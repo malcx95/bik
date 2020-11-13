@@ -10,5 +10,12 @@ pub const MENU_BACKGROUND_COLOR: (u8, u8, u8) = (108, 57, 57);
 pub const NAME_POS: (f32, f32) = (50., 150.);
 
 // Steering parameters
+pub const STEERING_RATE: f32 = 3.;
 pub const STEERING_MAX: f32 = 0.5;
 pub const WHEEL_DISTANCE: f32 = 50.;
+
+pub const MAX_SPEED: f32 = 350.;
+pub const MAX_BACKWARD_SPEED: f32 = 50.;
+pub const ACCELERATION: f32 = 200.;
+
+pub const POWERUP_DISTANCE: f32 = 100.;
