@@ -1,7 +1,14 @@
 [package]
 name = "plen"
 version = "0.1.0"
-authors = ["Emil Segerbäck", "Hannes Tuhkala", "Malcolm Wigren", "Frans Skarman", "Robin Sliwa"]
+authors = [
+  "Emil Segerbäck",
+  "Hannes Tuhkala",
+  "Malcolm Wigren",
+  "Frans Skarman",
+  "Robin Sliwa",
+  "Joel Nordström",
+]
 edition = "2018"
 build = "build.rs"
 
