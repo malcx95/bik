@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 mod assets;
 mod client_state;
 mod menu;
@@ -73,7 +74,7 @@ impl MainState {
             match bincode::deserialize(&message).unwrap() {
                 ServerMessage::AssignId(_) => panic!("Got new ID after intialisation"),
                 ServerMessage::GameState(state) => self.game_state = state,
-                ServerMessage::PlaySound(sound, pos) => {
+                ServerMessage::PlaySound(sound, _pos) => {
                     fn play_sound(soundeffect: &sdl2::mixer::Chunk) {
                         if let Err(e) = sdl2::mixer::Channel::all().play(soundeffect, 0) {
                             println!("SDL mixer error: {}", e);

@@ -45,7 +45,7 @@ impl MenuState {
     }
 
     pub fn draw(&mut self, canvas: &mut Canvas<Window>, assets: &Assets) -> Result<(), String> {
-        let (width, height) = canvas.logical_size();
+        // let (width, height) = canvas.logical_size();
         canvas.set_draw_color(constants::MENU_BACKGROUND_COLOR);
         canvas.clear();
 

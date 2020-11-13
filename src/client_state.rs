@@ -19,19 +19,19 @@ impl ClientState {
         }
     }
 
-    pub fn update(&mut self, delta_time: f32, game_state: &GameState, my_id: u64) {
+    pub fn update(&mut self, _delta_time: f32, _game_state: &GameState, _my_id: u64) {
         // update client side stuff
     }
 
     pub fn draw(
         &self,
-        my_id: u64,
+        _my_id: u64,
         game_state: &GameState,
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
-        let (screen_w, screen_h) = canvas.logical_size();
-        let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
+        let (_screen_w, _screen_h) = canvas.logical_size();
+        // let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
         // draw some stuff
         for player in &game_state.players {
@@ -40,7 +40,8 @@ impl ClientState {
                 &assets.motorcycle,
                 player.position,
                 player.angle,
-            );
+            )
+            .unwrap();
         }
 
         Ok(())

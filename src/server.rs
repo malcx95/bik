@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use std::io;
 use std::io::prelude::*;
 use std::net::TcpListener;
@@ -121,7 +123,7 @@ impl Server {
     fn update_clients(&mut self, delta_time: f32) {
         // Send data to clients
         let mut clients_to_delete = vec![];
-        let mut sounds_to_play = vec![];
+        let sounds_to_play = vec![];
 
         macro_rules! remove_player_on_disconnect {
             ($op:expr, $id:expr) => {

@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 pub mod player;
 pub mod constants;
 pub mod math;

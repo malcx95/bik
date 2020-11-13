@@ -27,7 +27,7 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, delta: f32) {
+    pub fn update(&mut self, _delta: f32) {
         // update game state
     }
 

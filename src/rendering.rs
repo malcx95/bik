@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use libplen::constants;
 use libplen::math::{vec2, Vec2};
 use sdl2::rect::Rect;
