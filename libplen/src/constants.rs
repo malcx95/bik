@@ -51,3 +51,10 @@ pub const PRE_RACE_PRESS_ENTER_POS_Y: f32 = 0.25;
 pub const COUNTDOWN_POS_Y: f32 = 0.25;
 pub const COUNTDOWN_TEXT_MAX_SIZE: f32 = 3.;
 pub const COUNTDOWN_TEXT_MIN_SIZE: f32 = 2.;
+pub const BIKE_SIZE: u32 = 40;
+
+pub const COLLISION_GRACE_PERIOD: f32 = 1.;
+pub const COLLISION_DAMAGE: i16 = 10;
+pub const COLLISION_SPEED_REDUCTION: f32 = 500.;
+
+pub const DEBUG: bool = true;

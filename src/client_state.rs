@@ -136,6 +136,21 @@ impl ClientState {
             }
         }
 
+        // Draw the hitbox
+        if constants::DEBUG {
+            for player in &game_state.players {
+                let hit_radius = constants::BIKE_SIZE * 2;
+                let x = player.position.x - camera_position.x as f32;
+                let y = player.position.y - camera_position.y as f32;
+                rendering::draw_texture_rotated(
+                    canvas,
+                    &assets.red_outline,
+                    vec2(x, y),
+                    player.angle + player.steering_angle,
+                );
+            }
+        }
+
         Ok(())
     }
 

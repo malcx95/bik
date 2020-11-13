@@ -10,7 +10,7 @@ use crate::constants::{
     MAX_BACKWARD_SPEED,
     STEERING_RATE,
     BIKE_SCALE,
-    STEERING_ATTENUATION_MAX,
+    STEERING_ATTENUATION_MAX
 };
 use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
@@ -34,6 +34,9 @@ pub struct Player {
     pub checkpoint: usize,
 
     pub fuel_level: f32,
+    pub bike_health: i16,
+
+    pub time_to_next_collision: f32
 }
 
 
@@ -53,6 +56,8 @@ impl Player {
             lap: 0,
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,
+            bike_health: 100,
+            time_to_next_collision: constants::COLLISION_GRACE_PERIOD
         }
     }
 
@@ -136,5 +141,27 @@ impl Player {
 
     pub fn get_fuel_percentage(&self) -> f32 {
         self.fuel_level as f32 / constants::MAX_FUEL_LEVEL
+    }
+
+    pub fn update_collision_timer(&mut self, delta_time: f32) {
+        self.time_to_next_collision -= delta_time;
+        if self.time_to_next_collision < 0. {
+            self.time_to_next_collision = 0.
+        }
+    }
+
+    pub fn damage(&mut self, dmg: i16) -> bool {
+        println!("took damage!");
+        self.bike_health -= dmg;
+
+        if self.bike_health <= 0 {
+            self.bike_health = 0;
+        }
+
+        true
+    }
+
+    pub fn is_bike_broken(&mut self) -> bool{
+        self.bike_health == 0
     }
 }

@@ -134,6 +134,10 @@ impl MainState {
     fn draw_ui(&mut self, canvas: &mut Canvas<Window>, assets: &mut Assets) -> Result<(), String> {
         self.client_state
             .draw_ui(self.my_id, &self.game_state, canvas, assets)
+            .draw(self.my_id, &self.game_state, canvas, assets)?;
+        self.client_state
+            .draw_ui(self.my_id, &self.game_state, canvas, assets)?;
+        Ok(())
     }
 
     fn get_first_game_state(&mut self, server_reader: &mut MessageReader) {

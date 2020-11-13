@@ -16,6 +16,8 @@ pub struct Assets<'ttf, 'r> {
     pub track: Texture<'r>,
     pub track_overlay: Texture<'r>,
 
+    pub red_outline: Texture<'r>,
+
     pub mace_pickup: Texture<'r>,
 
     pub menu_background: Texture<'r>,
@@ -52,6 +54,8 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             driver: load_tex("resources/driver.png"),
             track: load_tex("resources/track.png"),
             track_overlay: load_tex("resources/track_overlay.png"),
+
+            red_outline: load_tex("resources/red_outline.png"),
 
             mace_pickup: load_tex("resources/mace.png"),
 
