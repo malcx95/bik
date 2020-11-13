@@ -3,7 +3,7 @@ use std::sync::mpsc::Receiver;
 use serde_derive::{Serialize, Deserialize};
 
 use crate::checkpoint::Checkpoint;
-use crate::constants::{MAP_SCALE, POWERUP_TIMEOUT, POWERUP_DISTANCE};
+use crate::constants::{MAP_SCALE, POWERUP_TIMEOUT, POWERUP_DISTANCE, BIKE_SIZE, COLLISION_DAMAGE, COLLISION_GRACE_PERIOD};
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::player::Player;
 use crate::powerup::Powerup;
@@ -38,8 +38,11 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, delta: f32) {
+    pub fn update(&mut self, delta: f32) -> Vec<u64> {
+        // update game state
+        let hit_players = self.handle_player_collisions(delta);
         self.update_powerups(delta);
+        hit_players
     }
 
     pub fn update_powerups(&mut self, delta: f32) {
@@ -93,6 +96,43 @@ impl GameState {
         }
 
         None
+    }
+
+    pub fn handle_player_collisions(&mut self, delta: f32) -> Vec<u64> {
+        let mut collided_players: Vec<(u64, String)> = vec!();
+        let hit_radius = BIKE_SIZE * 2;
+
+        for p1 in &self.players {
+            for p2 in &self.players {
+                let distance = (p1.position - p2.position).norm();
+                if p1.id != p2.id && distance < hit_radius as f32 {
+                    collided_players.push((p1.id, p2.name.clone()));
+                }
+            }
+        }
+
+        let mut damaged_players = Vec::new();
+        for player in &mut self.players {
+            player.update_collision_timer(delta);
+
+            for (id, attacker) in &collided_players {
+                if player.id == *id && player.time_to_next_collision == 0. {
+                    let took_damage = player.damage(COLLISION_DAMAGE);
+
+                    if took_damage {
+                        damaged_players.push(player.id);
+                    }
+
+                    if player.has_died() {
+                        let msg = format!("{} killed {} by collision.", attacker.clone(), &player.name.clone());
+                        println!("{}",msg.as_str());
+                    }
+
+                    player.time_to_next_collision = COLLISION_GRACE_PERIOD;
+                }
+            }
+        }
+        damaged_players
     }
 }
 

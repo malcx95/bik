@@ -42,3 +42,7 @@ pub const GAUGE_HEIGHT: f32 = 0.47;
 pub const GAUGE_WIDTH: f32 = 0.05;
 pub const GAUGE_TEXT_POS_PADDING: f32 = 0.023;
 
+pub const BIKE_SIZE: u32 = 100;
+
+pub const COLLISION_GRACE_PERIOD: f32 = 1.;
+pub const COLLISION_DAMAGE: i16 = 40;
