@@ -7,3 +7,4 @@ pub mod gamestate;
 pub mod messages;
 pub mod debug;
 pub mod track;
+pub mod powerup;

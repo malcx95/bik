@@ -10,6 +10,7 @@ use crate::constants::{
 };
 use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
+use crate::powerup::Powerup;
 
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -52,5 +53,9 @@ impl Player {
             .max(-STEERING_MAX)
             .min(STEERING_MAX);
         self.angle += delta_angle * delta_time;
+    }
+
+    pub fn take_powerup(&mut self, _powerup: Powerup) {
+        // TODO
     }
 }

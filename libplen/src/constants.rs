@@ -17,3 +17,5 @@ pub const WHEEL_DISTANCE: f32 = 50.;
 pub const MAX_SPEED: f32 = 350.;
 pub const MAX_BACKWARD_SPEED: f32 = 50.;
 pub const ACCELERATION: f32 = 200.;
+
+pub const POWERUP_DISTANCE: f32 = 100.;
