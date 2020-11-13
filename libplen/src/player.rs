@@ -14,6 +14,9 @@ pub struct Player {
     pub angle: f32,
     pub speed: f32,
     pub steering_angle: f32,
+	
+	pub lap: u64,
+	pub checkpoint: u64,
 }
 
 
@@ -29,6 +32,8 @@ impl Player {
             angle: 0.,
             speed: 0.,
             steering_angle: 0.,
+			lap: 0,
+			checkpoint: 0,
         }
     }
 

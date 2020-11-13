@@ -12,3 +12,6 @@ pub const NAME_POS: (f32, f32) = (50., 150.);
 // Steering parameters
 pub const STEERING_MAX: f32 = 0.5;
 pub const WHEEL_DISTANCE: f32 = 50.;
+
+// lap info parameters
+pub const LAP_POS: (f32, f32) = (10., 10.);
