@@ -49,9 +49,10 @@ impl Player {
 
         let delta_angle = self.speed * self.steering_angle.tan() / WHEEL_DISTANCE;
 
-        self.steering_angle = (self.steering_angle + STEERING_RATE * input.x_input * delta_time)
-            .max(-STEERING_MAX)
-            .min(STEERING_MAX);
+        self.steering_angle = STEERING_MAX * input.x_input;
+        // self.steering_angle = (self.steering_angle + STEERING_RATE * input.x_input * delta_time)
+        //     .max(-STEERING_MAX)
+        //     .min(STEERING_MAX);
 
         self.angle += delta_angle * delta_time;
     }
