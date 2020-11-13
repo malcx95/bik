@@ -1,8 +1,8 @@
-# Plen
+# Bik
 
-Fly the plen blyat
+Ride the bik blyat
 
-A multiplayer shoot at each other with planes game
+A multiplayer race against each other with bikes game
 
 ## Usage instructions
 
@@ -16,7 +16,7 @@ The game client is very slow in debug mode, so it should be run in release mode
 
 ### Compiling under Windows
 
-SDL2 needs to be added to be able to compile Plen under Windows. You can follow [this tutorial](https://github.com/Rust-SDL2/rust-sdl2/blob/master/README.md#windows-with-build-script)
+SDL2 needs to be added to be able to compile Bik under Windows. You can follow [this tutorial](https://github.com/Rust-SDL2/rust-sdl2/blob/master/README.md#windows-with-build-script)
 (or possibly one of the others listed below it, not tested it myself but should work).
 
 You also need to install SDL2_image, SDL2_mixer and SDL2_ttf which can be found here:
@@ -28,7 +28,7 @@ Download both zip files under "Development Libraries", SDL2_xxxxx-devel-2.x.x-VC
 
 Extract them both according to the same instructions as noted in the SDL2 tutorial.
 
-Plen should now compile and you should be able to run the game under Windows.
+Bik should now compile and you should be able to run the game under Windows.
 
 ## Attribution
 Flame animation by serenajeanne used under CC-BY-SA 3.0
