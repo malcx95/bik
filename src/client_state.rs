@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
@@ -37,9 +39,20 @@ impl ClientState {
         for player in &game_state.players {
             rendering::draw_texture_rotated(
                 canvas,
-                &assets.motorcycle,
+                &assets.bike_back,
                 player.position,
-                player.angle,
+                player.angle + PI / 2.,
+            )
+            .unwrap();
+
+            let bike_length = 50.;
+            let front_offset = Vec2::from_direction(player.angle, bike_length);
+
+            rendering::draw_texture_rotated(
+                canvas,
+                &assets.bike_front,
+                player.position + front_offset,
+                player.angle + PI / 2. + player.steering_angle,
             )
             .unwrap();
         }
