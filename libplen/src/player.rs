@@ -1,6 +1,7 @@
 use serde_derive::{Serialize, Deserialize};
 
 use crate::math::{Vec2, vec2};
+use crate::messages::ClientInput;
 
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -28,7 +29,9 @@ impl Player {
         }
     }
 
-    pub fn update(&mut self, delta_time: f32) {
+    pub fn update(&mut self, input: &ClientInput, delta_time: f32) {
+        self.angle += input.x_input * delta_time;
+        self.speed += input.y_input * delta_time * 100.;
         // player update here
         self.position += Vec2::from_direction(self.angle, self.speed * delta_time);
     }
