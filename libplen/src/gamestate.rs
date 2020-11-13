@@ -1,9 +1,12 @@
+use std::fs;
 use std::sync::mpsc::Receiver;
 
 use serde_derive::{Serialize, Deserialize};
+use ron;
 
 use crate::player::Player;
 use crate::math::{Vec2, vec2};
+use crate::track;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameState {
@@ -13,6 +16,11 @@ pub struct GameState {
 
 impl GameState {
     pub fn new() -> GameState {
+        let map_config: track::MapConfig = ron::de::from_str(
+            &fs::read_to_string("resources/map.ron")
+                .expect("Could not open map.ron")
+        ).unwrap();
+
         GameState {
             players: Vec::new(),
             // init server side game state stuff here
