@@ -56,16 +56,16 @@ impl ClientState {
             )
             .unwrap();
         }
-		
-		if let Some(player) = game_state.get_player_by_id(my_id) {
-			Self::draw_lap_info(canvas, assets, player.lap);
-		}
+        
+        if let Some(player) = game_state.get_player_by_id(my_id) {
+            Self::draw_lap_info(canvas, assets, player.lap);
+        }
 
         Ok(())
     }
-	
-	fn draw_lap_info(canvas: &mut Canvas<Window>, assets: &Assets, lap: u64) -> Result<(), String> {
-		let text = assets
+    
+    fn draw_lap_info(canvas: &mut Canvas<Window>, assets: &Assets, lap: u64) -> Result<(), String> {
+        let text = assets
             .race_font
             .render(&format!("Lap: {}", lap))
             .blended((255, 255, 255))
@@ -76,7 +76,7 @@ impl ClientState {
 
         let res_offset = rendering::calculate_resolution_offset(canvas);
         rendering::draw_texture(canvas, &text_texture, vec2(LAP_POS.0, LAP_POS.1) + res_offset);
-		
-		Ok(())
-	}
+        
+        Ok(())
+    }
 }
