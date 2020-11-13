@@ -63,6 +63,14 @@ impl ClientState {
                 player.angle + PI / 2. + player.steering_angle,
             )
             .unwrap();
+
+            rendering::draw_texture_rotated(
+                canvas,
+                &assets.driver,
+                player.position - camera_position,
+                player.angle + PI / 2.,
+            )
+            .unwrap();
         }
 
         for powerup in &game_state.powerups {
