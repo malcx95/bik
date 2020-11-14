@@ -25,6 +25,19 @@ pub fn draw_texture(
     )
 }
 
+pub fn draw_uncentered_scaled(
+    canvas: &mut Canvas<Window>,
+    texture: &Texture,
+    pos: Vec2,
+    scale: Vec2,
+) -> Result<(), String> {
+    let texture_query = texture.query();
+    let w = texture_query.width as f32 * scale.x;
+    let h = texture_query.height as f32 * scale.y;
+    let dest_rect = sdl2::rect::Rect::new(pos.x as i32, pos.y as i32, w as u32, h as u32);
+    canvas.copy_ex(texture, None, dest_rect, 0., None, false, false)
+}
+
 pub fn draw_texture_centered(
     canvas: &mut Canvas<Window>,
     texture: &Texture,

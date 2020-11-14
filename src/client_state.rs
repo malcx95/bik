@@ -40,7 +40,13 @@ impl ClientState {
 
         // let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
-        rendering::draw_texture(canvas, &assets.track, -camera_position).unwrap();
+        rendering::draw_uncentered_scaled(
+            canvas,
+            &assets.track,
+            -camera_position,
+            vec2(MAP_SCALE, MAP_SCALE),
+        )
+        .unwrap();
 
         // draw some stuff
         for player in &game_state.players {
