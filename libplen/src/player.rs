@@ -55,7 +55,7 @@ impl Player {
     }
 
     pub fn update(&mut self, input: &ClientInput, delta_time: f32) {
-        self.speed = (self.speed + input.y_input * ACCELERATION * delta_time)
+        self.speed = (self.speed + (input.y_input * ACCELERATION * delta_time) * BIKE_SCALE)
             .max(-MAX_BACKWARD_SPEED)
             .min(MAX_SPEED);
 
