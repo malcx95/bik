@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 use serde_derive::{Serialize, Deserialize};
 use crate::constants;
 
@@ -59,6 +59,12 @@ impl Mul<f32> for Vec2 {
             x: self.x * scalar,
             y: self.y * scalar,
         }
+    }
+}
+
+impl MulAssign<f32> for Vec2 {
+    fn mul_assign(&mut self, scalar: f32) {
+        *self = *self * scalar
     }
 }
 

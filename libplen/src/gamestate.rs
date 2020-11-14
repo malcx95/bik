@@ -3,7 +3,7 @@ use std::sync::mpsc::Receiver;
 use serde_derive::{Serialize, Deserialize};
 
 use crate::checkpoint::Checkpoint;
-use crate::constants::{POWERUP_TIMEOUT, POWERUP_DISTANCE};
+use crate::constants::{MAP_SCALE, POWERUP_TIMEOUT, POWERUP_DISTANCE};
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::player::Player;
 use crate::powerup::Powerup;
@@ -18,7 +18,11 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new(powerups: Vec<Powerup>) -> GameState {
+    pub fn new(mut powerups: Vec<Powerup>) -> GameState {
+        for p in &mut powerups {
+            p.position *= MAP_SCALE;
+        }
+
         GameState {
             players: Vec::new(),
             powerups,
