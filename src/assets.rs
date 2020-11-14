@@ -18,7 +18,7 @@ pub struct Assets<'ttf, 'r> {
     pub track_overlay_overhead: Texture<'r>,
 
     pub red_outline: Texture<'r>,
-	pub finish_line: Texture<'r>,
+    pub finish_line: Texture<'r>,
 
     pub trees: Vec<Texture<'r>>,
     pub tires: Vec<Texture<'r>>,
@@ -62,7 +62,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             track_overlay_overhead: load_tex("resources/track_overlay_overhead.png"),
 
             red_outline: load_tex("resources/red_outline.png"),
-			finish_line: load_tex("resources/finish_line.png"),
+            finish_line: load_tex("resources/finish_line.png"),
 
             trees: vec![
                 load_tex("resources/tree1.png"),
