@@ -8,3 +8,4 @@ pub mod messages;
 pub mod debug;
 pub mod track;
 pub mod powerup;
+pub mod checkpoint;

@@ -5,7 +5,8 @@ use serde_derive::{Serialize, Deserialize};
 use ron;
 
 use crate::player::Player;
-use crate::math::{Vec2, vec2};
+use crate::checkpoint::Checkpoint;
+use crate::math::{Vec2, vec2, LineSegment};
 use crate::track;
 use crate::powerup::Powerup;
 use crate::constants::POWERUP_DISTANCE;
@@ -14,6 +15,7 @@ use crate::constants::POWERUP_DISTANCE;
 pub struct GameState {
     pub players: Vec<Player>,
     pub powerups: Vec<Powerup>,
+    pub checkpoints: Vec<Checkpoint>,
     // put server side game state stuff here
 }
 
@@ -30,6 +32,7 @@ impl GameState {
                 position: vec2(500.0, 500.0),
                 kind: crate::powerup::PowerupKind::Weapon(crate::powerup::Weapon::Mace),
             }],
+            checkpoints: Vec::new(),
             // init server side game state stuff here
         }
     }
@@ -63,6 +66,10 @@ impl GameState {
     pub fn add_player(&mut self, player: Player) {
         self.players.push(player.clone());
     }
+    
+    pub fn add_checkpoint(&mut self, checkpoint: Checkpoint) {
+        self.checkpoints.push(checkpoint.clone());
+    }
 
     pub fn get_player_by_id(&self, id: u64) -> Option<&Player> {
         for player in &self.players {
@@ -70,6 +77,17 @@ impl GameState {
                 return Some(player);
             }
         }
+        
+        None
+    }
+    
+    pub fn get_checkpoint_by_id(&self, id: u64) -> Option<&Checkpoint> {
+        for checkpoint in &self.checkpoints {
+            if checkpoint.id == id {
+                return Some(checkpoint);
+            }
+        }
+        
         None
     }
 }
