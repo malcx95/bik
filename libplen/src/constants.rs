@@ -46,5 +46,6 @@ pub const BIKE_SIZE: u32 = 40;
 
 pub const COLLISION_GRACE_PERIOD: f32 = 1.;
 pub const COLLISION_DAMAGE: i16 = 10;
+pub const COLLISION_SPEED_REDUCTION: f32 = 500.;
 
-pub const DEBUG: bool = false;
+pub const DEBUG: bool = true;

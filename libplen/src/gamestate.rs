@@ -3,7 +3,7 @@ use std::sync::mpsc::Receiver;
 use serde_derive::{Serialize, Deserialize};
 
 use crate::checkpoint::Checkpoint;
-use crate::constants::{MAP_SCALE, POWERUP_TIMEOUT, POWERUP_DISTANCE, BIKE_SIZE, COLLISION_DAMAGE, COLLISION_GRACE_PERIOD};
+use crate::constants;
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::player::Player;
 use crate::powerup::Powerup;
@@ -20,7 +20,7 @@ pub struct GameState {
 impl GameState {
     pub fn new(mut powerups: Vec<Powerup>) -> GameState {
         for p in &mut powerups {
-            p.position *= MAP_SCALE;
+            p.position *= constants::MAP_SCALE;
         }
 
         GameState {
@@ -58,9 +58,9 @@ impl GameState {
             if powerup.timeout <= 0. {
                 for player in &mut self.players {
                     let distance = player.position.distance_to(powerup.position);
-                    if distance < POWERUP_DISTANCE {
+                    if distance < constants::POWERUP_DISTANCE {
                         player.take_powerup(&powerup);
-                        powerup.timeout = POWERUP_TIMEOUT;
+                        powerup.timeout = constants::POWERUP_TIMEOUT;
                         continue 'powerups;
                     }
                 }
@@ -100,7 +100,7 @@ impl GameState {
 
     pub fn handle_player_collisions(&mut self, delta: f32) -> Vec<u64> {
         let mut collided_players: Vec<(u64, String)> = vec!();
-        let hit_radius = BIKE_SIZE * 2;
+        let hit_radius = constants::BIKE_SIZE * 2;
 
         for p1 in &self.players {
             for p2 in &self.players {
@@ -117,7 +117,7 @@ impl GameState {
 
             for (id, attacker) in &collided_players {
                 if player.id == *id && player.time_to_next_collision == 0. {
-                    let took_damage = player.damage(COLLISION_DAMAGE);
+                    let took_damage = player.damage(constants::COLLISION_DAMAGE);
 
                     if took_damage {
                         damaged_players.push(player.id);
@@ -128,8 +128,9 @@ impl GameState {
                         //let msg = format!("{} killed {} by collision.", attacker.clone(), &player.name.clone());
                         //println!("{}",msg.as_str());
                     }
-
-                    player.time_to_next_collision = COLLISION_GRACE_PERIOD;
+					
+					player.speed -= constants::COLLISION_SPEED_REDUCTION;
+                    player.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
                 }
             }
         }

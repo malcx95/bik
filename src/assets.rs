@@ -14,6 +14,8 @@ pub struct Assets<'ttf, 'r> {
     pub bike_front: Texture<'r>,
     pub driver: Texture<'r>,
     pub track: Texture<'r>,
+	
+	pub red_outline: Texture<'r>,
 
     pub mace_pickup: Texture<'r>,
 
@@ -58,6 +60,8 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             bike_front: load_tex("resources/front.png"),
             driver: load_tex("resources/driver.png"),
             track: load_tex("resources/track.png"),
+			
+			red_outline: load_tex("resources/red_outline.png"),
 
             mace_pickup: load_tex("resources/mace.png"),
 

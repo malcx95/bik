@@ -105,10 +105,9 @@ impl ClientState {
         if constants::DEBUG {
             for player in &game_state.players {
                 let hit_radius = constants::BIKE_SIZE * 2;
-                let x = player.position.x - camera_position.x - (hit_radius / 2) as f32;
-                let y = player.position.y - camera_position.y - (hit_radius / 2) as f32;
-                canvas.set_draw_color((255, 0, 0));
-                canvas.draw_rect(Rect::new(x as i32, y as i32, hit_radius, hit_radius));
+				let x = player.position.x - camera_position.x as f32;
+				let y = player.position.y - camera_position.y as f32;
+				rendering::draw_texture_rotated(canvas, &assets.red_outline, vec2(x, y), player.angle + player.steering_angle);
             }
         }
 
