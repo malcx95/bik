@@ -112,7 +112,6 @@ impl Player {
         self.angle += delta_angle * delta_time;
 
         self.update_fuel_level(input);
-
     }
 
     pub fn take_powerup(&mut self, _powerup: &Powerup) {
