@@ -7,7 +7,7 @@ use crate::constants::{
     STEERING_MAX,
     ACCELERATION,
     MAX_SPEED,
-    MAX_BACKWARD_SPEED,
+    MAX_WALK_SPEED,
     STEERING_RATE,
     BIKE_SCALE,
     STEERING_ATTENUATION_MAX
@@ -74,6 +74,8 @@ impl Player {
         delta_time: f32,
         race_state: &RaceState
     ) {
+        self.update_fuel_level(input);
+
         let ground_type = ground.query_terrain(self.position)
             .expect(&format!("failed to query terrain for player {:?}", self.name));
 
@@ -85,7 +87,22 @@ impl Player {
 
         match race_state {
             RaceState::Started => {
-                let acc_magnitude = (ACCELERATION * input.y_input * delta_time) * BIKE_SCALE;
+                let fuel_factor = if input.y_input.signum() == forward_component.signum() && (
+                    forward_component < -MAX_WALK_SPEED ||
+                    self.fuel_level <= 0. &&
+                    forward_component.abs() > MAX_WALK_SPEED
+                ) {
+                    0.0
+                } else {
+                    1.0
+                };
+
+                let acc_magnitude = ACCELERATION *
+                    BIKE_SCALE *
+                    input.y_input *
+                    fuel_factor *
+                    delta_time;
+
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 
                 // Side velocity attenuation. AKA anti-hovercraft force
@@ -100,9 +117,7 @@ impl Player {
                 };
 
                 let uncapped_velocity = self.velocity + acceleration + side_decel + forward_decel;
-                let vel_magnitude = uncapped_velocity.norm()
-                    .max(-MAX_BACKWARD_SPEED)
-                    .min(MAX_SPEED);
+                let vel_magnitude = uncapped_velocity.norm();
 
                 self.velocity = if uncapped_velocity != vec2(0., 0.) {
                     uncapped_velocity.normalize() * vel_magnitude

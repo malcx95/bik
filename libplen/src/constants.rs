@@ -20,7 +20,7 @@ pub const WHEEL_DISTANCE: f32 = 20.;
 pub const BIKE_SCALE: f32 = 2.0;
 
 pub const MAX_SPEED: f32 = 600.;
-pub const MAX_BACKWARD_SPEED: f32 = 50.;
+pub const MAX_WALK_SPEED: f32 = 100.;
 pub const ACCELERATION: f32 = 350.;
 
 // lap info parameters
