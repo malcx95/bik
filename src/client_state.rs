@@ -118,12 +118,14 @@ impl ClientState {
             for checkpoint in &game_state.checkpoints {
                 let x = checkpoint.position.x - camera_position.x - constants::CHECKPOINT_RADIUS;
                 let y = checkpoint.position.y - camera_position.y - constants::CHECKPOINT_RADIUS;
-                canvas.draw_rect(Rect::new(
-                    x as i32,
-                    y as i32,
-                    (constants::CHECKPOINT_RADIUS * 2.) as u32,
-                    (constants::CHECKPOINT_RADIUS * 2.) as u32,
-                ));
+                canvas
+                    .draw_rect(Rect::new(
+                        x as i32,
+                        y as i32,
+                        (constants::CHECKPOINT_RADIUS * 2.) as u32,
+                        (constants::CHECKPOINT_RADIUS * 2.) as u32,
+                    ))
+                    .unwrap();
             }
         }
 
