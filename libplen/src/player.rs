@@ -117,6 +117,7 @@ impl Player {
     }
 
     pub fn damage(&mut self, dmg: i16) -> bool {
+        println!("took damage!");
         self.health -= dmg;
 
         if self.health <= 0 {

@@ -124,8 +124,9 @@ impl GameState {
                     }
 
                     if player.has_died() {
-                        let msg = format!("{} killed {} by collision.", attacker.clone(), &player.name.clone());
-                        println!("{}",msg.as_str());
+                        // TODO: Something should happen when people die
+                        //let msg = format!("{} killed {} by collision.", attacker.clone(), &player.name.clone());
+                        //println!("{}",msg.as_str());
                     }
 
                     player.time_to_next_collision = COLLISION_GRACE_PERIOD;

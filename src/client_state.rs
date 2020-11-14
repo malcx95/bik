@@ -1,9 +1,9 @@
 use std::f32::consts::PI;
 
 use sdl2::pixels::Color;
-use sdl2::rect::Rect;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use sdl2::rect::Rect;
 
 use libplen::constants;
 use libplen::gamestate::GameState;
@@ -99,6 +99,17 @@ impl ClientState {
         }
         if let Some(player) = game_state.get_player_by_id(my_id) {
             Self::draw_lap_info(canvas, assets, player.lap).unwrap();
+        }
+
+        // Draw the hitbox
+        if constants::DEBUG {
+            for player in &game_state.players {
+                let hit_radius = constants::BIKE_SIZE * 2;
+                let x = player.position.x - camera_position.x - (hit_radius / 2) as f32;
+                let y = player.position.y - camera_position.y - (hit_radius / 2) as f32;
+                canvas.set_draw_color((255, 0, 0));
+                canvas.draw_rect(Rect::new(x as i32, y as i32, hit_radius, hit_radius));
+            }
         }
 
         Ok(())

@@ -141,7 +141,6 @@ impl MainState {
             .draw(self.my_id, &self.game_state, canvas, assets)?;
         self.client_state
             .draw_ui(self.my_id, &self.game_state, canvas, assets)?;
-
         Ok(())
     }
 
