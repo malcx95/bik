@@ -1,10 +1,16 @@
 (
-    start_position: (1200, 1452),
+    start_position: (x: 1200, y: 1452),
     powerups: [
-      (
-        position: (x: 500, y: 500),
-        kind: Weapon(Mace),
-        timeout: 0,
-      )
+        (
+            position: ( x: 500, y: 500 ),
+            kind: Weapon(Mace),
+            timeout: 0,
+        )
+    ],
+    checkpoints: [
+        (x: 1700, y: 1750), // Lower right
+        (x: 1750, y: 250), // Upper right
+        (x: 470, y: 250), // Upper left
+        (x: 500, y: 1530), // Lower left
     ]
 )

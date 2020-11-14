@@ -60,7 +60,7 @@ impl MainState {
     fn new(my_id: u64) -> MainState {
         MainState {
             my_id,
-            game_state: gamestate::GameState::new(Vec::new()),
+            game_state: gamestate::GameState::default(),
             client_state: client_state::ClientState::new(my_id),
             last_time: Instant::now(),
         }
@@ -321,6 +321,14 @@ pub fn main() -> Result<(), String> {
                     } => {
                         lowres_target = create_lowres_target((width as u32, height as u32));
                     }
+                    Event::KeyDown {
+                        keycode: Some(kc), ..
+                    } => match kc {
+                        Keycode::F1 => {
+                            main_state.client_state.toggle_debug_draw();
+                        }
+                        _ => {}
+                    },
                     _ => {}
                 }
             }

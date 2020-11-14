@@ -27,8 +27,8 @@ pub struct Player {
     pub speed: f32,
     pub steering_angle: f32,
 
-    pub lap: u64,
-    pub checkpoint: u64,
+    pub lap: usize,
+    pub checkpoint: usize,
 
     pub fuel_level: f32,
 }

@@ -18,15 +18,19 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new(mut powerups: Vec<Powerup>) -> GameState {
+    pub fn new(mut powerups: Vec<Powerup>, checkpoint_positions: &Vec<Vec2>) -> GameState {
         for p in &mut powerups {
             p.position *= MAP_SCALE;
         }
 
+        let checkpoints = checkpoint_positions.iter().cloned().map(|pos|
+            Checkpoint::new(pos * MAP_SCALE)
+        ).collect();
+
         GameState {
             players: Vec::new(),
             powerups,
-            checkpoints: Vec::new(),
+            checkpoints,
         }
     }
 
@@ -71,10 +75,6 @@ impl GameState {
         self.players.push(player);
     }
 
-    pub fn add_checkpoint(&mut self, checkpoint: Checkpoint) {
-        self.checkpoints.push(checkpoint);
-    }
-
     pub fn get_player_by_id(&self, id: u64) -> Option<&Player> {
         for player in &self.players {
             if player.id == id {
@@ -84,20 +84,10 @@ impl GameState {
 
         None
     }
-
-    pub fn get_checkpoint_by_id(&self, id: u64) -> Option<&Checkpoint> {
-        for checkpoint in &self.checkpoints {
-            if checkpoint.id == id {
-                return Some(checkpoint);
-            }
-        }
-
-        None
-    }
 }
 
 impl Default for GameState {
     fn default() -> Self {
-        Self::new(Vec::new())
+        Self::new(Vec::new(), &Vec::new())
     }
 }

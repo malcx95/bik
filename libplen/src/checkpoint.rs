@@ -1,26 +1,21 @@
 use serde_derive::{Serialize, Deserialize};
 
-use crate::math::{Vec2, vec2, LineSegment};
+use crate::constants;
+use crate::math::Vec2;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Checkpoint {
-    pub id: u64,
-    pub line: LineSegment,
+    pub position: Vec2,
 }
 
 impl Checkpoint {
-    pub fn new(
-        id: u64,
-        _line: LineSegment,
-    ) -> Checkpoint {
+    pub fn new(position: Vec2) -> Checkpoint {
         Checkpoint {
-            id,
-            line: LineSegment::new(vec2(150., 150.), vec2(300., 300.)),
+            position
         }
     }
-    
-    // Make a line segment of the player's previous position and its future position, then check whether it intersects player.checkpoint + 1
-    pub fn intersects(&self, other: LineSegment) -> bool {
-        self.line.intersects(other)
+
+    pub fn player_reached(&self, player_position: Vec2) -> bool {
+        player_position.distance_to(self.position) < constants::CHECKPOINT_RADIUS * constants::MAP_SCALE
     }
 }

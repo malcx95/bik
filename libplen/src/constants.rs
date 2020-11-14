@@ -35,7 +35,9 @@ pub const POWERUP_TIMEOUT: f32 = 5.;
 
 // Map parameters
 pub const MAP_SCALE: f32 = 2.;
+pub const CHECKPOINT_RADIUS: f32 = 300.;
 
+// UI parameters
 pub const GAUGE_BACKGROUND: (u8, u8, u8) = (10, 10, 10);
 pub const GAUGE_POS_X: f32 = 0.02;
 pub const GAUGE_POS_Y: f32 = 0.5;

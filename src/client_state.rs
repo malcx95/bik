@@ -16,11 +16,19 @@ use libplen::powerup::{PowerupKind, Weapon};
 
 pub struct ClientState {
     my_id: u64,
+    debug_drawing: bool,
 }
 
 impl ClientState {
     pub fn new(my_id: u64) -> ClientState {
-        ClientState { my_id }
+        ClientState {
+            my_id,
+            debug_drawing: false,
+        }
+    }
+
+    pub fn toggle_debug_draw(&mut self) {
+        self.debug_drawing = !self.debug_drawing;
     }
 
     pub fn update(&mut self, _delta_time: f32, _game_state: &GameState, _my_id: u64) {
@@ -102,10 +110,28 @@ impl ClientState {
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
 
+        if self.debug_drawing {
+            canvas.set_draw_color((255, 0, 0));
+            for checkpoint in &game_state.checkpoints {
+                let x = checkpoint.position.x - camera_position.x - constants::CHECKPOINT_RADIUS;
+                let y = checkpoint.position.y - camera_position.y - constants::CHECKPOINT_RADIUS;
+                canvas.draw_rect(Rect::new(
+                    x as i32,
+                    y as i32,
+                    (constants::CHECKPOINT_RADIUS * 2.) as u32,
+                    (constants::CHECKPOINT_RADIUS * 2.) as u32,
+                ));
+            }
+        }
+
         Ok(())
     }
 
-    fn draw_lap_info(canvas: &mut Canvas<Window>, assets: &Assets, lap: u64) -> Result<(), String> {
+    fn draw_lap_info(
+        canvas: &mut Canvas<Window>,
+        assets: &Assets,
+        lap: usize,
+    ) -> Result<(), String> {
         let text = assets
             .race_font
             .render(&format!("Lap: {}", lap))

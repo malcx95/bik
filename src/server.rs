@@ -16,7 +16,7 @@ use unicode_truncate::UnicodeTruncateStr;
 use libplen::constants;
 use libplen::gamestate;
 use libplen::ground::Ground;
-use libplen::math::{vec2, Vec2};
+use libplen::math::{vec2, LineSegment, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use libplen::player::Player;
 use libplen::track;
@@ -97,7 +97,7 @@ impl<'a> Server<'a> {
             )
             .expect("failed to load ground"),
             last_time: Instant::now(),
-            state: gamestate::GameState::new(map_config.powerups.clone()),
+            state: gamestate::GameState::new(map_config.powerups.clone(), &map_config.checkpoints),
             opts,
             has_had_player: false,
             map_config,
@@ -187,11 +187,10 @@ impl<'a> Server<'a> {
                             name = name.trim().unicode_truncate(20).0.to_string()
                         }
 
-                        let (x, y) = self.map_config.start_position;
                         let player = Player::new(
                             client.id,
                             name,
-                            vec2(x as f32, y as f32) * constants::MAP_SCALE,
+                            self.map_config.start_position * constants::MAP_SCALE,
                         );
                         self.state.add_player(player);
                     }
@@ -204,7 +203,28 @@ impl<'a> Server<'a> {
 
             for player in &mut self.state.players {
                 if player.id == client.id {
+                    let old_pos = player.position;
                     player.update(&client.input, &self.ground, delta_time);
+
+                    if player.checkpoint < self.state.checkpoints.len() {
+                        let checkpoint = &self.state.checkpoints[player.checkpoint];
+                        if checkpoint.player_reached(player.position) {
+                            player.checkpoint += 1;
+                        }
+                    } else {
+                        let start_point = self.map_config.start_position * constants::MAP_SCALE;
+                        let goal_width = constants::CHECKPOINT_RADIUS * constants::MAP_SCALE;
+                        let goal_line = LineSegment::new(
+                            start_point + vec2(0., -goal_width),
+                            start_point + vec2(0., goal_width),
+                        );
+
+                        let player_movement_line = LineSegment::new(old_pos, player.position);
+                        if player_movement_line.intersects(goal_line) {
+                            player.lap += 1;
+                            player.checkpoint = 0;
+                        }
+                    }
                     break;
                 }
             }
