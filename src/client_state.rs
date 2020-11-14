@@ -86,7 +86,7 @@ impl ClientState {
             rendering::draw_texture_rotated(canvas, texture, powerup.position, 0.).unwrap();
         }
         if let Some(player) = game_state.get_player_by_id(my_id) {
-            Self::draw_lap_info(canvas, assets, player.lap);
+            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
         }
 
         Ok(())
@@ -107,7 +107,8 @@ impl ClientState {
             canvas,
             &text_texture,
             vec2(LAP_POS.0, LAP_POS.1) + res_offset,
-        );
+        )
+        .unwrap();
         Ok(())
     }
 
@@ -131,7 +132,7 @@ impl ClientState {
 
         let texture_creator = canvas.texture_creator();
         let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
-        rendering::draw_texture(canvas, &text_texture, screen_center);
+        rendering::draw_texture(canvas, &text_texture, screen_center).unwrap();
 
         Ok(())
     }
