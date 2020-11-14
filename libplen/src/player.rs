@@ -14,6 +14,7 @@ use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
 use crate::constants;
 use crate::powerup::Powerup;
+use crate::ground::Ground;
 
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -56,7 +57,13 @@ impl Player {
         self.fuel_level = (self.fuel_level - input.y_input.max(0.)*constants::FUEL_CONSUMPTION).max(0.);
     }
 
-    pub fn update(&mut self, input: &ClientInput, delta_time: f32) {
+    pub fn update(&mut self, input: &ClientInput, ground: &Ground, delta_time: f32) {
+        let ground_type = ground.query_terrain(self.position)
+            .expect(&format!("failed to query terrain for player {:?}", self.name));
+
+        println!("{:?}", ground_type);
+
+        // Steering logic
         self.speed = (self.speed + (input.y_input * ACCELERATION * delta_time) * BIKE_SCALE)
             .max(-MAX_BACKWARD_SPEED)
             .min(MAX_SPEED);
@@ -83,6 +90,7 @@ impl Player {
         self.angle += delta_angle * delta_time;
 
         self.update_fuel_level(input);
+
     }
 
     pub fn take_powerup(&mut self, _powerup: &Powerup) {

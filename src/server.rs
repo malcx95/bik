@@ -15,6 +15,7 @@ use unicode_truncate::UnicodeTruncateStr;
 
 use libplen::constants;
 use libplen::gamestate;
+use libplen::ground::Ground;
 use libplen::math::{vec2, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use libplen::player::Player;
@@ -64,7 +65,7 @@ struct Server<'a> {
     listener: TcpListener,
     connections: Vec<Client>,
     state: gamestate::GameState,
-    map_data: Surface<'a>,
+    ground: Ground<'a>,
     next_id: u64,
     last_time: Instant,
     opts: Opt,
@@ -91,7 +92,10 @@ impl<'a> Server<'a> {
             listener,
             connections: vec![],
             next_id: 0,
-            map_data: Surface::from_file("resources/track.png").expect("failed to laod map data"),
+            ground: Ground::new(
+                Surface::from_file("resources/track.png").expect("failed to laod map data"),
+            )
+            .expect("failed to load ground"),
             last_time: Instant::now(),
             state: gamestate::GameState::new(map_config.powerups.clone()),
             opts,
@@ -200,7 +204,7 @@ impl<'a> Server<'a> {
 
             for player in &mut self.state.players {
                 if player.id == client.id {
-                    player.update(&client.input, delta_time);
+                    player.update(&client.input, &self.ground, delta_time);
                     break;
                 }
             }

@@ -213,6 +213,7 @@ dependencies = [
  "rand 0.7.2",
  "rand_derive",
  "ron",
+ "sdl2",
  "serde",
  "serde_derive",
  "strum",

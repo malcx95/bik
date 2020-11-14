@@ -17,3 +17,4 @@ bincode = "1.2.0"
 enum_dispatch = "0.2.0"
 enum-map = "0.6.2"
 ron = "0.6.2"
+sdl2 = {version = "0.32.2", features = ["image", "mixer", "ttf"]}
