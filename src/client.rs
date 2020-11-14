@@ -8,10 +8,11 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::time::Instant;
 
-use sdl2::event::Event;
+use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::{Keycode, Scancode};
 use sdl2::render::BlendMode;
 use sdl2::render::Canvas;
+use sdl2::render::Texture;
 use sdl2::video::Window;
 use structopt::StructOpt;
 
@@ -138,11 +139,12 @@ impl MainState {
 
     fn draw(&mut self, canvas: &mut Canvas<Window>, assets: &mut Assets) -> Result<(), String> {
         self.client_state
-            .draw(self.my_id, &self.game_state, canvas, assets)?;
-        self.client_state
-            .draw_ui(self.my_id, &self.game_state, canvas, assets)?;
+            .draw(self.my_id, &self.game_state, canvas, assets)
+    }
 
-        Ok(())
+    fn draw_ui(&mut self, canvas: &mut Canvas<Window>, assets: &mut Assets) -> Result<(), String> {
+        self.client_state
+            .draw_ui(self.my_id, &self.game_state, canvas, assets)
     }
 
     fn get_first_game_state(&mut self, server_reader: &mut MessageReader) {
@@ -297,21 +299,50 @@ pub fn main() -> Result<(), String> {
         // blocks until the first game state is recieved
         main_state.get_first_game_state(&mut reader);
 
+        let create_lowres_target = |(width, height)| {
+            texture_creator
+                .create_texture_target(
+                    sdl2::pixels::PixelFormatEnum::RGB332,
+                    width / constants::PIXEL_SCALE,
+                    height / constants::PIXEL_SCALE,
+                )
+                .unwrap()
+        };
+
+        let mut lowres_target = create_lowres_target(canvas.output_size()?);
+
         'gameloop: loop {
             for event in event_pump.poll_iter() {
                 match event {
                     Event::Quit { .. } => break 'mainloop,
+                    Event::Window {
+                        win_event: WindowEvent::Resized(width, height),
+                        ..
+                    } => {
+                        lowres_target = create_lowres_target((width as u32, height as u32));
+                    }
                     _ => {}
                 }
             }
             rendering::setup_coordinates(&mut canvas)?;
 
             canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
-            canvas.clear();
 
             let state_result =
                 main_state.update(&assets, &mut reader, &event_pump.keyboard_state());
-            main_state.draw(&mut canvas, &mut assets).unwrap();
+
+            canvas
+                .with_texture_canvas(&mut lowres_target, |mut canvas| {
+                    canvas.clear();
+                    let scale = 1. / constants::PIXEL_SCALE as f32;
+                    canvas.set_scale(scale, scale).unwrap();
+                    main_state.draw(&mut canvas, &mut assets).unwrap();
+                })
+                .unwrap();
+
+            canvas.copy(&lowres_target, None, None)?;
+
+            main_state.draw_ui(&mut canvas, &mut assets).unwrap();
 
             canvas.present();
 

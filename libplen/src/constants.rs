@@ -5,6 +5,7 @@ pub const DELTA_TIME: f32 = 0.01;
 pub const SERVER_SLEEP_DURATION: u64 = 10;
 
 pub const WINDOW_SIZE: f32 = 700.;
+pub const PIXEL_SCALE: u32 = 4;
 
 pub const MENU_BACKGROUND_COLOR: (u8, u8, u8) = (108, 57, 57);
 
@@ -41,4 +42,3 @@ pub const GAUGE_POS_Y: f32 = 0.5;
 pub const GAUGE_HEIGHT: f32 = 0.47;
 pub const GAUGE_WIDTH: f32 = 0.05;
 pub const GAUGE_TEXT_POS_PADDING: f32 = 0.023;
-

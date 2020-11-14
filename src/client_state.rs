@@ -29,12 +29,16 @@ impl ClientState {
 
     pub fn draw(
         &self,
-        my_id: u64,
+        _my_id: u64,
         game_state: &GameState,
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
         let (screen_w, screen_h) = canvas.logical_size();
+        let (screen_w, screen_h) = (
+            screen_w * constants::PIXEL_SCALE,
+            screen_h * constants::PIXEL_SCALE,
+        );
         let camera_position = if let Some(my_player) = game_state.get_player_by_id(self.my_id) {
             my_player.position - vec2(screen_w as f32, screen_h as f32) / 2.
         } else {
@@ -97,9 +101,6 @@ impl ClientState {
 
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
-        if let Some(player) = game_state.get_player_by_id(my_id) {
-            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
-        }
 
         Ok(())
     }
@@ -131,6 +132,10 @@ impl ClientState {
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
+        if let Some(player) = game_state.get_player_by_id(my_id) {
+            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
+        }
+
         let (screen_w, screen_h) = canvas.logical_size();
         let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
@@ -144,7 +149,7 @@ impl ClientState {
         &self,
         player: &Player,
         canvas: &mut Canvas<Window>,
-        screen_center: Vec2,
+        _screen_center: Vec2,
         assets: &mut Assets,
     ) {
         let (screen_w, screen_h) = canvas.logical_size();
