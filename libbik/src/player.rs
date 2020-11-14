@@ -90,6 +90,9 @@ impl Player {
         self.update_motion(input, ground, delta_time, race_state);
         if let Some(weapon) = &mut self.weapon {
             weapon.update(delta_time);
+            if weapon.expired() {
+                self.weapon = None;
+            }
         }
     }
 
