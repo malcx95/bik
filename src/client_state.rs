@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use libplen::constants::{LAP_POS};
+use libplen::constants::{BIKE_SCALE, LAP_POS};
 use libplen::gamestate::GameState;
 use libplen::math::{self, vec2, Vec2};
 
@@ -45,30 +45,33 @@ impl ClientState {
 
         // draw some stuff
         for player in &game_state.players {
-            rendering::draw_texture_rotated(
+            rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 &assets.bike_back,
                 player.position - camera_position,
                 player.angle + PI / 2.,
+                vec2(BIKE_SCALE, BIKE_SCALE),
             )
             .unwrap();
 
             let bike_length = 50.;
-            let front_offset = Vec2::from_direction(player.angle, bike_length);
+            let front_offset = Vec2::from_direction(player.angle, bike_length) * BIKE_SCALE;
 
-            rendering::draw_texture_rotated(
+            rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 &assets.bike_front,
                 player.position + front_offset - camera_position,
                 player.angle + PI / 2. + player.steering_angle,
+                vec2(BIKE_SCALE, BIKE_SCALE),
             )
             .unwrap();
 
-            rendering::draw_texture_rotated(
+            rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 &assets.driver,
                 player.position - camera_position,
                 player.angle + PI / 2.,
+                vec2(BIKE_SCALE, BIKE_SCALE),
             )
             .unwrap();
         }
@@ -100,9 +103,13 @@ impl ClientState {
         let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
 
         let res_offset = rendering::calculate_resolution_offset(canvas);
-        rendering::draw_texture(canvas, &text_texture, vec2(LAP_POS.0, LAP_POS.1) + res_offset);
+        rendering::draw_texture(
+            canvas,
+            &text_texture,
+            vec2(LAP_POS.0, LAP_POS.1) + res_offset,
+        );
         Ok(())
-}
+    }
 
     pub fn draw_ui(
         &self,

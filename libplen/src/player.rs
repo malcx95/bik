@@ -7,6 +7,7 @@ use crate::constants::{
     MAX_SPEED,
     MAX_BACKWARD_SPEED,
     STEERING_RATE,
+    BIKE_SCALE,
 };
 use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
@@ -60,7 +61,7 @@ impl Player {
 
         self.position += Vec2::from_direction(self.angle, self.speed * delta_time);
 
-        let delta_angle = self.speed * self.steering_angle.tan() / WHEEL_DISTANCE;
+        let delta_angle = self.speed * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
 
         self.steering_angle = STEERING_MAX * input.x_input;
         // self.steering_angle = (self.steering_angle + STEERING_RATE * input.x_input * delta_time)

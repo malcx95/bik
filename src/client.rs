@@ -146,8 +146,10 @@ impl MainState {
                         self.game_state = state;
                         match self.game_state.get_player_by_id(self.my_id) {
                             // got a game state with out ID in it
-                            Some(_) => { return; }
-                            _ => { }
+                            Some(_) => {
+                                return;
+                            }
+                            _ => {}
                         }
                     }
                     _ => {
