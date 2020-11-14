@@ -84,7 +84,7 @@ impl Player {
         self.update_fuel_level(input);
     }
 
-    pub fn take_powerup(&mut self, _powerup: Powerup) {
+    pub fn take_powerup(&mut self, _powerup: &Powerup) {
         // TODO
     }
 }

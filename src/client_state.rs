@@ -76,13 +76,21 @@ impl ClientState {
         }
 
         for powerup in &game_state.powerups {
+            if powerup.timeout > 0. {
+                continue;
+            }
+
             let texture = match &powerup.kind {
                 PowerupKind::Weapon(weapon) => match weapon {
                     Weapon::Mace => &assets.mace_pickup,
                 },
             };
 
-            rendering::draw_texture_rotated(canvas, texture, powerup.position, 0.).unwrap();
+            rendering::draw_texture(
+                canvas,
+                texture,
+                powerup.position - camera_position,
+            ).unwrap();
         }
         if let Some(player) = game_state.get_player_by_id(my_id) {
             Self::draw_lap_info(canvas, assets, player.lap).unwrap();

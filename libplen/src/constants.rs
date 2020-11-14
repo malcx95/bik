@@ -29,3 +29,4 @@ pub const MAX_FUEL_LEVEL: f32 = 100.;
 pub const FUEL_CONSUMPTION: f32 = 1.;
 
 pub const POWERUP_DISTANCE: f32 = 100.;
+pub const POWERUP_TIMEOUT: f32 = 5.;

@@ -1,7 +1,8 @@
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
+use crate::powerup::Powerup;
 
-#[derive(Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct MapConfig {
-    start_position: (usize, usize),
+    pub start_position: (usize, usize),
+    pub powerups: Vec<Powerup>,
 }
-

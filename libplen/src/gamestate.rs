@@ -2,14 +2,13 @@ use std::fs;
 use std::sync::mpsc::Receiver;
 
 use serde_derive::{Serialize, Deserialize};
-use ron;
 
 use crate::player::Player;
 use crate::checkpoint::Checkpoint;
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::track;
 use crate::powerup::Powerup;
-use crate::constants::POWERUP_DISTANCE;
+use crate::constants::{POWERUP_TIMEOUT, POWERUP_DISTANCE};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameState {
@@ -26,14 +25,15 @@ impl GameState {
                 .expect("Could not open map.ron")
         ).unwrap();
 
+        let powerups = map_config
+            .powerups
+            .into_iter()
+            .collect();
+
         GameState {
             players: Vec::new(),
-            powerups: vec![Powerup {
-                position: vec2(500.0, 500.0),
-                kind: crate::powerup::PowerupKind::Weapon(crate::powerup::Weapon::Mace),
-            }],
+            powerups,
             checkpoints: Vec::new(),
-            // init server side game state stuff here
         }
     }
 
@@ -45,21 +45,32 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, _delta: f32) {
-        for player in &mut self.players {
-            let mut i = 0;
-            loop {
-                if i >= self.powerups.len() {
-                    break;
-                }
+    pub fn update(&mut self, delta: f32) {
+        self.update_powerups(delta);
+    }
 
-                let distance = player.position.distance_to(self.powerups[i].position);
-                if distance < POWERUP_DISTANCE {
-                    player.take_powerup(self.powerups.swap_remove(i));
-                } else {
-                    i += 1;
+    pub fn update_powerups(&mut self, delta: f32) {
+        let mut i = 0;
+        'powerups: loop {
+            if i >= self.powerups.len() {
+                break;
+            }
+
+            let powerup = &mut self.powerups[i];
+            powerup.timeout = (powerup.timeout - delta).max(0.);
+
+            if powerup.timeout <= 0. {
+                for player in &mut self.players {
+                    let distance = player.position.distance_to(powerup.position);
+                    if distance < POWERUP_DISTANCE {
+                        player.take_powerup(&powerup);
+                        powerup.timeout = POWERUP_TIMEOUT;
+                        continue 'powerups;
+                    }
                 }
             }
+
+            i += 1;
         }
     }
 
