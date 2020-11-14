@@ -67,11 +67,17 @@ impl Player {
         delta_time: f32,
         race_state: &RaceState
     ) {
+        let ground_type = ground.query_terrain(self.position)
+            .expect(&format!("failed to query terrain for player {:?}", self.name));
+
+        let forward_dir = Vec2::from_direction(self.angle, 1.);
+        let forward_component = forward_dir.dot(self.velocity);
+        let forward_decel_amount = ground_type.braking_factor() * forward_component;
+        let forward_decel = -forward_dir * (forward_decel_amount * delta_time)
+            .max(forward_decel_amount);
+
         match race_state {
             RaceState::Started => {
-                let ground_type = ground.query_terrain(self.position)
-                    .expect(&format!("failed to query terrain for player {:?}", self.name));
-
                 let acc_magnitude = (ACCELERATION * input.y_input * delta_time) * BIKE_SCALE;
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 
@@ -85,12 +91,6 @@ impl Player {
 
                     -side_direction * (decel * delta_time).max(side_vel_magnitude)
                 };
-
-                let forward_dir = Vec2::from_direction(self.angle, 1.);
-                let forward_component = forward_dir.dot(self.velocity);
-                let forward_decel_amount = ground_type.braking_factor() * forward_component;
-                let forward_decel = -forward_dir * (forward_decel_amount * delta_time)
-                    .max(forward_decel_amount);
 
                 let uncapped_velocity = self.velocity + acceleration + side_decel + forward_decel;
                 let vel_magnitude = uncapped_velocity.norm()
@@ -114,7 +114,7 @@ impl Player {
 
         let delta_angle = self.velocity.norm() * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
 
-        let steering_attenuation = (1. - self.velocity.norm() / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
+        let steering_attenuation = (1. - forward_component / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
             + STEERING_ATTENUATION_MAX;
         let steering_max = STEERING_MAX * steering_attenuation;
 
