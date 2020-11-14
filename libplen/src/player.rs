@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use serde_derive::{Serialize, Deserialize};
 
 use crate::constants::{
@@ -24,7 +26,7 @@ pub struct Player {
 
     pub position: Vec2,
     pub angle: f32,
-    pub speed: f32,
+    pub velocity: Vec2,
     pub steering_angle: f32,
 
     pub lap: usize,
@@ -45,7 +47,7 @@ impl Player {
             name,
             position,
             angle: 0.,
-            speed: 0.,
+            velocity: vec2(0., 0.),
             steering_angle: 0.,
             lap: 0,
             checkpoint: 0,
@@ -61,21 +63,38 @@ impl Player {
         let ground_type = ground.query_terrain(self.position)
             .expect(&format!("failed to query terrain for player {:?}", self.name));
 
-        let motor_acceleration = input.y_input * ACCELERATION;
-        let braking_force = self.speed * (1. - ground_type.braking_factor());
-        let acceleration = motor_acceleration - braking_force;
-        println!("{} {} {} {}", motor_acceleration, braking_force, acceleration, self.speed);
+        let acc_magnitude = (ACCELERATION * input.y_input * delta_time) * BIKE_SCALE;
+        let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 
-        // Steering logic
-        self.speed = (self.speed + (acceleration * delta_time) * BIKE_SCALE)
+        // Side velocity attenuation. AKA anti-hovercraft force
+        let side_decel = {
+            let side_direction = Vec2::from_direction(self.angle + PI/2., 1.);
+
+            let side_vel_magnitude = side_direction.dot(self.velocity);
+
+            let decel = ground_type.side_speed_decay() * side_vel_magnitude;
+
+            -side_direction * (decel * delta_time).max(side_vel_magnitude)
+        };
+
+        let uncapped_velocity = self.velocity + acceleration + side_decel;
+        let vel_magnitude = uncapped_velocity.norm()
             .max(-MAX_BACKWARD_SPEED)
             .min(MAX_SPEED);
 
-        self.position += Vec2::from_direction(self.angle, self.speed * delta_time);
+        self.velocity = if uncapped_velocity != vec2(0., 0.) {
+            uncapped_velocity.normalize() * vel_magnitude
+        }
+        else {
+            vec2(0., 0.)
+        };
 
-        let delta_angle = self.speed * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
 
-        let steering_attenuation = (1. - self.speed / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
+        self.position += self.velocity * delta_time;
+
+        let delta_angle = self.velocity.norm() * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
+
+        let steering_attenuation = (1. - self.velocity.norm() / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
             + STEERING_ATTENUATION_MAX;
         let steering_max = STEERING_MAX * steering_attenuation;
 

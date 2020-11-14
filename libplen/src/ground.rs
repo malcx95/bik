@@ -31,6 +31,19 @@ impl TerrainType {
             TerrainType::Obstacle => 0.99,
         }
     }
+
+    /// Rate of decay of side component of speed.
+    /// A value of 1 makes any velocity not in the forward direction is removed in 1 second.
+    ///
+    /// A value of 0 makes the bike behave like a hovercraft
+    pub fn side_speed_decay(&self) -> f32 {
+        match self {
+            TerrainType::Road => 10.,
+            TerrainType::Puddle => 1.0,
+            TerrainType::Sand => 5.,
+            TerrainType::Obstacle => 1000.
+        }
+    }
 }
 
 
