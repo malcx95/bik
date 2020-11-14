@@ -67,10 +67,17 @@ impl Player {
         let steering_attenuation = (1. - self.speed / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
             + STEERING_ATTENUATION_MAX;
         let steering_max = STEERING_MAX * steering_attenuation;
-        self.steering_angle = steering_max * input.x_input;
-        // self.steering_angle = (self.steering_angle + STEERING_RATE * input.x_input * delta_time)
-        //     .max(-STEERING_MAX)
-        //     .min(STEERING_MAX);
+
+        // self.steering_angle = steering_max * input.x_input;
+
+        let target_angle = steering_max * input.x_input;
+
+        let steer_amount = (self.steering_angle - target_angle) * STEERING_RATE
+            .max(-STEERING_RATE)
+            .min(STEERING_RATE);
+        self.steering_angle = (self.steering_angle - steer_amount * delta_time)
+            .min(steering_max)
+            .max(-steering_max);
 
         self.angle += delta_angle * delta_time;
 
