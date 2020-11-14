@@ -103,4 +103,5 @@ impl ClientInput {
 pub enum ClientMessage {
     Input(ClientInput),
     JoinGame { name: String },
+    StartGame,
 }

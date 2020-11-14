@@ -9,12 +9,21 @@ use crate::player::Player;
 use crate::powerup::Powerup;
 use crate::track;
 
+
+#[derive(Serialize, Deserialize, Clone)]
+pub enum RaceState {
+    NotStarted,
+    Starting(f32),
+    Started,
+}
+
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameState {
     pub players: Vec<Player>,
     pub powerups: Vec<Powerup>,
     pub checkpoints: Vec<Checkpoint>,
-    // put server side game state stuff here
+    pub race_state: RaceState,
 }
 
 impl GameState {
@@ -31,6 +40,7 @@ impl GameState {
             players: Vec::new(),
             powerups,
             checkpoints,
+            race_state: RaceState::NotStarted,
         }
     }
 
@@ -44,6 +54,17 @@ impl GameState {
      */
     pub fn update(&mut self, delta: f32) {
         self.update_powerups(delta);
+
+        self.race_state = match self.race_state {
+            RaceState::Starting(time) => {
+                if time - delta < 0. {
+                    RaceState::Started
+                } else {
+                    RaceState::Starting(time - delta)
+                }
+            }
+            _ => self.race_state.clone()
+        };
     }
 
     pub fn update_powerups(&mut self, delta: f32) {

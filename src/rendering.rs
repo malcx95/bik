@@ -5,7 +5,9 @@ use libplen::math::{vec2, Vec2};
 use sdl2::rect::Rect;
 use sdl2::render::{Canvas, Texture};
 use sdl2::video::Window;
+use sdl2::pixels::Color;
 use std::f32::consts::PI;
+use crate::assets::Assets;
 
 pub fn draw_texture(
     canvas: &mut Canvas<Window>,
@@ -95,6 +97,37 @@ pub fn draw_texture_rotated_and_scaled(
     );
     let angle = (angle / PI * 180.) as f64;
     canvas.copy_ex(texture, None, dest_rect, angle, None, false, false)
+}
+
+pub fn draw_text(
+    canvas: &mut Canvas<Window>,
+    text: String,
+    pos: Vec2,
+    color: Color,
+    font: &sdl2::ttf::Font,
+) -> Result<(), String> {
+    draw_text_rotated_and_scaled(canvas, text, pos, color, font, 0., vec2(1., 1.))
+}
+
+pub fn draw_text_rotated_and_scaled(
+    canvas: &mut Canvas<Window>,
+    text: String,
+    pos: Vec2,
+    color: Color,
+    font: &sdl2::ttf::Font,
+    angle: f32,
+    scale: Vec2,
+) -> Result<(), String> {
+    let text = font
+        .render(&text.to_string())
+        .blended(color)
+        .expect("Could not render text");
+
+    let texture_creator = canvas.texture_creator();
+    let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
+
+    draw_texture_rotated_and_scaled(
+        canvas, &text_texture, pos, angle, scale)
 }
 
 pub fn setup_coordinates(canvas: &mut Canvas<Window>) -> Result<(), String> {

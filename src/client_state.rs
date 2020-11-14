@@ -7,6 +7,7 @@ use sdl2::video::Window;
 
 use libplen::constants;
 use libplen::gamestate::GameState;
+use libplen::gamestate::RaceState;
 use libplen::math::{self, vec2, Vec2};
 use libplen::player::Player;
 
@@ -17,6 +18,7 @@ use libplen::powerup::{PowerupKind, Weapon};
 pub struct ClientState {
     my_id: u64,
     debug_drawing: bool,
+    clock: f32,
 }
 
 impl ClientState {
@@ -24,6 +26,7 @@ impl ClientState {
         ClientState {
             my_id,
             debug_drawing: false,
+            clock: 0.,
         }
     }
 
@@ -31,8 +34,8 @@ impl ClientState {
         self.debug_drawing = !self.debug_drawing;
     }
 
-    pub fn update(&mut self, _delta_time: f32, _game_state: &GameState, _my_id: u64) {
-        // update client side stuff
+    pub fn update(&mut self, delta_time: f32, _game_state: &GameState, _my_id: u64) {
+        self.clock += delta_time;
     }
 
     pub fn draw(
@@ -168,7 +171,68 @@ impl ClientState {
         let player = game_state.get_player_by_id(my_id).unwrap();
 
         self.draw_fuel_gauge(player, canvas, screen_center, assets);
+
+        match game_state.race_state {
+            RaceState::NotStarted => {
+                self.draw_pre_race_text(canvas, assets);
+            }
+            RaceState::Starting(t) => {
+                self.draw_race_countdown(canvas, assets, t);
+            }
+            _ => { }
+        }
+
         Ok(())
+    }
+
+    fn draw_race_countdown(
+        &self,
+        canvas: &mut Canvas<Window>,
+        assets: &mut Assets,
+        countdown_time: f32,
+    ) {
+        let num = countdown_time.ceil();
+        let round_err = 1. - (num - countdown_time);
+
+        let size = constants::COUNTDOWN_TEXT_MIN_SIZE +
+            (constants::COUNTDOWN_TEXT_MAX_SIZE - constants::COUNTDOWN_TEXT_MIN_SIZE)*round_err;
+
+        let (screen_w, screen_h) = canvas.logical_size();
+        let pos =
+            vec2(screen_w as f32 * 0.5, screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y);
+
+        rendering::draw_text_rotated_and_scaled(
+            canvas,
+            format!("{}", num as i32),
+            pos,
+            (255, 255, 255).into(),
+            &assets.race_font,
+            0.,
+            vec2(size, size)
+        ).unwrap();
+
+    }
+
+    fn draw_pre_race_text(
+        &self,
+        canvas: &mut Canvas<Window>,
+        assets: &mut Assets
+    ) {
+        let (screen_w, screen_h) = canvas.logical_size();
+        let pos =
+            vec2(screen_w as f32 * 0.5, screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y);
+        let oscillation_size =
+            0.8 + ((self.clock.sin() + 1.) / 2.)*0.2;
+
+        rendering::draw_text_rotated_and_scaled(
+            canvas,
+            String::from("Press Enter to start race!"),
+            pos,
+            (255, 255, 255).into(),
+            &assets.race_font,
+            (self.clock / 2.).sin() / 16.,
+            vec2(oscillation_size, oscillation_size)
+        ).unwrap();
     }
 
     fn draw_fuel_gauge(
@@ -183,22 +247,15 @@ impl ClientState {
         let gauge_pos_x = (constants::GAUGE_POS_X * (screen_w as f32)) as i32;
         let gauge_pos_y = (constants::GAUGE_POS_Y * (screen_h as f32)) as i32;
 
-        let text = assets
-            .font
-            .render("Fuel level")
-            .blended((255, 255, 255))
-            .expect("Could not render text");
-
-        let texture_creator = canvas.texture_creator();
-        let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
-
         let padding = constants::GAUGE_TEXT_POS_PADDING * (screen_h as f32);
-        rendering::draw_texture(
+
+        rendering::draw_text(
             canvas,
-            &text_texture,
-            vec2(gauge_pos_x as f32, gauge_pos_y as f32 - padding).into(),
-        )
-        .unwrap();
+            String::from("Fuel level"),
+            vec2(gauge_pos_x as f32 + 30., gauge_pos_y as f32 - padding),
+            (255, 255, 255).into(),
+            &assets.font
+        ).unwrap();
 
         let fuel_bar_height =
             (constants::GAUGE_HEIGHT * (screen_h as f32) * player.get_fuel_percentage()) as i32;

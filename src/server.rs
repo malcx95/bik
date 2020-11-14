@@ -15,6 +15,7 @@ use unicode_truncate::UnicodeTruncateStr;
 
 use libplen::constants;
 use libplen::gamestate;
+use libplen::gamestate::RaceState;
 use libplen::ground::Ground;
 use libplen::math::{vec2, LineSegment, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
@@ -194,6 +195,11 @@ impl<'a> Server<'a> {
                         );
                         self.state.add_player(player);
                     }
+                    Ok(ClientMessage::StartGame) => {
+                        self.state.race_state =
+                            RaceState::Starting(constants::RACE_COUNTDOWN_TIMER_START);
+                        println!("Client {} is starting game!", client.id);
+                    }
                     Err(_) => {
                         println!("Could not decode message from {}, deleting", client.id);
                         clients_to_delete.push(client.id);
@@ -204,7 +210,7 @@ impl<'a> Server<'a> {
             for player in &mut self.state.players {
                 if player.id == client.id {
                     let old_pos = player.position;
-                    player.update(&client.input, &self.ground, delta_time);
+                    player.update(&client.input, &self.ground, delta_time, &self.state.race_state);
 
                     if player.checkpoint < self.state.checkpoints.len() {
                         let checkpoint = &self.state.checkpoints[player.checkpoint];

@@ -19,6 +19,7 @@ use structopt::StructOpt;
 use assets::Assets;
 use libplen::constants;
 use libplen::gamestate;
+use libplen::gamestate::RaceState;
 use libplen::math::{vec2, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use menu::MenuState;
@@ -327,8 +328,19 @@ pub fn main() -> Result<(), String> {
                         Keycode::F1 => {
                             main_state.client_state.toggle_debug_draw();
                         }
-                        _ => {}
-                    },
+                        Keycode::Return => {
+                            match main_state.game_state.race_state {
+                                RaceState::NotStarted => {
+                                    send_client_message(
+                                        &ClientMessage::StartGame, &mut reader.stream
+                                    );
+                                    println!("Starting game!")
+                                }
+                                _ => { }
+                            }
+                        }
+                        _ => { }
+                    }
                     _ => {}
                 }
             }

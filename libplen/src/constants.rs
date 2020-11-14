@@ -44,3 +44,10 @@ pub const GAUGE_POS_Y: f32 = 0.5;
 pub const GAUGE_HEIGHT: f32 = 0.47;
 pub const GAUGE_WIDTH: f32 = 0.05;
 pub const GAUGE_TEXT_POS_PADDING: f32 = 0.023;
+
+pub const RACE_COUNTDOWN_TIMER_START: f32 = 3.;
+
+pub const PRE_RACE_PRESS_ENTER_POS_Y: f32 = 0.25;
+pub const COUNTDOWN_POS_Y: f32 = 0.25;
+pub const COUNTDOWN_TEXT_MAX_SIZE: f32 = 3.;
+pub const COUNTDOWN_TEXT_MIN_SIZE: f32 = 2.;
