@@ -17,9 +17,3 @@ pub struct Powerup {
     pub kind: PowerupKind,
     pub timeout: f32,
 }
-
-#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
-pub enum MaybePowerup {
-    Powerup(Powerup),
-    Timeout(f32),
-}
