@@ -13,6 +13,7 @@ use sdl2::keyboard::{Keycode, Scancode};
 use sdl2::render::BlendMode;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use structopt::StructOpt;
 
 use assets::Assets;
 use libplen::constants;
@@ -20,6 +21,15 @@ use libplen::gamestate;
 use libplen::math::{vec2, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use menu::MenuState;
+
+#[derive(StructOpt)]
+struct Opt {
+    /// Address of server to connect to
+    #[structopt(short, long, default_value = "localhost")]
+    address: String,
+    #[structopt(short, long, default_value = "4444")]
+    port: u16,
+}
 
 fn send_client_message(msg: &ClientMessage, stream: &mut TcpStream) {
     let data = bincode::serialize(msg).expect("Failed to encode message");
@@ -167,7 +177,8 @@ impl MainState {
 }
 
 pub fn main() -> Result<(), String> {
-    let host = std::env::var("SERVER").unwrap_or(String::from("localhost:4444"));
+    let opts = Opt::from_args();
+    let host = format!("{}:{}", opts.address, opts.port);
     let stream = TcpStream::connect(host).expect("Could not connect to server");
     println!("Connected to server");
 
