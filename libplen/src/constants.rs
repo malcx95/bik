@@ -1,3 +1,4 @@
+
 // currently hardcoded to the background image size
 pub const WORLD_SIZE: f32 = 3000.;
 pub const DELTA_TIME: f32 = 0.01;
@@ -33,3 +34,11 @@ pub const POWERUP_TIMEOUT: f32 = 5.;
 
 // Map parameters
 pub const MAP_SCALE: f32 = 2.;
+
+pub const GAUGE_BACKGROUND: (u8, u8, u8) = (10, 10, 10);
+pub const GAUGE_POS_X: f32 = 0.02;
+pub const GAUGE_POS_Y: f32 = 0.5;
+pub const GAUGE_HEIGHT: f32 = 0.47;
+pub const GAUGE_WIDTH: f32 = 0.05;
+pub const GAUGE_TEXT_POS_PADDING: f32 = 0.023;
+

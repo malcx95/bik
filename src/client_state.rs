@@ -2,10 +2,13 @@ use std::f32::consts::PI;
 
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use sdl2::rect::Rect;
+use sdl2::pixels::Color;
 
-use libplen::constants::{BIKE_SCALE, LAP_POS, MAP_SCALE, WHEEL_DISTANCE};
+use libplen::constants;
 use libplen::gamestate::GameState;
 use libplen::math::{self, vec2, Vec2};
+use libplen::player::Player;
 
 use crate::assets::Assets;
 use crate::rendering;
@@ -44,7 +47,7 @@ impl ClientState {
             canvas,
             &assets.track,
             -camera_position,
-            vec2(MAP_SCALE, MAP_SCALE),
+            vec2(constants::MAP_SCALE, constants::MAP_SCALE),
         )
         .unwrap();
 
@@ -55,18 +58,19 @@ impl ClientState {
                 &assets.bike_back,
                 player.position - camera_position,
                 player.angle + PI / 2.,
-                vec2(BIKE_SCALE, BIKE_SCALE),
+                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
             )
             .unwrap();
 
-            let front_offset = Vec2::from_direction(player.angle, WHEEL_DISTANCE) * BIKE_SCALE;
+            let front_offset =
+                Vec2::from_direction(player.angle, constants::WHEEL_DISTANCE) * constants::BIKE_SCALE;
 
             rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 &assets.bike_front,
                 player.position + front_offset - camera_position,
                 player.angle + PI / 2. + player.steering_angle,
-                vec2(BIKE_SCALE, BIKE_SCALE),
+                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
             )
             .unwrap();
 
@@ -75,7 +79,7 @@ impl ClientState {
                 &assets.driver,
                 player.position - camera_position,
                 player.angle + PI / 2.,
-                vec2(BIKE_SCALE, BIKE_SCALE),
+                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
             )
             .unwrap();
         }
@@ -114,7 +118,7 @@ impl ClientState {
         rendering::draw_texture(
             canvas,
             &text_texture,
-            vec2(LAP_POS.0, LAP_POS.1) + res_offset,
+            vec2(constants::LAP_POS.0, constants::LAP_POS.1) + res_offset,
         )
         .unwrap();
         Ok(())
@@ -132,16 +136,78 @@ impl ClientState {
 
         let player = game_state.get_player_by_id(my_id).unwrap();
 
+
+        self.draw_fuel_gauge(player, canvas, screen_center, assets);
+        Ok(())
+    }
+
+    fn draw_fuel_gauge(
+        &self,
+        player: &Player,
+        canvas: &mut Canvas<Window>,
+        screen_center: Vec2,
+        assets: &mut Assets,
+    ) {
+        let (screen_w, screen_h) = canvas.logical_size();
+
+        let gauge_pos_x = (constants::GAUGE_POS_X*(screen_w as f32)) as i32;
+        let gauge_pos_y = (constants::GAUGE_POS_Y*(screen_h as f32)) as i32;
+
         let text = assets
             .font
-            .render(&format!("Fuel level: {}", player.fuel_level))
+            .render("Fuel level")
             .blended((255, 255, 255))
             .expect("Could not render text");
 
         let texture_creator = canvas.texture_creator();
         let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
-        rendering::draw_texture(canvas, &text_texture, screen_center).unwrap();
 
-        Ok(())
+        let padding = constants::GAUGE_TEXT_POS_PADDING * (screen_h as f32);
+        rendering::draw_texture(
+            canvas, &text_texture, vec2(gauge_pos_x as f32, gauge_pos_y as f32 - padding).into())
+            .unwrap();
+
+        let fuel_bar_height =
+            (constants::GAUGE_HEIGHT*(screen_h as f32)*
+             player.get_fuel_percentage()) as i32;
+        let max_fuel_bar_height =
+            (constants::GAUGE_HEIGHT*(screen_h as f32)) as i32;
+
+        canvas.set_draw_color(self.get_fuel_bar_color(player));
+        canvas.fill_rect(
+            Rect::new(
+                gauge_pos_x,
+                gauge_pos_y +
+                    (max_fuel_bar_height - fuel_bar_height),
+                (constants::GAUGE_WIDTH*(screen_w as f32)) as u32,
+                fuel_bar_height as u32,
+                ))
+            .unwrap();
+
+        canvas.set_draw_color(constants::GAUGE_BACKGROUND);
+        canvas.draw_rect(
+            Rect::new(
+                gauge_pos_x,
+                gauge_pos_y,
+                (constants::GAUGE_WIDTH*(screen_w as f32)) as u32,
+                max_fuel_bar_height as u32,
+                ))
+            .unwrap();
+    }
+
+    fn get_fuel_bar_color(&self, player: &Player) -> (u8, u8, u8) {
+        let fuel_percentage = player.get_fuel_percentage();
+        let r: f32;
+        let g: f32;
+        let b: f32;
+        if fuel_percentage > 0.5 {
+            r = 255. * (1. - (fuel_percentage - 0.5) * 2.);
+            g = 255.;
+        } else {
+            r = 255.;
+            g = 255. * fuel_percentage * 2.;
+        }
+        b = 0.;
+        (r as u8, g as u8, b as u8)
     }
 }

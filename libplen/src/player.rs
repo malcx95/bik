@@ -88,4 +88,8 @@ impl Player {
     pub fn take_powerup(&mut self, _powerup: &Powerup) {
         // TODO
     }
+
+    pub fn get_fuel_percentage(&self) -> f32 {
+        self.fuel_level as f32 / constants::MAX_FUEL_LEVEL
+    }
 }
