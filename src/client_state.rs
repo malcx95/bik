@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use libplen::constants::{BIKE_SCALE, LAP_POS, WHEEL_DISTANCE};
+use libplen::constants::{self, BIKE_SCALE, LAP_POS, WHEEL_DISTANCE};
 use libplen::gamestate::GameState;
 use libplen::math::{self, vec2, Vec2};
 
@@ -32,6 +32,10 @@ impl ClientState {
         assets: &mut Assets,
     ) -> Result<(), String> {
         let (screen_w, screen_h) = canvas.logical_size();
+        let (screen_w, screen_h) = (
+            screen_w * constants::BITCRUSH_SCALE,
+            screen_h * constants::BITCRUSH_SCALE,
+        );
         let camera_position = if let Some(my_player) = game_state.get_player_by_id(self.my_id) {
             my_player.position - vec2(screen_w as f32, screen_h as f32) / 2.
         } else {
@@ -87,9 +91,6 @@ impl ClientState {
 
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
-        if let Some(player) = game_state.get_player_by_id(my_id) {
-            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
-        }
 
         Ok(())
     }
@@ -121,6 +122,10 @@ impl ClientState {
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
+        if let Some(player) = game_state.get_player_by_id(my_id) {
+            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
+        }
+
         let (screen_w, screen_h) = canvas.logical_size();
         let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
