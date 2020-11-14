@@ -29,6 +29,7 @@ pub struct Player {
     pub angle: f32,
     pub velocity: Vec2,
     pub steering_angle: f32,
+    pub speed: f32,
 
     pub lap: usize,
     pub checkpoint: usize,
@@ -53,6 +54,7 @@ impl Player {
             angle: 0.,
             velocity: vec2(0., 0.),
             steering_angle: 0.,
+            speed: 0.,
             lap: 0,
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,

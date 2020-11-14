@@ -134,10 +134,7 @@ impl ClientState {
                     ))
                     .unwrap();
             }
-        }
 
-        // Draw the hitbox
-        if constants::DEBUG {
             for player in &game_state.players {
                 let hit_radius = constants::BIKE_SIZE * 2;
                 let x = player.position.x - camera_position.x as f32;

@@ -110,16 +110,6 @@ impl GameState {
         None
     }
 
-    pub fn get_checkpoint_by_id(&self, id: u64) -> Option<&Checkpoint> {
-        for checkpoint in &self.checkpoints {
-            if checkpoint.id == id {
-                return Some(checkpoint);
-            }
-        }
-
-        None
-    }
-
     pub fn handle_player_collisions(&mut self, delta: f32) -> Vec<u64> {
         let mut collided_players: Vec<(u64, String)> = vec!();
         let hit_radius = constants::BIKE_SIZE * 2;
