@@ -40,7 +40,7 @@ impl MessageReader {
         }
     }
 
-    pub fn iter<'a>(&'a mut self) -> MessageIterator<'a> {
+    pub fn iter(&mut self) -> MessageIterator<'_> {
         MessageIterator {
             message_reader: self
         }
@@ -84,7 +84,7 @@ pub enum ServerMessage {
     PlaySound(SoundEffect, Vec2),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct ClientInput {
     pub x_input: f32,
     pub y_input: f32,

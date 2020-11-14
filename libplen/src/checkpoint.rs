@@ -11,7 +11,7 @@ pub struct Checkpoint {
 impl Checkpoint {
     pub fn new(
         id: u64,
-        line: LineSegment,
+        _line: LineSegment,
     ) -> Checkpoint {
         Checkpoint {
             id,

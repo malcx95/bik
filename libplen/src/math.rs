@@ -153,47 +153,39 @@ impl LineSegment {
     }
 
     fn check(&self, x: f32, y: f32) -> bool {
-        return self.min_x() <= x && x <= self.max_x() &&
-            self.min_y() <= y && y <= self.max_y();
+        self.min_x() <= x && x <= self.max_x() &&
+            self.min_y() <= y && y <= self.max_y()
     }
     
     pub fn max_x(&self) -> f32 {
-        let max = if self.p1.x >= self.p2.x {
+        if self.p1.x >= self.p2.x {
             self.p1.x
         } else {
             self.p2.x
-        };
-
-        max
+        }
     }
 
     pub fn max_y(&self) -> f32 {
-        let max = if self.p1.y >= self.p2.y {
+        if self.p1.y >= self.p2.y {
             self.p1.y
         } else {
             self.p2.y
-        };
-
-        max
+        }
     }
     
     pub fn min_x(&self) -> f32 {
-        let min = if self.p1.x <= self.p2.x {
+        if self.p1.x <= self.p2.x {
             self.p1.x
         } else {
             self.p2.x
-        };
-
-        min
+        }
     }
 
     pub fn min_y(&self) -> f32 {
-        let min = if self.p1.y <= self.p2.y {
+        if self.p1.y <= self.p2.y {
             self.p1.y
         } else {
             self.p2.y
-        };
-
-        min
+        }
     }
 }

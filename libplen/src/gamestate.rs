@@ -75,11 +75,11 @@ impl GameState {
     }
 
     pub fn add_player(&mut self, player: Player) {
-        self.players.push(player.clone());
+        self.players.push(player);
     }
     
     pub fn add_checkpoint(&mut self, checkpoint: Checkpoint) {
-        self.checkpoints.push(checkpoint.clone());
+        self.checkpoints.push(checkpoint);
     }
 
     pub fn get_player_by_id(&self, id: u64) -> Option<&Player> {
@@ -100,5 +100,11 @@ impl GameState {
         }
         
         None
+    }
+}
+
+impl Default for GameState {
+    fn default() -> Self {
+        Self::new()
     }
 }

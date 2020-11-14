@@ -29,7 +29,7 @@ fn send_bytes(bytes: &[u8], stream: &mut TcpStream) -> io::Result<()> {
         match stream.write(&bytes[start..bytes.len()]) {
             Ok(n) => {
                 if n < bytes.len() - start {
-                    start = start + n;
+                    start += n;
                 } else {
                     break Ok(());
                 }
@@ -109,9 +109,8 @@ impl Server {
                 Ok(mut stream) => {
                     stream.set_nonblocking(true).unwrap();
                     println!("Got new connection {}", self.next_id);
-                    if let Err(_) =
-                        send_server_message(&ServerMessage::AssignId(self.next_id), &mut stream)
-                    {
+                    let message = ServerMessage::AssignId(self.next_id);
+                    if send_server_message(&message, &mut stream).is_err() {
                         println!("Could not send assign id message");
                         continue;
                     }
@@ -165,10 +164,10 @@ impl Server {
                         client.input = input;
                     }
                     Ok(ClientMessage::JoinGame { mut name }) => {
-                        if name.trim().len() != 0 {
-                            name = name.trim().unicode_truncate(20).0.to_string()
-                        } else {
+                        if name.trim().is_empty() {
                             name = "Mr Whitespace".into();
+                        } else {
+                            name = name.trim().unicode_truncate(20).0.to_string()
                         }
 
                         let player = Player::new(client.id, name);
