@@ -74,8 +74,6 @@ impl Player {
         delta_time: f32,
         race_state: &RaceState
     ) {
-        self.update_fuel_level(input);
-
         let ground_type = ground.query_terrain(self.position)
             .expect(&format!("failed to query terrain for player {:?}", self.name));
 
