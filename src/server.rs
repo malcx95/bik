@@ -210,7 +210,12 @@ impl<'a> Server<'a> {
             for player in &mut self.state.players {
                 if player.id == client.id {
                     let old_pos = player.position;
-                    player.update(&client.input, &self.ground, delta_time, &self.state.race_state);
+                    player.update(
+                        &client.input,
+                        &self.ground,
+                        delta_time,
+                        &self.state.race_state,
+                    );
 
                     if player.checkpoint < self.state.checkpoints.len() {
                         let checkpoint = &self.state.checkpoints[player.checkpoint];

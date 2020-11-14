@@ -1,13 +1,13 @@
 #![allow(dead_code)]
 
+use crate::assets::Assets;
 use libplen::constants;
 use libplen::math::{vec2, Vec2};
+use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::{Canvas, Texture};
 use sdl2::video::Window;
-use sdl2::pixels::Color;
 use std::f32::consts::PI;
-use crate::assets::Assets;
 
 pub fn draw_texture(
     canvas: &mut Canvas<Window>,
@@ -126,8 +126,7 @@ pub fn draw_text_rotated_and_scaled(
     let texture_creator = canvas.texture_creator();
     let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
 
-    draw_texture_rotated_and_scaled(
-        canvas, &text_texture, pos, angle, scale)
+    draw_texture_rotated_and_scaled(canvas, &text_texture, pos, angle, scale)
 }
 
 pub fn setup_coordinates(canvas: &mut Canvas<Window>) -> Result<(), String> {

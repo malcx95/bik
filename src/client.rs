@@ -328,19 +328,15 @@ pub fn main() -> Result<(), String> {
                         Keycode::F1 => {
                             main_state.client_state.toggle_debug_draw();
                         }
-                        Keycode::Return => {
-                            match main_state.game_state.race_state {
-                                RaceState::NotStarted => {
-                                    send_client_message(
-                                        &ClientMessage::StartGame, &mut reader.stream
-                                    );
-                                    println!("Starting game!")
-                                }
-                                _ => { }
+                        Keycode::Return => match main_state.game_state.race_state {
+                            RaceState::NotStarted => {
+                                send_client_message(&ClientMessage::StartGame, &mut reader.stream);
+                                println!("Starting game!")
                             }
-                        }
-                        _ => { }
-                    }
+                            _ => {}
+                        },
+                        _ => {}
+                    },
                     _ => {}
                 }
             }

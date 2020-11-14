@@ -65,6 +65,13 @@ impl ClientState {
             vec2(constants::MAP_SCALE, constants::MAP_SCALE),
         )
         .unwrap();
+        rendering::draw_uncentered_scaled(
+            canvas,
+            &assets.track_overlay,
+            -camera_position,
+            vec2(constants::MAP_SCALE, constants::MAP_SCALE),
+        )
+        .unwrap();
 
         // draw some stuff
         for player in &game_state.players {
@@ -181,7 +188,7 @@ impl ClientState {
             RaceState::Starting(t) => {
                 self.draw_race_countdown(canvas, assets, t);
             }
-            _ => { }
+            _ => {}
         }
 
         Ok(())
@@ -196,12 +203,14 @@ impl ClientState {
         let num = countdown_time.ceil();
         let round_err = 1. - (num - countdown_time);
 
-        let size = constants::COUNTDOWN_TEXT_MIN_SIZE +
-            (constants::COUNTDOWN_TEXT_MAX_SIZE - constants::COUNTDOWN_TEXT_MIN_SIZE)*round_err;
+        let size = constants::COUNTDOWN_TEXT_MIN_SIZE
+            + (constants::COUNTDOWN_TEXT_MAX_SIZE - constants::COUNTDOWN_TEXT_MIN_SIZE) * round_err;
 
         let (screen_w, screen_h) = canvas.logical_size();
-        let pos =
-            vec2(screen_w as f32 * 0.5, screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y);
+        let pos = vec2(
+            screen_w as f32 * 0.5,
+            screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y,
+        );
 
         rendering::draw_text_rotated_and_scaled(
             canvas,
@@ -210,21 +219,18 @@ impl ClientState {
             (255, 255, 255).into(),
             &assets.race_font,
             0.,
-            vec2(size, size)
-        ).unwrap();
-
+            vec2(size, size),
+        )
+        .unwrap();
     }
 
-    fn draw_pre_race_text(
-        &self,
-        canvas: &mut Canvas<Window>,
-        assets: &mut Assets
-    ) {
+    fn draw_pre_race_text(&self, canvas: &mut Canvas<Window>, assets: &mut Assets) {
         let (screen_w, screen_h) = canvas.logical_size();
-        let pos =
-            vec2(screen_w as f32 * 0.5, screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y);
-        let oscillation_size =
-            0.8 + ((self.clock.sin() + 1.) / 2.)*0.2;
+        let pos = vec2(
+            screen_w as f32 * 0.5,
+            screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y,
+        );
+        let oscillation_size = 0.8 + ((self.clock.sin() + 1.) / 2.) * 0.2;
 
         rendering::draw_text_rotated_and_scaled(
             canvas,
@@ -233,8 +239,9 @@ impl ClientState {
             (255, 255, 255).into(),
             &assets.race_font,
             (self.clock / 2.).sin() / 16.,
-            vec2(oscillation_size, oscillation_size)
-        ).unwrap();
+            vec2(oscillation_size, oscillation_size),
+        )
+        .unwrap();
     }
 
     fn draw_fuel_gauge(
@@ -256,8 +263,9 @@ impl ClientState {
             String::from("Fuel level"),
             vec2(gauge_pos_x as f32 + 30., gauge_pos_y as f32 - padding),
             (255, 255, 255).into(),
-            &assets.font
-        ).unwrap();
+            &assets.font,
+        )
+        .unwrap();
 
         let fuel_bar_height =
             (constants::GAUGE_HEIGHT * (screen_h as f32) * player.get_fuel_percentage()) as i32;
