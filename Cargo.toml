@@ -24,6 +24,7 @@ libplen = {path="libplen"}
 unicode-truncate = "0.1.1"
 enum-map = "0.6.2"
 ron = "0.6.2"
+structopt = "0.3"
 
 [[bin]]
 name = "server"

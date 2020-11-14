@@ -7,6 +7,7 @@ use std::net::TcpStream;
 use std::time::Instant;
 use std::vec;
 
+use structopt::StructOpt;
 use unicode_truncate::UnicodeTruncateStr;
 
 use libplen::constants;
@@ -14,6 +15,13 @@ use libplen::gamestate;
 use libplen::math::{vec2, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use libplen::player::Player;
+
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(short, long)]
+    /// Kill the server if all clients disconnect
+    debug_kill: bool,
+}
 
 fn send_bytes(bytes: &[u8], stream: &mut TcpStream) -> io::Result<()> {
     let mut start = 0;
@@ -54,10 +62,14 @@ struct Server {
     state: gamestate::GameState,
     next_id: u64,
     last_time: Instant,
+    opts: Opt,
+    has_had_player: bool,
 }
 
 impl Server {
     pub fn new() -> Self {
+        let opts = Opt::from_args();
+
         let listener = TcpListener::bind("0.0.0.0:4444").unwrap();
 
         listener.set_nonblocking(true).unwrap();
@@ -70,6 +82,8 @@ impl Server {
             next_id: 0,
             last_time: Instant::now(),
             state: gamestate::GameState::new(),
+            opts,
+            has_had_player: false,
         }
     }
 
@@ -106,6 +120,7 @@ impl Server {
                         message_reader: MessageReader::new(stream),
                         input: ClientInput::new(),
                     });
+                    self.has_had_player = true;
                     self.next_id += 1;
                 }
                 Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
@@ -195,6 +210,10 @@ impl Server {
             .retain(|player| !clients_to_delete.contains(&player.id));
         self.connections
             .retain(|client| !clients_to_delete.contains(&client.id));
+
+        if self.has_had_player && self.connections.is_empty() && self.opts.debug_kill {
+            panic!("All clients disconnected and debug mode is on. Exiting")
+        }
     }
 }
 
