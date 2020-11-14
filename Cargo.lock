@@ -45,6 +45,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3441f0f7b02788e948e47f457ca01f1d7e6d92c693bc132c22b087d3141c03ff"
 
 [[package]]
+name = "bik"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "enum-map",
+ "libbik",
+ "rand 0.7.2",
+ "rand_derive",
+ "ron",
+ "sdl2",
+ "structopt",
+ "unicode-truncate",
+ "whoami",
+]
+
+[[package]]
 name = "bincode"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -198,13 +214,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
-name = "libc"
-version = "0.2.65"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a31a0627fdf1f6a39ec0dd577e101440b7db22672c0901fe00a9a6fbb5c24e8"
-
-[[package]]
-name = "libplen"
+name = "libbik"
 version = "0.1.0"
 dependencies = [
  "bincode",
@@ -219,6 +229,12 @@ dependencies = [
  "strum",
  "strum_macros",
 ]
+
+[[package]]
+name = "libc"
+version = "0.2.65"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a31a0627fdf1f6a39ec0dd577e101440b7db22672c0901fe00a9a6fbb5c24e8"
 
 [[package]]
 name = "log"
@@ -275,22 +291,6 @@ name = "once_cell"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "891f486f630e5c5a4916c7e16c4b24a53e78c860b646e9f8e005e4f16847bfed"
-
-[[package]]
-name = "plen"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "enum-map",
- "libplen",
- "rand 0.7.2",
- "rand_derive",
- "ron",
- "sdl2",
- "structopt",
- "unicode-truncate",
- "whoami",
-]
 
 [[package]]
 name = "ppv-lite86"

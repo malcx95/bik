@@ -4,7 +4,7 @@ use sdl2::mixer::Chunk;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 
-use libplen::constants;
+use libbik::constants;
 
 pub struct Assets<'ttf, 'r> {
     pub font: sdl2::ttf::Font<'ttf, 'r>,

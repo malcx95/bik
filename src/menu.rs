@@ -3,8 +3,8 @@ use sdl2::video::Window;
 
 use crate::assets::Assets;
 use crate::rendering;
-use libplen::constants;
-use libplen::math::vec2;
+use libbik::constants;
+use libbik::math::vec2;
 
 pub struct MenuState {
     pub name: String,

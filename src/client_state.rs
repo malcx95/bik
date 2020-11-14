@@ -5,15 +5,15 @@ use sdl2::rect::Rect;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use libplen::constants;
-use libplen::gamestate::GameState;
-use libplen::gamestate::RaceState;
-use libplen::math::{self, vec2, Vec2};
-use libplen::player::Player;
+use libbik::constants;
+use libbik::gamestate::GameState;
+use libbik::gamestate::RaceState;
+use libbik::math::{self, vec2, Vec2};
+use libbik::player::Player;
 
 use crate::assets::Assets;
 use crate::rendering;
-use libplen::powerup::{PowerupKind, Weapon};
+use libbik::powerup::{PowerupKind, Weapon};
 
 pub struct ClientState {
     my_id: u64,

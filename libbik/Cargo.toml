@@ -1,5 +1,5 @@
 [package]
-name = "libplen"
+name = "libbik"
 version = "0.1.0"
 authors = ["Emil Segerbäck", "Hannes Tuhkala", "Malcolm Wigren", "Frans Skarman", "Robin Sliwa"]
 edition = "2018"

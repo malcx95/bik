@@ -13,14 +13,14 @@ use sdl2::surface::Surface;
 use structopt::StructOpt;
 use unicode_truncate::UnicodeTruncateStr;
 
-use libplen::constants;
-use libplen::gamestate;
-use libplen::gamestate::RaceState;
-use libplen::ground::Ground;
-use libplen::math::{vec2, LineSegment, Vec2};
-use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
-use libplen::player::Player;
-use libplen::track;
+use libbik::constants;
+use libbik::gamestate;
+use libbik::gamestate::RaceState;
+use libbik::ground::Ground;
+use libbik::math::{vec2, LineSegment, Vec2};
+use libbik::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
+use libbik::player::Player;
+use libbik::track;
 
 #[derive(StructOpt)]
 struct Opt {

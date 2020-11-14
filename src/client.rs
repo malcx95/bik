@@ -17,11 +17,11 @@ use sdl2::video::Window;
 use structopt::StructOpt;
 
 use assets::Assets;
-use libplen::constants;
-use libplen::gamestate;
-use libplen::gamestate::RaceState;
-use libplen::math::{vec2, Vec2};
-use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
+use libbik::constants;
+use libbik::gamestate;
+use libbik::gamestate::RaceState;
+use libbik::math::{vec2, Vec2};
+use libbik::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use menu::MenuState;
 
 #[derive(StructOpt)]
