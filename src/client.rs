@@ -57,6 +57,12 @@ struct MainState {
     last_time: Instant,
 }
 
+fn play_sound_loop(soundeffect: &sdl2::mixer::Chunk) {
+    if let Err(e) = sdl2::mixer::Channel::all().play(soundeffect, -1) {
+        println!("SDL mixer error: {}", e);
+    }
+}
+
 impl MainState {
     fn new(my_id: u64) -> MainState {
         MainState {
@@ -87,28 +93,12 @@ impl MainState {
                 ServerMessage::AssignId(_) => panic!("Got new ID after intialisation"),
                 ServerMessage::GameState(state) => self.game_state = state,
                 ServerMessage::PlaySound(sound, _pos) => {
-                    fn play_sound(soundeffect: &sdl2::mixer::Chunk) {
-                        if let Err(e) = sdl2::mixer::Channel::all().play(soundeffect, 0) {
-                            println!("SDL mixer error: {}", e);
-                        }
-                    }
-
                     match sound {
-                        SoundEffect::Powerup => {
-                            play_sound(&assets.powerup);
-                        }
-                        SoundEffect::Gun => {
-                            play_sound(&assets.gun);
-                        }
-                        SoundEffect::Explosion => {
-                            play_sound(&assets.explosion);
-                        }
-                        SoundEffect::LaserCharge => {
-                            play_sound(&assets.laser_charge_sound);
-                        }
-                        SoundEffect::LaserFire => {
-                            play_sound(&assets.laser_fire_sound);
-                        }
+                        SoundEffect::Powerup => {}
+                        SoundEffect::Gun => {}
+                        SoundEffect::Explosion => {}
+                        SoundEffect::LaserCharge => {}
+                        SoundEffect::LaserFire => {}
                     }
                 }
             }
@@ -311,6 +301,8 @@ pub fn main() -> Result<(), String> {
         };
 
         let mut lowres_target = create_lowres_target(canvas.output_size()?);
+
+        play_sound_loop(&assets.engine_sound);
 
         'gameloop: loop {
             for event in event_pump.poll_iter() {

@@ -21,15 +21,7 @@ pub struct Assets<'ttf, 'r> {
     pub menu_background: Texture<'r>,
     pub end_background: Texture<'r>,
 
-    pub achtung_blitzkrieg_engine: Chunk,
-    pub el_pollo_romero_engine: Chunk,
-    pub howdy_cowboy_engine: Chunk,
-    pub suka_blyat_engine: Chunk,
-    pub explosion: Chunk,
-    pub powerup: Chunk,
-    pub gun: Chunk,
-    pub laser_fire_sound: Chunk,
-    pub laser_charge_sound: Chunk,
+    pub engine_sound: Chunk,
 }
 
 impl<'ttf, 'r> Assets<'ttf, 'r> {
@@ -63,27 +55,11 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
 
             mace_pickup: load_tex("resources/mace.png"),
 
-            achtung_blitzkrieg_engine: Chunk::from_file(
-                "resources/audio/achtungblitzkrieg-engine.ogg",
-            )
-            .unwrap(),
-            el_pollo_romero_engine: Chunk::from_file("resources/audio/elpolloromero-engine.ogg")
-                .unwrap(),
-            howdy_cowboy_engine: Chunk::from_file("resources/audio/howdycowboy-engine.ogg")
-                .unwrap(),
-            suka_blyat_engine: Chunk::from_file("resources/audio/sukablyat-engine.ogg").unwrap(),
-            powerup: Chunk::from_file("resources/audio/powerup.ogg").unwrap(),
-            explosion: Chunk::from_file("resources/audio/explosion.ogg").unwrap(),
-            gun: Chunk::from_file("resources/audio/gun.ogg").unwrap(),
-            laser_fire_sound: Chunk::from_file("resources/audio/laserfire.ogg").unwrap(),
-            laser_charge_sound: Chunk::from_file("resources/audio/lasercharge.ogg").unwrap(),
+            engine_sound: Chunk::from_file("resources/audio/engine.ogg").unwrap(),
         };
 
         // Volume is on a scale from 0 to 128
-        assets.achtung_blitzkrieg_engine.set_volume(30);
-        assets.el_pollo_romero_engine.set_volume(30);
-        assets.howdy_cowboy_engine.set_volume(30);
-        assets.suka_blyat_engine.set_volume(30);
+        assets.engine_sound.set_volume(30);
 
         assets
     }
