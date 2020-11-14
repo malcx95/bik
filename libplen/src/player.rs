@@ -61,10 +61,13 @@ impl Player {
         let ground_type = ground.query_terrain(self.position)
             .expect(&format!("failed to query terrain for player {:?}", self.name));
 
-        println!("{:?}", ground_type);
+        let motor_acceleration = input.y_input * ACCELERATION;
+        let braking_force = self.speed * (1. - ground_type.braking_factor());
+        let acceleration = motor_acceleration - braking_force;
+        println!("{} {} {} {}", motor_acceleration, braking_force, acceleration, self.speed);
 
         // Steering logic
-        self.speed = (self.speed + (input.y_input * ACCELERATION * delta_time) * BIKE_SCALE)
+        self.speed = (self.speed + (acceleration * delta_time) * BIKE_SCALE)
             .max(-MAX_BACKWARD_SPEED)
             .min(MAX_SPEED);
 

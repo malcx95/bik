@@ -16,9 +16,23 @@ pub enum GroundError {
 pub enum TerrainType {
     Road,
     Puddle,
-    OutsideMap,
+    Sand,
     Obstacle,
 }
+
+
+impl TerrainType {
+    /// Percentage of speed retained per second
+    pub fn braking_factor(&self) -> f32 {
+        match self {
+            TerrainType::Road => 0.9,
+            TerrainType::Puddle => 1.0,
+            TerrainType::Sand => 0.1,
+            TerrainType::Obstacle => 0.99,
+        }
+    }
+}
+
 
 pub struct Ground<'a> {
     map: Surface<'a>,
@@ -38,7 +52,7 @@ impl<'a> Ground<'a> {
 
     pub fn query_terrain(&self, point: Vec2) -> Result<TerrainType, GroundError> {
         if point.x < 0. || point.y < 0. {
-            return Ok(TerrainType::OutsideMap)
+            return Ok(TerrainType::Sand)
         }
         let x = (point.x / MAP_SCALE) as u32;
         let y = (point.y / MAP_SCALE) as u32;
@@ -46,7 +60,7 @@ impl<'a> Ground<'a> {
         let h = self.map.height();
 
         if x >= w || y >= h {
-            Ok(TerrainType::OutsideMap)
+            Ok(TerrainType::Sand)
         }
         else {
             let array_index = ((y * self.map.width() + x) * self.stride) as usize;
@@ -71,7 +85,7 @@ impl<'a> Ground<'a> {
                 [255, 0,   0  ] => Ok(TerrainType::Obstacle),
                 [89,  126, 206] => Ok(TerrainType::Puddle),
                 [101, 81,  9  ] => Ok(TerrainType::Road),
-                [255, 204, 104] => Ok(TerrainType::Road),
+                [255, 204, 104] => Ok(TerrainType::Sand),
                 x @ [_,   _, _] => Err(GroundError::UnknownKind(x.into())),
                 _ => Err(GroundError::Not3Pixels),
             }

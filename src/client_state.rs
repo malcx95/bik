@@ -1,9 +1,9 @@
 use std::f32::consts::PI;
 
+use sdl2::pixels::Color;
+use sdl2::rect::Rect;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
-use sdl2::rect::Rect;
-use sdl2::pixels::Color;
 
 use libplen::constants;
 use libplen::gamestate::GameState;
@@ -62,8 +62,8 @@ impl ClientState {
             )
             .unwrap();
 
-            let front_offset =
-                Vec2::from_direction(player.angle, constants::WHEEL_DISTANCE) * constants::BIKE_SCALE;
+            let front_offset = Vec2::from_direction(player.angle, constants::WHEEL_DISTANCE)
+                * constants::BIKE_SCALE;
 
             rendering::draw_texture_rotated_and_scaled(
                 canvas,
@@ -136,7 +136,6 @@ impl ClientState {
 
         let player = game_state.get_player_by_id(my_id).unwrap();
 
-
         self.draw_fuel_gauge(player, canvas, screen_center, assets);
         Ok(())
     }
@@ -150,8 +149,8 @@ impl ClientState {
     ) {
         let (screen_w, screen_h) = canvas.logical_size();
 
-        let gauge_pos_x = (constants::GAUGE_POS_X*(screen_w as f32)) as i32;
-        let gauge_pos_y = (constants::GAUGE_POS_Y*(screen_h as f32)) as i32;
+        let gauge_pos_x = (constants::GAUGE_POS_X * (screen_w as f32)) as i32;
+        let gauge_pos_y = (constants::GAUGE_POS_Y * (screen_h as f32)) as i32;
 
         let text = assets
             .font
@@ -164,34 +163,34 @@ impl ClientState {
 
         let padding = constants::GAUGE_TEXT_POS_PADDING * (screen_h as f32);
         rendering::draw_texture(
-            canvas, &text_texture, vec2(gauge_pos_x as f32, gauge_pos_y as f32 - padding).into())
-            .unwrap();
+            canvas,
+            &text_texture,
+            vec2(gauge_pos_x as f32, gauge_pos_y as f32 - padding).into(),
+        )
+        .unwrap();
 
         let fuel_bar_height =
-            (constants::GAUGE_HEIGHT*(screen_h as f32)*
-             player.get_fuel_percentage()) as i32;
-        let max_fuel_bar_height =
-            (constants::GAUGE_HEIGHT*(screen_h as f32)) as i32;
+            (constants::GAUGE_HEIGHT * (screen_h as f32) * player.get_fuel_percentage()) as i32;
+        let max_fuel_bar_height = (constants::GAUGE_HEIGHT * (screen_h as f32)) as i32;
 
         canvas.set_draw_color(self.get_fuel_bar_color(player));
-        canvas.fill_rect(
-            Rect::new(
+        canvas
+            .fill_rect(Rect::new(
                 gauge_pos_x,
-                gauge_pos_y +
-                    (max_fuel_bar_height - fuel_bar_height),
-                (constants::GAUGE_WIDTH*(screen_w as f32)) as u32,
+                gauge_pos_y + (max_fuel_bar_height - fuel_bar_height),
+                (constants::GAUGE_WIDTH * (screen_w as f32)) as u32,
                 fuel_bar_height as u32,
-                ))
+            ))
             .unwrap();
 
         canvas.set_draw_color(constants::GAUGE_BACKGROUND);
-        canvas.draw_rect(
-            Rect::new(
+        canvas
+            .draw_rect(Rect::new(
                 gauge_pos_x,
                 gauge_pos_y,
-                (constants::GAUGE_WIDTH*(screen_w as f32)) as u32,
+                (constants::GAUGE_WIDTH * (screen_w as f32)) as u32,
                 max_fuel_bar_height as u32,
-                ))
+            ))
             .unwrap();
     }
 
