@@ -184,7 +184,11 @@ impl<'a> Server<'a> {
                         }
 
                         let (x, y) = self.map_config.start_position;
-                        let player = Player::new(client.id, name, vec2(x as f32, y as f32));
+                        let player = Player::new(
+                            client.id,
+                            name,
+                            vec2(x as f32, y as f32) * constants::MAP_SCALE,
+                        );
                         self.state.add_player(player);
                     }
                     Err(_) => {
