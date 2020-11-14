@@ -12,5 +12,22 @@
         (x: 1750, y: 250), // Upper right
         (x: 470, y: 250), // Upper left
         (x: 500, y: 1530), // Lower left
+    ],
+    static_objects: [
+        (
+            position: ( x: 1480, y: 1240 ),
+            kind: Tree,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1520, y: 1310 ),
+            kind: Tree,
+            variant: 1,
+        ),
+        (
+            position: ( x: 1578, y: 1420 ),
+            kind: Tree,
+            variant: 2,
+        )
     ]
 )

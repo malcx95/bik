@@ -101,7 +101,11 @@ impl<'a> Server<'a> {
             )
             .expect("failed to load ground"),
             last_time: Instant::now(),
-            state: gamestate::GameState::new(map_config.powerups.clone(), &map_config.checkpoints),
+            state: gamestate::GameState::new(
+                map_config.powerups.clone(),
+                &map_config.checkpoints,
+                map_config.static_objects.clone(),
+            ),
             opts,
             has_had_player: false,
             map_config,

@@ -7,6 +7,7 @@ use crate::constants;
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::player::Player;
 use crate::powerup::Powerup;
+use crate::static_object::StaticObject;
 use crate::track;
 
 
@@ -24,10 +25,15 @@ pub struct GameState {
     pub powerups: Vec<Powerup>,
     pub checkpoints: Vec<Checkpoint>,
     pub race_state: RaceState,
+    pub static_objects: Vec<StaticObject>
 }
 
 impl GameState {
-    pub fn new(mut powerups: Vec<Powerup>, checkpoint_positions: &Vec<Vec2>) -> GameState {
+    pub fn new(
+        mut powerups: Vec<Powerup>,
+        checkpoint_positions: &Vec<Vec2>,
+        static_objects: Vec<StaticObject>
+    ) -> GameState {
         for p in &mut powerups {
             p.position *= constants::MAP_SCALE;
         }
@@ -41,6 +47,7 @@ impl GameState {
             powerups,
             checkpoints,
             race_state: RaceState::NotStarted,
+            static_objects,
         }
     }
 
@@ -151,6 +158,6 @@ impl GameState {
 
 impl Default for GameState {
     fn default() -> Self {
-        Self::new(Vec::new(), &Vec::new())
+        Self::new(Vec::new(), &Vec::new(), Vec::new())
     }
 }

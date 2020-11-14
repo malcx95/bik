@@ -18,6 +18,8 @@ pub struct Assets<'ttf, 'r> {
 
     pub red_outline: Texture<'r>,
 
+    pub trees: Vec<Texture<'r>>,
+
     pub mace_pickup: Texture<'r>,
 
     pub menu_background: Texture<'r>,
@@ -56,6 +58,12 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             track_overlay: load_tex("resources/track_overlay.png"),
 
             red_outline: load_tex("resources/red_outline.png"),
+
+            trees: vec![
+                load_tex("resources/tree1.png"),
+                load_tex("resources/tree2.png"),
+                load_tex("resources/tree3.png"),
+            ],
 
             mace_pickup: load_tex("resources/mace.png"),
 

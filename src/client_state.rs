@@ -10,6 +10,7 @@ use libbik::gamestate::GameState;
 use libbik::gamestate::RaceState;
 use libbik::math::{self, vec2, Vec2};
 use libbik::player::Player;
+use libbik::static_object::StaticObjectKind;
 
 use crate::assets::Assets;
 use crate::rendering;
@@ -118,6 +119,20 @@ impl ClientState {
             };
 
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
+        }
+
+        for object in &game_state.static_objects {
+            match object.kind {
+                StaticObjectKind::Tree => {
+                    rendering::draw_texture_rotated_and_scaled(
+                        canvas,
+                        &assets.trees[object.variant],
+                        object.position - camera_position,
+                        0.,
+                        vec2(2., 2.),
+                    );
+                }
+            }
         }
 
         if self.debug_drawing {

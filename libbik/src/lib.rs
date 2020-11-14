@@ -10,3 +10,4 @@ pub mod track;
 pub mod powerup;
 pub mod checkpoint;
 pub mod ground;
+pub mod static_object;
