@@ -18,13 +18,14 @@ pub enum TerrainType {
     Puddle,
     Sand,
     Obstacle,
+    PitStop,
 }
 
 
 impl TerrainType {
     pub fn braking_factor(&self) -> f32 {
         match self {
-            TerrainType::Road => 0.01,
+            TerrainType::Road | TerrainType::PitStop => 0.01,
             TerrainType::Puddle => 0.005,
             TerrainType::Sand => 0.03,
             TerrainType::Obstacle => 0.1,
@@ -37,7 +38,7 @@ impl TerrainType {
     /// A value of 0 makes the bike behave like a hovercraft
     pub fn side_speed_decay(&self) -> f32 {
         match self {
-            TerrainType::Road => 10.,
+            TerrainType::Road | TerrainType::PitStop=> 10.,
             TerrainType::Puddle => 1.0,
             TerrainType::Sand => 5.,
             TerrainType::Obstacle => 1000.
@@ -98,6 +99,8 @@ impl<'a> Ground<'a> {
                 [89,  126, 206] => Ok(TerrainType::Puddle),
                 [101, 81,  9  ] => Ok(TerrainType::Road),
                 [255, 204, 104] => Ok(TerrainType::Sand),
+                [199, 191, 43] => Ok(TerrainType::PitStop), // Yellow
+                [42, 40, 2] => Ok(TerrainType::PitStop),
                 x @ [_,   _, _] => Err(GroundError::UnknownKind(x.into())),
                 _ => Err(GroundError::Not3Pixels),
             }

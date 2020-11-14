@@ -28,7 +28,8 @@ pub const LAP_POS: (f32, f32) = (10., 10.);
 
 pub const INITIAL_FUEL_LEVEL: f32 = 100.;
 pub const MAX_FUEL_LEVEL: f32 = 100.;
-pub const FUEL_CONSUMPTION: f32 = 1.;
+pub const FUEL_CONSUMPTION: f32 = 5.;
+pub const FUEL_PUMP_SPEED: f32 = 150.;
 
 pub const POWERUP_DISTANCE: f32 = 100.;
 pub const POWERUP_TIMEOUT: f32 = 5.;

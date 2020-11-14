@@ -16,7 +16,7 @@ use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
 use crate::constants;
 use crate::powerup::Powerup;
-use crate::ground::Ground;
+use crate::ground::{TerrainType, Ground};
 use crate::gamestate::RaceState;
 
 
@@ -63,8 +63,18 @@ impl Player {
         }
     }
 
-    pub fn update_fuel_level(&mut self, input: &ClientInput) {
-        self.fuel_level = (self.fuel_level - input.y_input.max(0.)*constants::FUEL_CONSUMPTION).max(0.);
+    pub fn update_fuel_level(
+        &mut self,
+        delta_time: f32,
+        input: &ClientInput,
+        ground: &TerrainType
+    ) {
+        self.fuel_level = (self.fuel_level - input.y_input.max(0.)*constants::FUEL_CONSUMPTION*delta_time).max(0.);
+
+        if let TerrainType::PitStop = ground {
+            self.fuel_level = (self.fuel_level + constants::FUEL_PUMP_SPEED * delta_time)
+                .min(constants::MAX_FUEL_LEVEL)
+        }
     }
 
     pub fn update(
@@ -123,7 +133,7 @@ impl Player {
 
                 self.position += self.velocity * delta_time;
 
-                // self.update_fuel_level(input);
+                self.update_fuel_level(delta_time, input, &ground_type);
 
                 // Handle steering
                 let delta_angle = fwd_vel_magnitude * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
