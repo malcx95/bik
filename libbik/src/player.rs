@@ -15,9 +15,10 @@ use crate::constants::{
 use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
 use crate::constants;
-use crate::powerup::Powerup;
+use crate::powerup::{self, Powerup, PowerupKind};
 use crate::ground::{TerrainType, Ground};
 use crate::gamestate::RaceState;
+use crate::weapon::Weapon;
 
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -31,6 +32,7 @@ pub struct Player {
     pub steering_angle: f32,
     pub speed: f32,
 
+    pub weapon: Option<Weapon>,
     pub lap: usize,
     pub checkpoint: usize,
 
@@ -55,6 +57,7 @@ impl Player {
             velocity: vec2(0., 0.),
             steering_angle: 0.,
             speed: 0.,
+            weapon: None,
             lap: 0,
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,
@@ -83,6 +86,19 @@ impl Player {
         ground: &Ground,
         delta_time: f32,
         race_state: &RaceState
+    ) {
+        self.update_motion(input, ground, delta_time, race_state);
+        if let Some(weapon) = &mut self.weapon {
+            weapon.update(delta_time);
+        }
+    }
+
+    fn update_motion(
+        &mut self,
+        input: &ClientInput,
+        ground: &Ground,
+        delta_time: f32,
+        race_state: &RaceState,
     ) {
         let ground_type = ground.query_terrain(self.position)
             .expect(&format!("failed to query terrain for player {:?}", self.name));
@@ -157,8 +173,12 @@ impl Player {
         }
     }
 
-    pub fn take_powerup(&mut self, _powerup: &Powerup) {
-        // TODO
+    pub fn take_powerup(&mut self, powerup: &Powerup) {
+        match &powerup.kind {
+            PowerupKind::Weapon(weapon) => {
+                self.weapon = Some(weapon.into());
+            }
+        }
     }
 
     pub fn get_fuel_percentage(&self) -> f32 {

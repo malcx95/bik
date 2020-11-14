@@ -14,7 +14,8 @@ use libbik::static_object::StaticObjectKind;
 
 use crate::assets::Assets;
 use crate::rendering;
-use libbik::powerup::{PowerupKind, Weapon};
+use libbik::powerup::{PowerupKind, self};
+use libbik::weapon::Weapon;
 
 pub struct ClientState {
     my_id: u64,
@@ -105,6 +106,8 @@ impl ClientState {
                 vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
             )
             .unwrap();
+
+            self.draw_weapon(player, canvas, camera_position, assets);
         }
 
         for powerup in &game_state.powerups {
@@ -114,7 +117,7 @@ impl ClientState {
 
             let texture = match &powerup.kind {
                 PowerupKind::Weapon(weapon) => match weapon {
-                    Weapon::Mace => &assets.mace_pickup,
+                    powerup::Weapon::Mace => &assets.mace_pickup,
                 },
             };
 
@@ -151,7 +154,6 @@ impl ClientState {
             }
 
             for player in &game_state.players {
-                let hit_radius = constants::BIKE_SIZE * 2;
                 let x = player.position.x - camera_position.x as f32;
                 let y = player.position.y - camera_position.y as f32;
                 rendering::draw_texture_rotated(
@@ -159,7 +161,7 @@ impl ClientState {
                     &assets.red_outline,
                     vec2(x, y),
                     player.angle + player.steering_angle,
-                );
+                )?;
             }
         }
 
@@ -317,6 +319,28 @@ impl ClientState {
                 max_fuel_bar_height as u32,
             ))
             .unwrap();
+    }
+
+    fn draw_weapon(
+        &self,
+        player: &Player,
+        canvas: &mut Canvas<Window>,
+        camera_position: Vec2,
+        assets: &mut Assets,
+    ) {
+        let weapon = match &player.weapon {
+            Some(weapon) => weapon,
+            None => return,
+        };
+
+        match weapon {
+            Weapon::Mace(mace) => {
+                let texture = &assets.mace_pickup;
+                let offset = Vec2::from_direction(mace.angle, constants::MACE_RADIUS);
+                let position = player.position + offset;
+                rendering::draw_texture(canvas, texture, position - camera_position).unwrap();
+            }
+        }
     }
 
     fn get_fuel_bar_color(&self, player: &Player) -> (u8, u8, u8) {
