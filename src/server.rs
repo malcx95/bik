@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 
+use std::fs;
 use std::io;
 use std::io::prelude::*;
 use std::net::TcpListener;
@@ -17,6 +18,7 @@ use libplen::gamestate;
 use libplen::math::{vec2, Vec2};
 use libplen::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use libplen::player::Player;
+use libplen::track;
 
 #[derive(StructOpt)]
 struct Opt {
@@ -67,11 +69,17 @@ struct Server<'a> {
     last_time: Instant,
     opts: Opt,
     has_had_player: bool,
+    map_config: track::MapConfig,
 }
 
 impl<'a> Server<'a> {
     pub fn new() -> Self {
         let opts = Opt::from_args();
+
+        let map_config: track::MapConfig = ron::de::from_str(
+            &fs::read_to_string("resources/map.ron").expect("Could not open map.ron"),
+        )
+        .unwrap();
 
         let listener = TcpListener::bind("0.0.0.0:4444").unwrap();
 
@@ -85,9 +93,10 @@ impl<'a> Server<'a> {
             next_id: 0,
             map_data: Surface::from_file("resources/track.png").expect("failed to laod map data"),
             last_time: Instant::now(),
-            state: gamestate::GameState::new(),
+            state: gamestate::GameState::new(map_config.powerups.clone()),
             opts,
             has_had_player: false,
+            map_config,
         }
     }
 
@@ -174,7 +183,8 @@ impl<'a> Server<'a> {
                             name = name.trim().unicode_truncate(20).0.to_string()
                         }
 
-                        let player = Player::new(client.id, name);
+                        let (x, y) = self.map_config.start_position;
+                        let player = Player::new(client.id, name, vec2(x as f32, y as f32));
                         self.state.add_player(player);
                     }
                     Err(_) => {

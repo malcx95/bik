@@ -36,12 +36,13 @@ pub struct Player {
 impl Player {
     pub fn new(
         id: u64,
-        name: String
+        name: String,
+        position: Vec2,
     ) -> Player {
         Player {
             id,
             name,
-            position: vec2(150., 150.),
+            position,
             angle: 0.,
             speed: 0.,
             steering_angle: 0.,

@@ -59,7 +59,7 @@ impl MainState {
     fn new(my_id: u64) -> MainState {
         MainState {
             my_id,
-            game_state: gamestate::GameState::new(),
+            game_state: gamestate::GameState::new(Vec::new()),
             client_state: client_state::ClientState::new(my_id),
             last_time: Instant::now(),
         }

@@ -130,7 +130,7 @@ impl LineSegment {
     }
 
     pub fn intersects(&self, v: LineSegment) -> bool {
-        let a1 = self.p2.y - self.p1.y; 
+        let a1 = self.p2.y - self.p1.y;
         let b1 = self.p1.x - self.p2.x;
         let c1 = a1 * self.p1.x + b1 * self.p1.y;
 
@@ -143,7 +143,7 @@ impl LineSegment {
         if det != 0. {
             let x = (b2 * c1 - b1 * c2) / det;
             let y = (a1 * c2 - a2 * c1) / det;
-        
+
             if self.check(x, y) && v.check(x, y) && !(x == 0. && y == 0.) {
                 return true;
             }
@@ -156,7 +156,7 @@ impl LineSegment {
         self.min_x() <= x && x <= self.max_x() &&
             self.min_y() <= y && y <= self.max_y()
     }
-    
+
     pub fn max_x(&self) -> f32 {
         if self.p1.x >= self.p2.x {
             self.p1.x
@@ -172,7 +172,7 @@ impl LineSegment {
             self.p2.y
         }
     }
-    
+
     pub fn min_x(&self) -> f32 {
         if self.p1.x <= self.p2.x {
             self.p1.x

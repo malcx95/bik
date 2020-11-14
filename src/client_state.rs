@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use libplen::constants::{BIKE_SCALE, LAP_POS, WHEEL_DISTANCE};
+use libplen::constants::{BIKE_SCALE, LAP_POS, MAP_SCALE, WHEEL_DISTANCE};
 use libplen::gamestate::GameState;
 use libplen::math::{self, vec2, Vec2};
 

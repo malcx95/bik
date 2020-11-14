@@ -30,3 +30,6 @@ pub const FUEL_CONSUMPTION: f32 = 1.;
 
 pub const POWERUP_DISTANCE: f32 = 100.;
 pub const POWERUP_TIMEOUT: f32 = 5.;
+
+// Map parameters
+pub const MAP_SCALE: f32 = 2.;

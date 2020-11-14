@@ -1,14 +1,13 @@
-use std::fs;
 use std::sync::mpsc::Receiver;
 
 use serde_derive::{Serialize, Deserialize};
 
-use crate::player::Player;
 use crate::checkpoint::Checkpoint;
-use crate::math::{Vec2, vec2, LineSegment};
-use crate::track;
-use crate::powerup::Powerup;
 use crate::constants::{POWERUP_TIMEOUT, POWERUP_DISTANCE};
+use crate::math::{Vec2, vec2, LineSegment};
+use crate::player::Player;
+use crate::powerup::Powerup;
+use crate::track;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameState {
@@ -19,14 +18,7 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new() -> GameState {
-        let map_config: track::MapConfig = ron::de::from_str(
-            &fs::read_to_string("resources/map.ron")
-                .expect("Could not open map.ron")
-        ).unwrap();
-
-        let powerups = map_config.powerups;
-
+    pub fn new(powerups: Vec<Powerup>) -> GameState {
         GameState {
             players: Vec::new(),
             powerups,
@@ -74,7 +66,7 @@ impl GameState {
     pub fn add_player(&mut self, player: Player) {
         self.players.push(player);
     }
-    
+
     pub fn add_checkpoint(&mut self, checkpoint: Checkpoint) {
         self.checkpoints.push(checkpoint);
     }
@@ -85,23 +77,23 @@ impl GameState {
                 return Some(player);
             }
         }
-        
+
         None
     }
-    
+
     pub fn get_checkpoint_by_id(&self, id: u64) -> Option<&Checkpoint> {
         for checkpoint in &self.checkpoints {
             if checkpoint.id == id {
                 return Some(checkpoint);
             }
         }
-        
+
         None
     }
 }
 
 impl Default for GameState {
     fn default() -> Self {
-        Self::new()
+        Self::new(Vec::new())
     }
 }
