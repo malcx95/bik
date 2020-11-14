@@ -19,6 +19,7 @@ pub struct Assets<'ttf, 'r> {
     pub red_outline: Texture<'r>,
 
     pub trees: Vec<Texture<'r>>,
+    pub tires: Vec<Texture<'r>>,
 
     pub mace_pickup: Texture<'r>,
 
@@ -64,6 +65,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
                 load_tex("resources/tree2.png"),
                 load_tex("resources/tree3.png"),
             ],
+            tires: vec![load_tex("resources/tire1.png")],
 
             mace_pickup: load_tex("resources/mace.png"),
 

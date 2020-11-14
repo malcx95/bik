@@ -14,7 +14,7 @@ use libbik::static_object::StaticObjectKind;
 
 use crate::assets::Assets;
 use crate::rendering;
-use libbik::powerup::{PowerupKind, self};
+use libbik::powerup::{self, PowerupKind};
 use libbik::weapon::Weapon;
 
 pub struct ClientState {
@@ -128,17 +128,17 @@ impl ClientState {
         }
 
         for object in &game_state.static_objects {
-            match object.kind {
-                StaticObjectKind::Tree => {
-                    rendering::draw_texture_rotated_and_scaled(
-                        canvas,
-                        &assets.trees[object.variant],
-                        object.position - camera_position,
-                        0.,
-                        vec2(2., 2.),
-                    );
-                }
-            }
+            let asset = match object.kind {
+                StaticObjectKind::Tree => &assets.trees[object.variant],
+                StaticObjectKind::Tire => &assets.tires[object.variant],
+            };
+            rendering::draw_texture_rotated_and_scaled(
+                canvas,
+                asset,
+                object.position * constants::MAP_SCALE - camera_position,
+                0.,
+                vec2(2., 2.),
+            );
         }
 
         if self.debug_drawing {

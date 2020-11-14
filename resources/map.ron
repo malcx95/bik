@@ -15,19 +15,24 @@
     ],
     static_objects: [
         (
-            position: ( x: 1480, y: 1240 ),
+            position: ( x: 740, y: 620 ),
             kind: Tree,
             variant: 0,
         ),
         (
-            position: ( x: 1520, y: 1310 ),
+            position: ( x: 760, y: 655 ),
             kind: Tree,
             variant: 1,
         ),
         (
-            position: ( x: 1578, y: 1420 ),
+            position: ( x: 789, y: 710 ),
             kind: Tree,
             variant: 2,
+        ),
+        (
+            position: ( x: 786, y: 1460 ),
+            kind: Tire,
+            variant: 0,
         )
     ]
 )
