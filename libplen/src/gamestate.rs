@@ -25,10 +25,7 @@ impl GameState {
                 .expect("Could not open map.ron")
         ).unwrap();
 
-        let powerups = map_config
-            .powerups
-            .into_iter()
-            .collect();
+        let powerups = map_config.powerups;
 
         GameState {
             players: Vec::new(),

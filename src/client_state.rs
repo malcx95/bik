@@ -85,11 +85,7 @@ impl ClientState {
                 },
             };
 
-            rendering::draw_texture(
-                canvas,
-                texture,
-                powerup.position - camera_position,
-            ).unwrap();
+            rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
         if let Some(player) = game_state.get_player_by_id(my_id) {
             Self::draw_lap_info(canvas, assets, player.lap).unwrap();
