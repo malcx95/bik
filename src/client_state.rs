@@ -12,7 +12,6 @@ use crate::rendering;
 use libplen::powerup::{PowerupKind, Weapon};
 
 pub struct ClientState {
-    // add client side state
     my_id: u64,
 }
 

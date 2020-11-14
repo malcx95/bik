@@ -8,6 +8,7 @@ use crate::constants::{
     MAX_BACKWARD_SPEED,
     STEERING_RATE,
     BIKE_SCALE,
+    STEERING_ATTENUATION_MAX,
 };
 use crate::math::{Vec2, vec2};
 use crate::messages::ClientInput;
@@ -63,7 +64,10 @@ impl Player {
 
         let delta_angle = self.speed * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
 
-        self.steering_angle = STEERING_MAX * input.x_input;
+        let steering_attenuation = (1. - self.speed / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
+            + STEERING_ATTENUATION_MAX;
+        let steering_max = STEERING_MAX * steering_attenuation;
+        self.steering_angle = steering_max * input.x_input;
         // self.steering_angle = (self.steering_angle + STEERING_RATE * input.x_input * delta_time)
         //     .max(-STEERING_MAX)
         //     .min(STEERING_MAX);
