@@ -27,6 +27,9 @@ struct Opt {
     #[structopt(short, long)]
     /// Kill the server if all clients disconnect
     debug_kill: bool,
+    /// Override the initial countdown timer
+    #[structopt(short = "s", long)]
+    start_countdown: Option<f32>,
 }
 
 fn send_bytes(bytes: &[u8], stream: &mut TcpStream) -> io::Result<()> {
@@ -196,8 +199,11 @@ impl<'a> Server<'a> {
                         self.state.add_player(player);
                     }
                     Ok(ClientMessage::StartGame) => {
-                        self.state.race_state =
-                            RaceState::Starting(constants::RACE_COUNTDOWN_TIMER_START);
+                        let countdown = self
+                            .opts
+                            .start_countdown
+                            .unwrap_or(constants::RACE_COUNTDOWN_TIMER_START);
+                        self.state.race_state = RaceState::Starting(countdown);
                         println!("Client {} is starting game!", client.id);
                     }
                     Err(_) => {

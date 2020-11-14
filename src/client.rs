@@ -92,15 +92,13 @@ impl MainState {
             match bincode::deserialize(&message).unwrap() {
                 ServerMessage::AssignId(_) => panic!("Got new ID after intialisation"),
                 ServerMessage::GameState(state) => self.game_state = state,
-                ServerMessage::PlaySound(sound, _pos) => {
-                    match sound {
-                        SoundEffect::Powerup => {}
-                        SoundEffect::Gun => {}
-                        SoundEffect::Explosion => {}
-                        SoundEffect::LaserCharge => {}
-                        SoundEffect::LaserFire => {}
-                    }
-                }
+                ServerMessage::PlaySound(sound, _pos) => match sound {
+                    SoundEffect::Powerup => {}
+                    SoundEffect::Gun => {}
+                    SoundEffect::Explosion => {}
+                    SoundEffect::LaserCharge => {}
+                    SoundEffect::LaserFire => {}
+                },
             }
         }
 
