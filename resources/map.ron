@@ -30,14 +30,113 @@
             variant: 2,
         ),
         (
+            position: ( x: 709, y: 960 ),
+            kind: Tree,
+            variant: 2,
+        ),
+        (
+            position: ( x: 675, y: 75 ),
+            kind: Tree,
+            variant: 1,
+        ),
+        (
+            position: ( x: 642, y: 73 ),
+            kind: Tree,
+            variant: 0,
+        ),
+        (
+            position: ( x: 700, y: 40 ),
+            kind: Tree,
+            variant: 1,
+        ),
+        (
+            position: ( x: 670, y: 235 ),
+            kind: Tree,
+            variant: 1,
+        ),
+        (
+            position: ( x: 1238, y: 380 ),
+            kind: Tree,
+            variant: 1,
+        ),
+        (
+            position: ( x: 1305, y: 366 ),
+            kind: Tree,
+            variant: 2,
+        ),
+        (
+            position: ( x: 484, y: 38 ),
+            kind: Tree,
+            variant: 0,
+        ),
+        (
+            position: ( x: 360, y: 139 ),
+            kind: Tree,
+            variant: 1,
+        ),
+
+
+        (
             position: ( x: 786, y: 1460 ),
             kind: Tire,
             variant: 0,
         ),
-		(
-			position: ( x: 1200, y: 1452),
-			kind: FinishLine,
-			variant: 0,
-		),
+        (
+            position: ( x: 753, y: 1427 ),
+            kind: Tire,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1835, y: 1252 ),
+            kind: Tire,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1791, y: 203 ),
+            kind: Tire,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1925, y: 131 ),
+            kind: Tire,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1859, y: 41 ),
+            kind: Tire,
+            variant: 0,
+        ),
+
+        (
+            position: ( x: 862, y: 1400 ),
+            kind: Barrel,
+            variant: 0,
+        ),
+        (
+            position: ( x: 845, y: 1380),
+            kind: Barrel,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1805, y: 140),
+            kind: Barrel,
+            variant: 0,
+        ),
+        (
+            position: ( x: 1825, y: 160),
+            kind: Barrel,
+            variant: 0,
+        ),
+        (
+            position: ( x: 474, y: 92),
+            kind: Barrel,
+            variant: 0,
+        ),
+
+        (
+            position: ( x: 1200, y: 1452),
+            kind: FinishLine,
+            variant: 0,
+        ),
     ]
 )

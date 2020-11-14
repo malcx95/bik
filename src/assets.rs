@@ -22,6 +22,7 @@ pub struct Assets<'ttf, 'r> {
 
     pub trees: Vec<Texture<'r>>,
     pub tires: Vec<Texture<'r>>,
+    pub barrel: Texture<'r>,
 
     pub mace_pickup: Texture<'r>,
 
@@ -70,6 +71,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
                 load_tex("resources/tree3.png"),
             ],
             tires: vec![load_tex("resources/tire1.png")],
+            barrel: load_tex("resources/barrel.png"),
 
             mace_pickup: load_tex("resources/mace.png"),
 

@@ -83,11 +83,7 @@ impl ClientState {
             .iter()
             .filter(|o| !o.above_player())
         {
-            let asset = match object.kind {
-                StaticObjectKind::Tree => &assets.trees[object.variant],
-                StaticObjectKind::Tire => &assets.tires[object.variant],
-                StaticObjectKind::FinishLine => &assets.finish_line,
-            };
+            let asset = static_object_asset(object, assets);
             rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 asset,
@@ -159,11 +155,7 @@ impl ClientState {
             .iter()
             .filter(|o| o.above_player())
         {
-            let asset = match object.kind {
-                StaticObjectKind::Tree => &assets.trees[object.variant],
-                StaticObjectKind::Tire => &assets.tires[object.variant],
-                StaticObjectKind::FinishLine => &assets.finish_line,
-            };
+            let asset = static_object_asset(object, assets);
             rendering::draw_texture_rotated_and_scaled(
                 canvas,
                 asset,
@@ -404,5 +396,17 @@ impl ClientState {
         }
         b = 0.;
         (r as u8, g as u8, b as u8)
+    }
+}
+
+pub fn static_object_asset<'ttf, 'r, 'a>(
+    object: &StaticObject,
+    assets: &'a Assets<'ttf, 'r>,
+) -> &'a sdl2::render::Texture<'r> {
+    match object.kind {
+        StaticObjectKind::Tree => &assets.trees[object.variant],
+        StaticObjectKind::Tire => &assets.tires[object.variant],
+        StaticObjectKind::Barrel => &assets.barrel,
+        StaticObjectKind::FinishLine => &assets.finish_line,
     }
 }
