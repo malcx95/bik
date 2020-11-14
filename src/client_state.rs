@@ -40,6 +40,19 @@ impl ClientState {
         self.clock += delta_time;
     }
 
+    pub fn camera_position(&self, canvas: &Canvas<Window>, game_state: &GameState) -> Vec2 {
+        let (screen_w, screen_h) = canvas.logical_size();
+        let (screen_w, screen_h) = (
+            screen_w * constants::PIXEL_SCALE,
+            screen_h * constants::PIXEL_SCALE,
+        );
+        if let Some(my_player) = game_state.get_player_by_id(self.my_id) {
+            my_player.position - vec2(screen_w as f32, screen_h as f32) / 2.
+        } else {
+            vec2(0., 0.)
+        }
+    }
+
     pub fn draw(
         &self,
         _my_id: u64,
@@ -47,17 +60,7 @@ impl ClientState {
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
-        let (screen_w, screen_h) = canvas.logical_size();
-        let (screen_w, screen_h) = (
-            screen_w * constants::PIXEL_SCALE,
-            screen_h * constants::PIXEL_SCALE,
-        );
-        let camera_position = if let Some(my_player) = game_state.get_player_by_id(self.my_id) {
-            my_player.position - vec2(screen_w as f32, screen_h as f32) / 2.
-        } else {
-            vec2(0., 0.)
-        };
-
+        let camera_position = self.camera_position(canvas, game_state);
         // let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
         rendering::draw_uncentered_scaled(
@@ -220,6 +223,18 @@ impl ClientState {
             _ => {}
         }
 
+        // for player in &game_state.players {
+        //     if player.id != my_id {
+        //         rendering::draw_text(
+        //             canvas,
+        //             &player.name,
+        //             (player.position - self.camera_position(canvas, game_state)) / constants::PIXEL_SCALE as f32,
+        //             (255, 255, 255).into(),
+        //             &assets.race_font
+        //         ).unwrap();
+        //     }
+        // }
+
         Ok(())
     }
 
@@ -243,7 +258,7 @@ impl ClientState {
 
         rendering::draw_text_rotated_and_scaled(
             canvas,
-            format!("{}", num as i32),
+            &format!("{}", num as i32),
             pos,
             (255, 255, 255).into(),
             &assets.race_font,
@@ -263,7 +278,7 @@ impl ClientState {
 
         rendering::draw_text_rotated_and_scaled(
             canvas,
-            String::from("Press Enter to start race!"),
+            "Press Enter to start race!",
             pos,
             (255, 255, 255).into(),
             &assets.race_font,
@@ -289,7 +304,7 @@ impl ClientState {
 
         rendering::draw_text(
             canvas,
-            String::from("Fuel level"),
+            "Fuel level",
             vec2(gauge_pos_x as f32 + 30., gauge_pos_y as f32 - padding),
             (255, 255, 255).into(),
             &assets.font,

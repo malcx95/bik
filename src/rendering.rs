@@ -101,7 +101,7 @@ pub fn draw_texture_rotated_and_scaled(
 
 pub fn draw_text(
     canvas: &mut Canvas<Window>,
-    text: String,
+    text: &str,
     pos: Vec2,
     color: Color,
     font: &sdl2::ttf::Font,
@@ -111,7 +111,7 @@ pub fn draw_text(
 
 pub fn draw_text_rotated_and_scaled(
     canvas: &mut Canvas<Window>,
-    text: String,
+    text: &str,
     pos: Vec2,
     color: Color,
     font: &sdl2::ttf::Font,
@@ -119,7 +119,7 @@ pub fn draw_text_rotated_and_scaled(
     scale: Vec2,
 ) -> Result<(), String> {
     let text = font
-        .render(&text.to_string())
+        .render(text)
         .blended(color)
         .expect("Could not render text");
 
