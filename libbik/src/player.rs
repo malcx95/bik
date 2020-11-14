@@ -104,9 +104,9 @@ impl Player {
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 
                 // Side velocity attenuation. AKA anti-hovercraft force
-                let side_decel = {
-                    let side_direction = Vec2::from_direction(self.angle + PI/2., 1.);
+                let side_direction = Vec2::from_direction(self.angle + PI/2., 1.);
 
+                let side_decel = {
                     let side_vel_magnitude = side_direction.dot(self.velocity);
 
                     let decel = ground_type.side_speed_decay() * side_vel_magnitude;
@@ -115,39 +115,36 @@ impl Player {
                 };
 
                 let uncapped_velocity = self.velocity + acceleration + side_decel + forward_decel;
-                let vel_magnitude = uncapped_velocity.norm();
 
-                self.velocity = if uncapped_velocity != vec2(0., 0.) {
-                    uncapped_velocity.normalize() * vel_magnitude
-                }
-                else {
-                    vec2(0., 0.)
-                };
+                let fwd_vel_magnitude = forward_dir.dot(uncapped_velocity);
+                let side_vel_magnitude = side_direction.dot(uncapped_velocity);
+                self.velocity = forward_dir * fwd_vel_magnitude + side_direction * side_vel_magnitude ;
 
 
                 self.position += self.velocity * delta_time;
 
-                self.update_fuel_level(input);
+                // self.update_fuel_level(input);
+
+                // Handle steering
+                let delta_angle = fwd_vel_magnitude * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
+
+                let steering_attenuation = (1. - forward_component / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
+                    + STEERING_ATTENUATION_MAX;
+                let steering_max = STEERING_MAX * steering_attenuation;
+
+                let target_angle = steering_max * input.x_input;
+
+                let steer_amount = (self.steering_angle - target_angle) * STEERING_RATE
+                    .max(-STEERING_RATE)
+                    .min(STEERING_RATE);
+                self.steering_angle = (self.steering_angle - steer_amount * delta_time)
+                    .min(steering_max)
+                    .max(-steering_max);
+
+                self.angle += delta_angle * delta_time;
             }
             _ => { }
         }
-
-        let delta_angle = self.velocity.norm() * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
-
-        let steering_attenuation = (1. - forward_component / MAX_SPEED) * (1. - STEERING_ATTENUATION_MAX)
-            + STEERING_ATTENUATION_MAX;
-        let steering_max = STEERING_MAX * steering_attenuation;
-
-        let target_angle = steering_max * input.x_input;
-
-        let steer_amount = (self.steering_angle - target_angle) * STEERING_RATE
-            .max(-STEERING_RATE)
-            .min(STEERING_RATE);
-        self.steering_angle = (self.steering_angle - steer_amount * delta_time)
-            .min(steering_max)
-            .max(-steering_max);
-
-        self.angle += delta_angle * delta_time;
     }
 
     pub fn take_powerup(&mut self, _powerup: &Powerup) {
