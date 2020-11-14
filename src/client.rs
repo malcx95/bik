@@ -129,8 +129,38 @@ impl MainState {
     fn draw(&mut self, canvas: &mut Canvas<Window>, assets: &mut Assets) -> Result<(), String> {
         self.client_state
             .draw(self.my_id, &self.game_state, canvas, assets)?;
+        self.client_state
+            .draw_ui(self.my_id, &self.game_state, canvas, assets)?;
 
         Ok(())
+    }
+
+    fn get_first_game_state(&mut self, server_reader: &mut MessageReader) {
+        let mut attempts = 0;
+
+        loop {
+            server_reader.fetch_bytes().unwrap();
+            for message in server_reader.iter() {
+                match bincode::deserialize(&message).unwrap() {
+                    ServerMessage::GameState(state) => {
+                        self.game_state = state;
+                        match self.game_state.get_player_by_id(self.my_id) {
+                            // got a game state with out ID in it
+                            Some(_) => { return; }
+                            _ => { }
+                        }
+                    }
+                    _ => {
+                        println!("Nope");
+                    }
+                }
+            }
+            std::thread::sleep(std::time::Duration::from_millis(50));
+            attempts += 1;
+            if attempts > 20 {
+                panic!("Never recieved game state from server!");
+            }
+        }
     }
 }
 
@@ -250,6 +280,10 @@ pub fn main() -> Result<(), String> {
         );
 
         let main_state = &mut MainState::new(my_id);
+
+        // blocks until the first game state is recieved
+        main_state.get_first_game_state(&mut reader);
+
         'gameloop: loop {
             for event in event_pump.poll_iter() {
                 match event {

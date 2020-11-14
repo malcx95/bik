@@ -15,3 +15,7 @@ pub const WHEEL_DISTANCE: f32 = 50.;
 
 // lap info parameters
 pub const LAP_POS: (f32, f32) = (10., 10.);
+
+pub const INITIAL_FUEL_LEVEL: f32 = 100.;
+pub const MAX_FUEL_LEVEL: f32 = 100.;
+pub const FUEL_CONSUMPTION: f32 = 1.;

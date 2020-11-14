@@ -56,14 +56,13 @@ impl ClientState {
             )
             .unwrap();
         }
-        
         if let Some(player) = game_state.get_player_by_id(my_id) {
             Self::draw_lap_info(canvas, assets, player.lap);
         }
 
         Ok(())
     }
-    
+
     fn draw_lap_info(canvas: &mut Canvas<Window>, assets: &Assets, lap: u64) -> Result<(), String> {
         let text = assets
             .race_font
@@ -76,7 +75,31 @@ impl ClientState {
 
         let res_offset = rendering::calculate_resolution_offset(canvas);
         rendering::draw_texture(canvas, &text_texture, vec2(LAP_POS.0, LAP_POS.1) + res_offset);
-        
+        Ok(())
+}
+
+    pub fn draw_ui(
+        &self,
+        my_id: u64,
+        game_state: &GameState,
+        canvas: &mut Canvas<Window>,
+        assets: &mut Assets,
+    ) -> Result<(), String> {
+        let (screen_w, screen_h) = canvas.logical_size();
+        let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
+
+        let player = game_state.get_player_by_id(my_id).unwrap();
+
+        let text = assets
+            .font
+            .render(&format!("Fuel level: {}", player.fuel_level))
+            .blended((255, 255, 255))
+            .expect("Could not render text");
+
+        let texture_creator = canvas.texture_creator();
+        let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
+        rendering::draw_texture(canvas, &text_texture, screen_center);
+
         Ok(())
     }
 }
