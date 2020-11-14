@@ -12,6 +12,10 @@ pub struct Assets<'ttf, 'r> {
 
     pub bike_back: Texture<'r>,
     pub bike_front: Texture<'r>,
+    pub driver: Texture<'r>,
+    pub track: Texture<'r>,
+
+    pub mace_pickup: Texture<'r>,
 
     pub menu_background: Texture<'r>,
     pub end_background: Texture<'r>,
@@ -52,6 +56,10 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
 
             bike_back: load_tex("resources/back.png"),
             bike_front: load_tex("resources/front.png"),
+            driver: load_tex("resources/driver.png"),
+            track: load_tex("resources/track.png"),
+
+            mace_pickup: load_tex("resources/mace.png"),
 
             achtung_blitzkrieg_engine: Chunk::from_file(
                 "resources/audio/achtungblitzkrieg-engine.ogg",

@@ -113,3 +113,87 @@ pub fn angle_diff(source_angle: f32, target_angle: f32) -> f32 {
     use std::f32::consts::PI;
     modulo(target_angle - source_angle + PI, 2. * PI) - PI
 }
+
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct LineSegment {
+    pub p1: Vec2,
+    pub p2: Vec2,
+}
+
+impl LineSegment {
+    pub fn new(p1: Vec2, p2: Vec2) -> Self {
+        LineSegment {
+            p1,
+            p2,
+        }
+    }
+
+    pub fn intersects(&self, v: LineSegment) -> bool {
+        let a1 = self.p2.y - self.p1.y; 
+        let b1 = self.p1.x - self.p2.x;
+        let c1 = a1 * self.p1.x + b1 * self.p1.y;
+
+        let a2 = v.p2.y - v.p1.y;
+        let b2 = v.p1.x - v.p2.x;
+        let c2 = a2 * v.p1.x + b2 * v.p1.y;
+
+        let det = a1 * b2 - a2 * b1;
+
+        if det != 0. {
+            let x = (b2 * c1 - b1 * c2) / det;
+            let y = (a1 * c2 - a2 * c1) / det;
+        
+            if self.check(x, y) && v.check(x, y) && !(x == 0. && y == 0.) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn check(&self, x: f32, y: f32) -> bool {
+        return self.min_x() <= x && x <= self.max_x() &&
+            self.min_y() <= y && y <= self.max_y();
+    }
+    
+    pub fn max_x(&self) -> f32 {
+        let max = if self.p1.x >= self.p2.x {
+            self.p1.x
+        } else {
+            self.p2.x
+        };
+
+        max
+    }
+
+    pub fn max_y(&self) -> f32 {
+        let max = if self.p1.y >= self.p2.y {
+            self.p1.y
+        } else {
+            self.p2.y
+        };
+
+        max
+    }
+    
+    pub fn min_x(&self) -> f32 {
+        let min = if self.p1.x <= self.p2.x {
+            self.p1.x
+        } else {
+            self.p2.x
+        };
+
+        min
+    }
+
+    pub fn min_y(&self) -> f32 {
+        let min = if self.p1.y <= self.p2.y {
+            self.p1.y
+        } else {
+            self.p2.y
+        };
+
+        min
+    }
+}

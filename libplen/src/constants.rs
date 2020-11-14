@@ -10,6 +10,7 @@ pub const MENU_BACKGROUND_COLOR: (u8, u8, u8) = (108, 57, 57);
 pub const NAME_POS: (f32, f32) = (50., 150.);
 
 // Steering parameters
+pub const STEERING_RATE: f32 = 3.;
 pub const STEERING_MAX: f32 = 0.5;
 pub const WHEEL_DISTANCE: f32 = 50.;
 
@@ -19,3 +20,9 @@ pub const LAP_POS: (f32, f32) = (10., 10.);
 pub const INITIAL_FUEL_LEVEL: f32 = 100.;
 pub const MAX_FUEL_LEVEL: f32 = 100.;
 pub const FUEL_CONSUMPTION: f32 = 1.;
+
+pub const MAX_SPEED: f32 = 350.;
+pub const MAX_BACKWARD_SPEED: f32 = 50.;
+pub const ACCELERATION: f32 = 200.;
+
+pub const POWERUP_DISTANCE: f32 = 100.;
