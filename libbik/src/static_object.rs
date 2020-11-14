@@ -6,6 +6,7 @@ use crate::math::Vec2;
 pub enum StaticObjectKind {
     Tree,
     Tire,
+	FinishLine,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

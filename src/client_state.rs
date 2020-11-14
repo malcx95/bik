@@ -131,6 +131,7 @@ impl ClientState {
             let asset = match object.kind {
                 StaticObjectKind::Tree => &assets.trees[object.variant],
                 StaticObjectKind::Tire => &assets.tires[object.variant],
+				StaticObjectKind::FinishLine => &assets.finish_line,
             };
             rendering::draw_texture_rotated_and_scaled(
                 canvas,

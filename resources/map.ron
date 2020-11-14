@@ -33,6 +33,11 @@
             position: ( x: 786, y: 1460 ),
             kind: Tire,
             variant: 0,
-        )
+        ),
+		(
+			position: ( x: 1200, y: 1452),
+			kind: FinishLine,
+			variant: 0,
+		),
     ]
 )
