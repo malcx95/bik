@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use libplen::constants::{BIKE_SCALE, LAP_POS};
+use libplen::constants::{BIKE_SCALE, LAP_POS, WHEEL_DISTANCE};
 use libplen::gamestate::GameState;
 use libplen::math::{self, vec2, Vec2};
 
@@ -53,8 +53,7 @@ impl ClientState {
             )
             .unwrap();
 
-            let bike_length = 50.;
-            let front_offset = Vec2::from_direction(player.angle, bike_length) * BIKE_SCALE;
+            let front_offset = Vec2::from_direction(player.angle, WHEEL_DISTANCE) * BIKE_SCALE;
 
             rendering::draw_texture_rotated_and_scaled(
                 canvas,

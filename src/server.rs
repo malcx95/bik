@@ -7,6 +7,8 @@ use std::net::TcpStream;
 use std::time::Instant;
 use std::vec;
 
+use sdl2::image::LoadSurface;
+use sdl2::surface::Surface;
 use structopt::StructOpt;
 use unicode_truncate::UnicodeTruncateStr;
 
@@ -56,17 +58,18 @@ struct Client {
     input: ClientInput,
 }
 
-struct Server {
+struct Server<'a> {
     listener: TcpListener,
     connections: Vec<Client>,
     state: gamestate::GameState,
+    map_data: Surface<'a>,
     next_id: u64,
     last_time: Instant,
     opts: Opt,
     has_had_player: bool,
 }
 
-impl Server {
+impl<'a> Server<'a> {
     pub fn new() -> Self {
         let opts = Opt::from_args();
 
@@ -80,6 +83,7 @@ impl Server {
             listener,
             connections: vec![],
             next_id: 0,
+            map_data: Surface::from_file("resources/track.png").expect("failed to laod map data"),
             last_time: Instant::now(),
             state: gamestate::GameState::new(),
             opts,
