@@ -10,7 +10,7 @@ use libbik::gamestate::GameState;
 use libbik::gamestate::RaceState;
 use libbik::math::{self, vec2, Vec2};
 use libbik::player::Player;
-use libbik::static_object::StaticObjectKind;
+use libbik::static_object::{StaticObject, StaticObjectKind};
 
 use crate::assets::Assets;
 use crate::rendering;
@@ -78,6 +78,24 @@ impl ClientState {
         )
         .unwrap();
 
+        for object in game_state
+            .static_objects
+            .iter()
+            .filter(|o| !o.above_player())
+        {
+            let asset = match object.kind {
+                StaticObjectKind::Tree => &assets.trees[object.variant],
+                StaticObjectKind::Tire => &assets.tires[object.variant],
+            };
+            rendering::draw_texture_rotated_and_scaled(
+                canvas,
+                asset,
+                object.position * constants::MAP_SCALE - camera_position,
+                0.,
+                vec2(2., 2.),
+            );
+        }
+
         // draw some stuff
         for player in &game_state.players {
             rendering::draw_texture_rotated_and_scaled(
@@ -127,7 +145,19 @@ impl ClientState {
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
 
-        for object in &game_state.static_objects {
+        rendering::draw_uncentered_scaled(
+            canvas,
+            &assets.track_overlay_overhead,
+            -camera_position,
+            vec2(constants::MAP_SCALE, constants::MAP_SCALE),
+        )
+        .unwrap();
+
+        for object in game_state
+            .static_objects
+            .iter()
+            .filter(|o| o.above_player())
+        {
             let asset = match object.kind {
                 StaticObjectKind::Tree => &assets.trees[object.variant],
                 StaticObjectKind::Tire => &assets.tires[object.variant],

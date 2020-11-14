@@ -15,3 +15,12 @@ pub struct StaticObject {
     pub kind: StaticObjectKind,
     pub variant: usize
 }
+
+impl StaticObject {
+    pub fn above_player(&self) -> bool {
+        match self.kind {
+            StaticObjectKind::Tree => true,
+            _ => false,
+        }
+    }
+}

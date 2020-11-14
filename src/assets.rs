@@ -15,6 +15,7 @@ pub struct Assets<'ttf, 'r> {
     pub driver: Texture<'r>,
     pub track: Texture<'r>,
     pub track_overlay: Texture<'r>,
+    pub track_overlay_overhead: Texture<'r>,
 
     pub red_outline: Texture<'r>,
 	pub finish_line: Texture<'r>,
@@ -58,6 +59,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             driver: load_tex("resources/driver.png"),
             track: load_tex("resources/track.png"),
             track_overlay: load_tex("resources/track_overlay.png"),
+            track_overlay_overhead: load_tex("resources/track_overlay_overhead.png"),
 
             red_outline: load_tex("resources/red_outline.png"),
 			finish_line: load_tex("resources/finish_line.png"),
