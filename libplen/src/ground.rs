@@ -22,13 +22,12 @@ pub enum TerrainType {
 
 
 impl TerrainType {
-    /// Percentage of speed retained per second
     pub fn braking_factor(&self) -> f32 {
         match self {
-            TerrainType::Road => 0.9,
-            TerrainType::Puddle => 1.0,
-            TerrainType::Sand => 0.1,
-            TerrainType::Obstacle => 0.99,
+            TerrainType::Road => 0.01,
+            TerrainType::Puddle => 0.005,
+            TerrainType::Sand => 0.03,
+            TerrainType::Obstacle => 0.1,
         }
     }
 

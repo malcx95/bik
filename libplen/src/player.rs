@@ -86,7 +86,13 @@ impl Player {
                     -side_direction * (decel * delta_time).max(side_vel_magnitude)
                 };
 
-                let uncapped_velocity = self.velocity + acceleration + side_decel;
+                let forward_dir = Vec2::from_direction(self.angle, 1.);
+                let forward_component = forward_dir.dot(self.velocity);
+                let forward_decel_amount = ground_type.braking_factor() * forward_component;
+                let forward_decel = -forward_dir * (forward_decel_amount * delta_time)
+                    .max(forward_decel_amount);
+
+                let uncapped_velocity = self.velocity + acceleration + side_decel + forward_decel;
                 let vel_magnitude = uncapped_velocity.norm()
                     .max(-MAX_BACKWARD_SPEED)
                     .min(MAX_SPEED);
