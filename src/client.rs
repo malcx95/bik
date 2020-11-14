@@ -306,7 +306,7 @@ pub fn main() -> Result<(), String> {
             }
             rendering::setup_coordinates(&mut canvas)?;
 
-            canvas.set_draw_color(sdl2::pixels::Color::RGB(25, 25, 25));
+            canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
             canvas.clear();
 
             let state_result =
