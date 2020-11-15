@@ -252,9 +252,9 @@ impl ClientState {
         let (screen_w, screen_h) = canvas.logical_size();
         let oscillation_size = constants::LAP_SCALE + (((self.clock * 2.).sin() + 1.) / 2.) * 0.2;
 
-        let mut lap_text = format!("Lap {}", player.lap);
+        let mut lap_text = format!("Lap {}", player.lap + 1);
         let mut lap_text_color = (255, 255, 255);
-        if player.lap == constants::TOTAL_NUM_LAPS {
+        if player.lap == constants::TOTAL_NUM_LAPS - 1{
             lap_text = String::from("Final lap!");
             lap_text_color = constants::FINAL_LAP_COLOR;
         }
@@ -277,7 +277,7 @@ impl ClientState {
             canvas,
             assets,
             player.current_lap,
-            player.lap,
+            player.lap + 1,
             vec2(
                 screen_w as f32 * constants::TIME_POS_X,
                 screen_h as f32 * constants::TIME_POS_Y,
@@ -298,7 +298,7 @@ impl ClientState {
                 vec2(
                     screen_w as f32 * constants::TIME_POS_X,
                     screen_h as f32 * constants::TIME_POS_Y
-                        + (player.lap - (lap + 1)) as f32 * constants::TIME_PADDING,
+                        + (player.lap - lap) as f32 * constants::TIME_PADDING,
                 ),
                 color.into(),
             );
@@ -371,7 +371,7 @@ impl ClientState {
                 vec2(
                     screen_w as f32 * constants::END_TIME_POS_X,
                     screen_h as f32 * constants::END_TIME_POS_Y
-                        + (constants::TOTAL_NUM_LAPS - (lap + 1)) as f32 * constants::TIME_PADDING,
+                        + (constants::TOTAL_NUM_LAPS - lap) as f32 * constants::TIME_PADDING,
                 ),
                 color.into(),
             );
