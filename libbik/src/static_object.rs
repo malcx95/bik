@@ -24,4 +24,13 @@ impl StaticObject {
             _ => false,
         }
     }
+
+    pub fn collision_radius(&self) -> Option<f32> {
+        match self.kind {
+            StaticObjectKind::Tree => Some(7.),
+            StaticObjectKind::Tire => Some(32.),
+            StaticObjectKind::FinishLine => None,
+            StaticObjectKind::Barrel => Some(16.),
+        }
+    }
 }

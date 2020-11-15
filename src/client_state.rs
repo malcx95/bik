@@ -155,7 +155,10 @@ impl ClientState {
                 asset,
                 object.position * constants::MAP_SCALE - camera_position,
                 0.,
-                vec2(2., 2.),
+                vec2(
+                    constants::STATIC_OBJECT_SCALE,
+                    constants::STATIC_OBJECT_SCALE,
+                ),
             );
         }
 

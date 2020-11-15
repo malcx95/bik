@@ -65,6 +65,7 @@ impl GameState {
     pub fn update(&mut self, delta: f32) {
         // update game state
         self.handle_player_collisions(delta);
+        self.handle_object_collision();
         self.update_powerups(delta);
         let all_finished = self.update_finished_players();
 
@@ -183,6 +184,21 @@ impl GameState {
         }
 
         all_finished
+    }
+
+    pub fn handle_object_collision(&mut self) {
+        for player in &mut self.players {
+            for (c, r) in player.collision_points() {
+                for object in &self.static_objects {
+                    if let Some(obj_radius) = object.collision_radius() {
+                        let distance = dbg!((c - object.position * constants::MAP_SCALE).norm());
+                        if distance < r + obj_radius * constants::STATIC_OBJECT_SCALE {
+                            player.state = crate::player::PlayerState::Falling(0.)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -19,6 +19,7 @@ pub const STEERING_MAX: f32 = 0.5;
 pub const WHEEL_DISTANCE: f32 = 20.;
 
 pub const BIKE_SCALE: f32 = 2.0;
+pub const STATIC_OBJECT_SCALE: f32 = 2.;
 
 pub const MAX_SPEED: f32 = 600.;
 pub const MAX_WALK_SPEED: f32 = 100.;
@@ -72,5 +73,5 @@ pub const COLLISION_SPEED_REDUCTION: f32 = 500.;
 
 
 // Crash parameters
-pub const FALLING_DURATION: f32 = 0.3;
+pub const FALLING_DURATION: f32 = 0.2;
 pub const CRASH_DURATION: f32 = 1.5;
