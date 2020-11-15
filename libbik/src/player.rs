@@ -49,7 +49,6 @@ pub struct Player {
     pub checkpoint: usize,
 
     pub fuel_level: f32,
-    pub bike_health: i16,
 
     pub time_to_next_collision: f32,
 
@@ -80,7 +79,6 @@ impl Player {
             lap: 0,
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,
-            bike_health: 100,
             time_to_next_collision: constants::COLLISION_GRACE_PERIOD,
             total_time: 0.,
             current_lap: 0.,
@@ -129,14 +127,21 @@ impl Player {
         delta_time: f32,
         race_state: &RaceState
     ) {
-        self.tick_state(delta_time);
+        match race_state {
+            RaceState::Started => {
+                self.tick_state(delta_time);
+                self.update_motion(input, ground, delta_time, race_state);
 
-        self.update_motion(input, ground, delta_time, race_state);
-        if let Some(weapon) = &mut self.weapon {
-            weapon.update(delta_time);
-            if weapon.expired() {
-                self.weapon = None;
+                if let Some(weapon) = &mut self.weapon {
+                    weapon.update(delta_time);
+                    if weapon.expired() {
+                        self.weapon = None;
+                    }
+                }
+
+                self.update_collision_timer(delta_time);
             }
+            _ => {}
         }
     }
 
@@ -274,19 +279,16 @@ impl Player {
         }
     }
 
-    pub fn damage(&mut self, dmg: i16) -> bool {
-        println!("took damage!");
-        self.bike_health -= dmg;
-
-        if self.bike_health <= 0 {
-            self.bike_health = 0;
+    pub fn crash(&mut self) -> bool {
+        if self.time_to_next_collision > 0. {
+            return false;
         }
 
-        true
-    }
 
-    pub fn is_bike_broken(&mut self) -> bool{
-        self.bike_health == 0
+        self.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
+        self.state = PlayerState::Falling(0, 0.);
+
+        true
     }
 
     /// Returns a list of points where collisions should be checked. Anything inside

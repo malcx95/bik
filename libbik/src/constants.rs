@@ -55,6 +55,7 @@ pub const POWERUP_TIMEOUT: f32 = 5.;
 
 pub const MACE_SPEED: f32 = 10.;
 pub const MACE_RADIUS: f32 = 100.;
+pub const MACE_DAMAGE: i16 = 50;
 
 // Map parameters
 pub const MAP_SCALE: f32 = 2.;

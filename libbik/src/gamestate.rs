@@ -1,4 +1,5 @@
 use std::sync::mpsc::Receiver;
+use std::collections::HashSet;
 
 use serde_derive::{Serialize, Deserialize};
 
@@ -9,7 +10,7 @@ use crate::player::{PlayerState, Player};
 use crate::powerup::Powerup;
 use crate::static_object::StaticObject;
 use crate::track;
-
+use crate::weapon;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum RaceState {
@@ -63,12 +64,6 @@ impl GameState {
      *  )
      */
     pub fn update(&mut self, delta: f32) {
-        // update game state
-        self.handle_player_collisions(delta);
-        self.handle_object_collision();
-        self.update_powerups(delta);
-        let all_finished = self.update_finished_players();
-
         self.race_state = match self.race_state {
             RaceState::Starting(time) => {
                 if time - delta < 0. {
@@ -78,6 +73,15 @@ impl GameState {
                 }
             }
             RaceState::Started => {
+                // update game state
+                self.handle_player_collisions();
+                self.handle_object_collision();
+                self.handle_player_attacks();
+
+                self.update_powerups(delta);
+
+                let all_finished = self.update_finished_players();
+
                 if all_finished {
                     RaceState::Finished
                 } else {
@@ -138,8 +142,34 @@ impl GameState {
         None
     }
 
-    pub fn handle_player_collisions(&mut self, delta: f32) {
-        let mut collided_players: Vec<(u64, String)> = vec!();
+    fn handle_player_attacks(&mut self) {
+        let mace_positions: Vec<Vec2> = self
+            .players
+            .iter()
+            .filter_map(|player| {
+                match &player.weapon {
+                    Some(weapon::Weapon::Mace(mace)) => Some({
+                        let offset = Vec2::from_direction(mace.angle, constants::MACE_RADIUS);
+                        offset + player.position
+                    }),
+                    _ => None,
+                }
+            })
+            .collect();
+
+        for mace in mace_positions {
+            for target in &mut self.players {
+                for (c1, r1) in target.collision_points() {
+                    if c1.distance_to(mace) < r1 {
+                        target.crash();
+                    }
+                }
+            }
+        }
+    }
+
+    pub fn handle_player_collisions(&mut self) {
+        let mut collided_players = HashSet::new();
 
         if !self.players.is_empty() {
             for (i, p1) in self.players[..self.players.len() - 1].iter().enumerate() {
@@ -148,7 +178,8 @@ impl GameState {
                         for (c2, r2) in p2.collision_points() {
                             let distance = (c1 - c2).norm();
                             if p1.id != p2.id && distance < r1+r2 as f32 {
-                                collided_players.push((p1.id, p2.name.clone()));
+                                collided_players.insert(p1.id);
+                                collided_players.insert(p2.id);
                             }
                         }
                     }
@@ -156,25 +187,9 @@ impl GameState {
             }
         }
 
-        let mut damaged_players = Vec::new();
         for player in &mut self.players {
-            player.update_collision_timer(delta);
-
-            for (id, attacker) in &collided_players {
-                if player.id == *id && player.time_to_next_collision == 0. {
-                    let took_damage = player.damage(constants::COLLISION_DAMAGE);
-
-                    if took_damage {
-                        damaged_players.push(player.id);
-                    }
-
-                    if player.is_bike_broken() {
-                        // TODO: Something should happen when the bike is broken.
-                        // Force a pit stop?
-                    }
-
-                    player.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
-                }
+            if collided_players.contains(&player.id) {
+                player.crash();
             }
         }
     }
