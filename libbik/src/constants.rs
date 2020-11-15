@@ -43,6 +43,7 @@ pub const SECOND_FINISH_COLOR: (u8, u8, u8) = (180, 180, 180);
 pub const THIRD_FINISH_COLOR: (u8, u8, u8) = (166, 95, 25);
 pub const END_TIME_POS_X: f32 = 0.2;
 pub const END_TIME_POS_Y: f32 = 0.2;
+pub const RESTART_TEXT_POS_Y: f32 = 0.7;
 
 pub const INITIAL_FUEL_LEVEL: f32 = 100.;
 pub const MAX_FUEL_LEVEL: f32 = 100.;

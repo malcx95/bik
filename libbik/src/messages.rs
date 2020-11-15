@@ -110,4 +110,5 @@ pub enum ClientMessage {
     Input(ClientInput),
     JoinGame { name: String },
     StartGame,
+    RestartGame,
 }

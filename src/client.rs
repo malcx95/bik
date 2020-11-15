@@ -340,6 +340,12 @@ pub fn main() -> Result<(), String> {
 
                                 println!("Starting game!")
                             }
+                            RaceState::Finished => {
+                                send_client_message(
+                                    &ClientMessage::RestartGame, &mut reader.stream
+                                );
+                                println!("Restarting game!")
+                            }
                             _ => {}
                         },
                         _ => {}
@@ -380,10 +386,9 @@ pub fn main() -> Result<(), String> {
                         true
                     };
 
-                if player_finished {
-                    engine_channel.fade_out(500);
-                    engine_on = false;
-                }
+                //if player_finished {
+                //    engine_on = false;
+                //}
             }
 
             canvas

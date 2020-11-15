@@ -130,7 +130,26 @@ impl<'a> Server<'a> {
         state.update(delta_time, |sound| sounds_to_play.push(sound));
 
         self.accept_new_connections();
-        self.update_clients(delta_time);
+        let restart_game = self.update_clients(delta_time);
+        if restart_game {
+            let map_config: track::MapConfig = ron::de::from_str(
+                &fs::read_to_string("resources/map.ron").expect("Could not open map.ron"),
+            )
+            .unwrap();
+            let old_players = self.state.players.clone();
+            self.state = gamestate::GameState::new(
+                map_config.powerups.clone(),
+                map_config.start_position * constants::MAP_SCALE,
+                &map_config.checkpoints,
+                map_config.static_objects.clone(),
+            );
+
+            for p in &old_players {
+                let start_distance = -50. * self.state.players.len() as f32;
+                let position = self.state.start_position + vec2(0., start_distance);
+                self.state.players.push(Player::new(p.id, p.name.clone(), position));
+            }
+        }
     }
 
     fn accept_new_connections(&mut self) {
@@ -165,7 +184,8 @@ impl<'a> Server<'a> {
         }
     }
 
-    fn update_clients(&mut self, delta_time: f32) {
+    fn update_clients(&mut self, delta_time: f32) -> bool {
+        let mut restart_game = false;
         // Send data to clients
         let mut clients_to_delete = vec![];
 
@@ -200,6 +220,7 @@ impl<'a> Server<'a> {
                             name = name.trim().unicode_truncate(20).0.to_string()
                         }
 
+                        // this code is duplicated in server.update, sorry it's game jam ok
                         let start_distance = -50. * self.state.players.len() as f32;
                         let position = self.state.start_position + vec2(0., start_distance);
 
@@ -215,6 +236,9 @@ impl<'a> Server<'a> {
                         self.sounds_to_play
                             .push((SoundEffect::StartRace, self.state.start_position));
                         println!("Client {} is starting game!", client.id);
+                    }
+                    Ok(ClientMessage::RestartGame) => {
+                        restart_game = true;
                     }
                     Err(_) => {
                         println!("Could not decode message from {}, deleting", client.id);
@@ -283,8 +307,10 @@ impl<'a> Server<'a> {
             .retain(|client| !clients_to_delete.contains(&client.id));
 
         if self.has_had_player && self.connections.is_empty() && self.opts.debug_kill {
-            panic!("All clients disconnected and debug mode is on. Exiting")
+            panic!("All clients disconnected and debug mode is on. Exiting");
         }
+
+        restart_game
     }
 }
 

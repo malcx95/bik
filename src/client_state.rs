@@ -313,6 +313,7 @@ impl ClientState {
         game_state: &GameState,
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
+        all_finished: bool,
     ) {
         let (screen_w, screen_h) = canvas.logical_size();
         let player = game_state.get_player_by_id(my_id).unwrap();
@@ -376,6 +377,23 @@ impl ClientState {
                 color.into(),
             );
         }
+
+        if all_finished {
+            let pos = vec2(
+                screen_w as f32 * 0.5,
+                screen_h as f32 * constants::RESTART_TEXT_POS_Y,
+            );
+            rendering::draw_text_rotated_and_scaled(
+                canvas,
+                "Press Enter to restart race!",
+                pos,
+                (255, 255, 255).into(),
+                &assets.race_font,
+                (self.clock / 2.).sin() / 16.,
+                vec2(oscillation_size, oscillation_size),
+            )
+            .unwrap();
+        }
     }
 
     pub fn draw_ui(
@@ -431,11 +449,11 @@ impl ClientState {
                         .unwrap();
                     }
                 } else {
-                    self.draw_finish_screen(my_id, game_state, canvas, assets);
+                    self.draw_finish_screen(my_id, game_state, canvas, assets, false);
                 }
             }
             RaceState::Finished => {
-                self.draw_finish_screen(my_id, game_state, canvas, assets);
+                self.draw_finish_screen(my_id, game_state, canvas, assets, true);
             }
         }
 
