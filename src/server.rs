@@ -97,7 +97,7 @@ impl<'a> Server<'a> {
             connections: vec![],
             next_id: 0,
             ground: Ground::new(
-                Surface::from_file("resources/track.png").expect("failed to laod map data"),
+                Surface::from_file("resources/track.png").expect("failed to load map data"),
             )
             .expect("failed to load ground"),
             last_time: Instant::now(),
