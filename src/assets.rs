@@ -34,6 +34,7 @@ pub struct Assets<'ttf, 'r> {
     pub end_background: Texture<'r>,
 
     pub engine_sound: Chunk,
+    pub race_start_sound: Chunk,
 }
 
 impl<'ttf, 'r> Assets<'ttf, 'r> {
@@ -87,10 +88,12 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             mace_pickup: load_tex("resources/mace.png"),
 
             engine_sound: Chunk::from_file("resources/audio/engine.ogg").unwrap(),
+            race_start_sound: Chunk::from_file("resources/audio/race_start.ogg").unwrap(),
         };
 
         // Volume is on a scale from 0 to 128
         assets.engine_sound.set_volume(30);
+        assets.race_start_sound.set_volume(100);
 
         assets
     }
