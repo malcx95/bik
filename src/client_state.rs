@@ -197,6 +197,20 @@ impl ClientState {
                     player.angle + player.steering_angle,
                 )?;
             }
+
+            for object in &game_state.static_objects {
+                if let Some(radius) = object.collision_radius() {
+                    for i in 0..25 {
+                        for n in 0..2 {
+                            let direction =
+                                Vec2::from_direction(PI * 2. * (i as f32 / 25.), radius + n as f32);
+                            let pos = object.position * constants::MAP_SCALE
+                                + direction * constants::STATIC_OBJECT_SCALE;
+                            canvas.draw_point((pos - camera_position).i32_tuple());
+                        }
+                    }
+                }
+            }
         }
 
         Ok(())

@@ -106,6 +106,10 @@ impl Vec2 {
     pub fn dot(self, other: Self) -> f32 {
         self.x * other.x + self.y * other.y
     }
+
+    pub fn i32_tuple(self) -> (i32, i32) {
+        (self.x as i32, self.y as i32)
+    }
 }
 
 
