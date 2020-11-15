@@ -32,6 +32,7 @@ pub struct Assets<'ttf, 'r> {
     pub mace_pickup: Texture<'r>,
     pub nitro_pickup: Texture<'r>,
     pub nitro_sound: Chunk,
+    pub hit_sound: Chunk,
 
     pub menu_background: Texture<'r>,
     pub end_background: Texture<'r>,
@@ -93,6 +94,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             mace_pickup: load_tex("resources/mace.png"),
             nitro_pickup: load_tex("resources/nitro.png"),
             nitro_sound: Chunk::from_file("resources/audio/nitro.ogg").unwrap(),
+            hit_sound: Chunk::from_file("resources/audio/hit.ogg").unwrap(),
 
             engine_sound: Chunk::from_file("resources/audio/engine.ogg").unwrap(),
             race_start_sound: Chunk::from_file("resources/audio/race_start.ogg").unwrap(),
