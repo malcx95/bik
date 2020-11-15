@@ -44,7 +44,9 @@ pub struct Player {
     pub velocity: Vec2,
     pub steering_angle: f32,
 
+    pub nitro: f32,
     pub weapon: Option<Weapon>,
+
     pub lap: usize,
     pub checkpoint: usize,
 
@@ -75,6 +77,7 @@ impl Player {
             state: PlayerState::Upright,
             velocity: vec2(0., 0.),
             steering_angle: 0.,
+            nitro: 0.,
             weapon: None,
             lap: 0,
             checkpoint: 0,
@@ -194,6 +197,8 @@ impl Player {
         let forward_decel = -forward_dir * (forward_decel_amount * delta_time)
             .max(forward_decel_amount);
 
+        self.nitro = (self.nitro - delta_time).max(0.);
+
         match race_state {
             RaceState::Started => {
                 self.update_time(delta_time);
@@ -217,6 +222,11 @@ impl Player {
                     BIKE_SCALE *
                     throttle *
                     fuel_factor *
+                    if self.nitro > 0. && self.fuel_level > 0. {
+                        constants::NITRO_SPEED_FACTOR
+                    } else {
+                        1.
+                    } *
                     delta_time;
 
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
@@ -268,6 +278,9 @@ impl Player {
         match &powerup.kind {
             PowerupKind::Weapon(weapon) => {
                 self.weapon = Some(weapon.into());
+            }
+            PowerupKind::Nitro(amount) => {
+                self.nitro += amount;
             }
         }
     }

@@ -142,6 +142,7 @@ impl ClientState {
                 PowerupKind::Weapon(weapon) => match weapon {
                     powerup::Weapon::Mace => &assets.mace_pickup,
                 },
+                PowerupKind::Nitro(_) => &assets.nitro_pickup,
             };
 
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();

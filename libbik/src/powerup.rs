@@ -9,6 +9,7 @@ pub enum Weapon {
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum PowerupKind {
     Weapon(Weapon),
+    Nitro(f32),
 }
 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]

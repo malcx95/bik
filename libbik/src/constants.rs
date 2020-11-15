@@ -57,6 +57,8 @@ pub const MACE_SPEED: f32 = 10.;
 pub const MACE_RADIUS: f32 = 100.;
 pub const MACE_DAMAGE: i16 = 50;
 
+pub const NITRO_SPEED_FACTOR: f32 = 1.5;
+
 // Map parameters
 pub const MAP_SCALE: f32 = 2.;
 pub const CHECKPOINT_RADIUS: f32 = 300.;

@@ -30,6 +30,7 @@ pub struct Assets<'ttf, 'r> {
     pub barrel: Texture<'r>,
 
     pub mace_pickup: Texture<'r>,
+    pub nitro_pickup: Texture<'r>,
 
     pub menu_background: Texture<'r>,
     pub end_background: Texture<'r>,
@@ -89,6 +90,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             barrel: load_tex("resources/barrel.png"),
 
             mace_pickup: load_tex("resources/mace.png"),
+            nitro_pickup: load_tex("resources/nitro.png"),
 
             engine_sound: Chunk::from_file("resources/audio/engine.ogg").unwrap(),
             race_start_sound: Chunk::from_file("resources/audio/race_start.ogg").unwrap(),
