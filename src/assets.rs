@@ -9,6 +9,7 @@ use libbik::constants;
 pub struct Assets<'ttf, 'r> {
     pub font: sdl2::ttf::Font<'ttf, 'r>,
     pub race_font: sdl2::ttf::Font<'ttf, 'r>,
+    pub mono_font: sdl2::ttf::Font<'ttf, 'r>,
 
     pub bike_back: Texture<'r>,
     pub bike_front: Texture<'r>,
@@ -53,6 +54,9 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
                 .expect("Could not find font!"),
             race_font: ttf_context
                 .load_font("resources/RacingSansOne-Regular.ttf", 30)
+                .expect("Could not find font!"),
+            mono_font: ttf_context
+                .load_font("resources/JetBrainsMono-Regular.ttf", 30)
                 .expect("Could not find font!"),
             menu_background: load_tex("resources/menu_background.png"),
             end_background: load_tex("resources/endscreen.png"),

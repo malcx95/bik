@@ -218,7 +218,7 @@ impl<'a> Server<'a> {
             }
 
             for player in &mut self.state.players {
-                if player.id == client.id {
+                if player.id == client.id && !player.finished {
                     let old_pos = player.position;
                     player.update(
                         &client.input,
@@ -242,7 +242,7 @@ impl<'a> Server<'a> {
 
                         let player_movement_line = LineSegment::new(old_pos, player.position);
                         if player_movement_line.intersects(goal_line) {
-                            player.lap += 1;
+                            player.add_lap();
                             player.checkpoint = 0;
                         }
                     }

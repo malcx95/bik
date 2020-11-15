@@ -16,6 +16,7 @@ pub enum RaceState {
     NotStarted,
     Starting(f32),
     Started,
+    Finished,
 }
 
 
@@ -25,7 +26,8 @@ pub struct GameState {
     pub powerups: Vec<Powerup>,
     pub checkpoints: Vec<Checkpoint>,
     pub race_state: RaceState,
-    pub static_objects: Vec<StaticObject>
+    pub static_objects: Vec<StaticObject>,
+    pub finished_players: Vec<u64>,
 }
 
 impl GameState {
@@ -48,6 +50,7 @@ impl GameState {
             checkpoints,
             race_state: RaceState::NotStarted,
             static_objects,
+            finished_players: Vec::new(),
         }
     }
 
@@ -63,6 +66,7 @@ impl GameState {
         // update game state
         self.handle_player_collisions(delta);
         self.update_powerups(delta);
+        let all_finished = self.update_finished_players();
 
         self.race_state = match self.race_state {
             RaceState::Starting(time) => {
@@ -70,6 +74,13 @@ impl GameState {
                     RaceState::Started
                 } else {
                     RaceState::Starting(time - delta)
+                }
+            }
+            RaceState::Started => {
+                if all_finished {
+                    RaceState::Finished
+                } else {
+                    RaceState::Started
                 }
             }
             _ => self.race_state.clone()
@@ -150,11 +161,28 @@ impl GameState {
                         // Force a pit stop?
                     }
 
-					player.speed -= constants::COLLISION_SPEED_REDUCTION;
+		    player.speed -= constants::COLLISION_SPEED_REDUCTION;
                     player.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
                 }
             }
         }
+    }
+
+    /**
+     * Adds newly finished players to finished_players vec,
+     * returns whether all have finished.
+     */
+    fn update_finished_players(&mut self) -> bool {
+        let mut all_finished = true;
+        for player in &self.players {
+            if !player.finished {
+                all_finished = false;
+            } else if !self.finished_players.contains(&player.id) {
+                self.finished_players.push(player.id);
+            }
+        }
+
+        all_finished
     }
 }
 

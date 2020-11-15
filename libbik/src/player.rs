@@ -19,6 +19,7 @@ use crate::powerup::{self, Powerup, PowerupKind};
 use crate::ground::{TerrainType, Ground};
 use crate::gamestate::RaceState;
 use crate::weapon::Weapon;
+use std::vec::Vec;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum PlayerState {
@@ -52,6 +53,13 @@ pub struct Player {
     pub bike_health: i16,
 
     pub time_to_next_collision: f32,
+
+    pub total_time: f32,
+    pub current_lap: f32,
+    pub best_lap: f32,
+    pub lap_times: Vec<f32>,
+
+    pub finished: bool,
 }
 
 
@@ -75,7 +83,12 @@ impl Player {
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,
             bike_health: 100,
-            time_to_next_collision: constants::COLLISION_GRACE_PERIOD
+            time_to_next_collision: constants::COLLISION_GRACE_PERIOD,
+            total_time: 0.,
+            current_lap: 0.,
+            best_lap: f32::INFINITY,
+            lap_times: vec!(),
+            finished: false,
         }
     }
 
@@ -90,6 +103,24 @@ impl Player {
         if let TerrainType::PitStop = ground {
             self.fuel_level = (self.fuel_level + constants::FUEL_PUMP_SPEED * delta_time)
                 .min(constants::MAX_FUEL_LEVEL)
+        }
+    }
+
+    pub fn add_lap(&mut self) {
+        self.lap_times.push(self.current_lap);
+        if self.current_lap < self.best_lap {
+            self.best_lap = self.current_lap;
+        }
+        self.current_lap = 0.;
+        self.lap += 1;
+
+        self.finished = self.lap >= constants::TOTAL_NUM_LAPS;
+    }
+
+    fn update_time(&mut self, delta_time: f32) {
+        if !self.finished {
+            self.total_time += delta_time;
+            self.current_lap += delta_time;
         }
     }
 
@@ -152,6 +183,8 @@ impl Player {
 
         match race_state {
             RaceState::Started => {
+                self.update_time(delta_time);
+
                 let fuel_factor = if input.y_input.signum() == forward_component.signum() && (
                     forward_component < -MAX_WALK_SPEED ||
                     self.fuel_level <= 0. &&
@@ -167,6 +200,7 @@ impl Player {
                     input.y_input *
                     fuel_factor *
                     delta_time;
+
 
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 

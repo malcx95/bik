@@ -189,28 +189,114 @@ impl ClientState {
         Ok(())
     }
 
-    fn draw_lap_info(
+    fn draw_time(
+        &self,
         canvas: &mut Canvas<Window>,
         assets: &Assets,
+        time: f32,
         lap: usize,
-    ) -> Result<(), String> {
-        let text = assets
-            .race_font
-            .render(&format!("Lap: {}", lap))
-            .blended((255, 255, 255))
-            .expect("Could not render text");
+        pos: Vec2,
+        color: Color,
+    ) {
+        let minute = (time / 60.).floor();
+        let second = time as i32 % 60;
+        let hundreds = ((time - time.floor()) * 100.) as i32;
 
-        let texture_creator = canvas.texture_creator();
-        let text_texture = texture_creator.create_texture_from_surface(text).unwrap();
-
-        let res_offset = rendering::calculate_resolution_offset(canvas);
-        rendering::draw_texture(
+        rendering::draw_text_rotated_and_scaled(
             canvas,
-            &text_texture,
-            vec2(constants::LAP_POS.0, constants::LAP_POS.1) + res_offset,
+            &format!("Lap {}: {:02}:{:02}:{:02}", lap, minute, second, hundreds),
+            pos,
+            color,
+            &assets.mono_font,
+            0.,
+            vec2(0.5, 0.5),
+        ).unwrap();
+    }
+
+    fn draw_lap_info(
+        &self,
+        canvas: &mut Canvas<Window>,
+        assets: &Assets,
+        player: &Player,
+    ) -> Result<(), String> {
+        let (screen_w, screen_h) = canvas.logical_size();
+        let oscillation_size = constants::LAP_SCALE + (((self.clock*2.).sin() + 1.) / 2.) * 0.2;
+
+        let mut lap_text = format!("Lap {}", player.lap);
+        let mut lap_text_color = (255, 255, 255);
+        if player.lap == constants::TOTAL_NUM_LAPS - 1 {
+            lap_text = String::from("Final lap!");
+            lap_text_color = constants::FINAL_LAP_COLOR;
+        }
+
+        rendering::draw_text_rotated_and_scaled(
+            canvas,
+            &lap_text,
+            vec2(screen_w as f32 * constants::LAP_POS_X, screen_h as f32 * constants::LAP_POS_Y),
+            lap_text_color.into(),
+            &assets.race_font,
+            0.,
+            vec2(oscillation_size, oscillation_size),
+        ).unwrap();
+
+        self.draw_time(
+            canvas,
+            assets,
+            player.current_lap,
+            player.lap,
+            vec2(
+                screen_w as f32 * constants::TIME_POS_X,
+                screen_h as f32 * constants::TIME_POS_Y,
+            ),
+            (10, 10, 10).into()
+        );
+
+        for (lap, time) in player.lap_times.iter().enumerate() {
+            let mut color = constants::TIME_COLOR;
+            if player.best_lap == *time {
+                color = constants::BEST_TIME_COLOR;
+            }
+            self.draw_time(
+                canvas,
+                assets,
+                *time,
+                lap,
+                vec2(
+                    screen_w as f32 * constants::TIME_POS_X,
+                    screen_h as f32 * constants::TIME_POS_Y +
+                    (player.lap - lap) as f32 * constants::TIME_PADDING,
+                ),
+                color.into()
+            );
+        }
+
+        Ok(())
+    }
+
+    pub fn draw_finish_screen(
+        &self,
+        my_id: u64,
+        game_state: &GameState,
+        canvas: &mut Canvas<Window>,
+        assets: &mut Assets
+    ) {
+        let (screen_w, screen_h) = canvas.logical_size();
+        let pos = vec2(
+            screen_w as f32 * 0.5,
+            screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y,
+        );
+        let oscillation_size = 0.8 + ((self.clock.sin() + 1.) / 2.) * 0.2;
+
+        rendering::draw_text_rotated_and_scaled(
+            canvas,
+            "u finish",
+            pos,
+            (255, 255, 255).into(),
+            &assets.race_font,
+            (self.clock / 2.).sin() / 16.,
+            vec2(oscillation_size, oscillation_size),
         )
         .unwrap();
-        Ok(())
     }
 
     pub fn draw_ui(
@@ -220,16 +306,11 @@ impl ClientState {
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
-        if let Some(player) = game_state.get_player_by_id(my_id) {
-            Self::draw_lap_info(canvas, assets, player.lap).unwrap();
-        }
 
         let (screen_w, screen_h) = canvas.logical_size();
         let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
         let player = game_state.get_player_by_id(my_id).unwrap();
-
-        self.draw_fuel_gauge(player, canvas, screen_center, assets);
 
         match game_state.race_state {
             RaceState::NotStarted => {
@@ -238,7 +319,17 @@ impl ClientState {
             RaceState::Starting(t) => {
                 self.draw_race_countdown(canvas, assets, t);
             }
-            _ => {}
+            RaceState::Started => {
+                if !player.finished {
+                    self.draw_lap_info(canvas, assets, player).unwrap();
+                    self.draw_fuel_gauge(player, canvas, screen_center, assets);
+                } else {
+                    self.draw_finish_screen(my_id, game_state, canvas, assets);
+                }
+            }
+            RaceState::Finished => {
+                self.draw_finish_screen(my_id, game_state, canvas, assets);
+            }
         }
 
         // for player in &game_state.players {
