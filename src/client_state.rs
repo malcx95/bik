@@ -313,6 +313,32 @@ impl ClientState {
         assets: &mut Assets,
     ) {
         let (screen_w, screen_h) = canvas.logical_size();
+        let player = game_state.get_player_by_id(my_id).unwrap();
+
+        canvas.set_draw_color(constants::END_SCREEN_COLOR);
+        canvas
+            .fill_rect(Rect::new(
+                (screen_w as f32 * constants::END_SCREEN_PADDING) as i32,
+                (screen_h as f32 * constants::END_SCREEN_PADDING) as i32,
+                (screen_w as f32 * (1. - constants::END_SCREEN_PADDING*2.)) as u32,
+                (screen_h as f32 * (1. - constants::END_SCREEN_PADDING*2.)) as u32,
+            ))
+            .unwrap();
+
+        let finish_position = game_state.get_player_finish_position(my_id);
+        let mut finish_text = format!("You have finished in {}:th position!", finish_position);
+        let mut finish_color = constants::DEFAULT_FINISH_COLOR;
+        if finish_position == 1 {
+            finish_text = String::from("You have won the race!");
+            finish_color = constants::FIRST_FINISH_COLOR;
+        } else if finish_position == 2 {
+            finish_color = constants::SECOND_FINISH_COLOR;
+            finish_text = String::from("You have finished second!");
+        } else if finish_position == 3 {
+            finish_color = constants::THIRD_FINISH_COLOR;
+            finish_text = String::from("You have finished third!");
+        }
+
         let pos = vec2(
             screen_w as f32 * 0.5,
             screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y,
@@ -321,14 +347,33 @@ impl ClientState {
 
         rendering::draw_text_rotated_and_scaled(
             canvas,
-            "u finish",
+            &finish_text,
             pos,
-            (255, 255, 255).into(),
+            finish_color.into(),
             &assets.race_font,
             (self.clock / 2.).sin() / 16.,
             vec2(oscillation_size, oscillation_size),
         )
         .unwrap();
+
+        for (lap, time) in player.lap_times.iter().enumerate() {
+            let mut color = constants::TIME_COLOR;
+            if player.best_lap == *time {
+                color = constants::BEST_TIME_COLOR;
+            }
+            self.draw_time(
+                canvas,
+                assets,
+                *time,
+                lap,
+                vec2(
+                    screen_w as f32 * constants::END_TIME_POS_X,
+                    screen_h as f32 * constants::END_TIME_POS_Y
+                        + (constants::TOTAL_NUM_LAPS - lap) as f32 * constants::TIME_PADDING,
+                ),
+                color.into(),
+            );
+        }
     }
 
     pub fn draw_ui(

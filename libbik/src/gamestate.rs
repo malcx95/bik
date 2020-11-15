@@ -88,6 +88,17 @@ impl GameState {
         };
     }
 
+    pub fn get_player_finish_position(&self, player_id: u64) -> i32 {
+        let mut position = 1;
+        for id in &self.finished_players {
+            if *id == player_id {
+                return position;
+            }
+            position += 1
+        }
+        -1
+    }
+
     pub fn update_powerups(&mut self, delta: f32) {
         let mut i = 0;
         'powerups: loop {

@@ -26,7 +26,6 @@ pub const MAX_WALK_SPEED: f32 = 100.;
 pub const MIN_CRASH_VELOCITY: f32 = 200.;
 pub const ACCELERATION: f32 = 350.;
 
-// lap info parameters
 pub const LAP_POS_X: f32 = 0.5;
 pub const LAP_POS_Y: f32 = 0.1;
 pub const LAP_SCALE: f32 = 1.5;
@@ -36,6 +35,14 @@ pub const TIME_PADDING: f32 = 20.;
 pub const TIME_COLOR: (u8, u8, u8) = (10, 10, 10);
 pub const BEST_TIME_COLOR: (u8, u8, u8) = (0, 150, 0);
 pub const FINAL_LAP_COLOR: (u8, u8, u8) = (0, 150, 0);
+pub const END_SCREEN_COLOR: (u8, u8, u8, u8) = (0, 0, 0, 128);
+pub const END_SCREEN_PADDING: f32 = 0.1;
+pub const DEFAULT_FINISH_COLOR: (u8, u8, u8) = (255, 255, 255);
+pub const FIRST_FINISH_COLOR: (u8, u8, u8) = (255, 215, 0);
+pub const SECOND_FINISH_COLOR: (u8, u8, u8) = (180, 180, 180);
+pub const THIRD_FINISH_COLOR: (u8, u8, u8) = (166, 95, 25);
+pub const END_TIME_POS_X: f32 = 0.2;
+pub const END_TIME_POS_Y: f32 = 0.2;
 
 pub const INITIAL_FUEL_LEVEL: f32 = 100.;
 pub const MAX_FUEL_LEVEL: f32 = 100.;
