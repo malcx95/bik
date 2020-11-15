@@ -99,7 +99,7 @@ impl ClientState {
                 PlayerState::Upright => {
                     self.draw_player_upright(player, camera_position, canvas, assets);
                 }
-                PlayerState::Falling(_) => {
+                PlayerState::Falling(0, _) => {
                     rendering::draw_texture_rotated_and_scaled(
                         canvas,
                         &assets.falling,
@@ -108,6 +108,16 @@ impl ClientState {
                         vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
                     )?;
                 }
+                PlayerState::Falling(1, _) => {
+                    rendering::draw_texture_rotated_and_scaled(
+                        canvas,
+                        &assets.more_falling,
+                        player.position - camera_position,
+                        player.angle + PI / 2.,
+                        vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+                    )?;
+                }
+                PlayerState::Falling(_, _) => unimplemented!("missing falling state asset"),
                 PlayerState::Crashed(_) => {
                     rendering::draw_texture_rotated_and_scaled(
                         canvas,

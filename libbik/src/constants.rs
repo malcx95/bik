@@ -75,3 +75,4 @@ pub const COLLISION_SPEED_REDUCTION: f32 = 500.;
 // Crash parameters
 pub const FALLING_DURATION: f32 = 0.2;
 pub const CRASH_DURATION: f32 = 1.5;
+pub const FALLING_STAGES: usize = 2;

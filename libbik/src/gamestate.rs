@@ -193,7 +193,7 @@ impl GameState {
                     if let Some(obj_radius) = object.collision_radius() {
                         let distance = dbg!((c - object.position * constants::MAP_SCALE).norm());
                         if distance < r + obj_radius * constants::STATIC_OBJECT_SCALE {
-                            player.state = crate::player::PlayerState::Falling(0.)
+                            player.state = crate::player::PlayerState::Falling(0, 0.)
                         }
                     }
                 }

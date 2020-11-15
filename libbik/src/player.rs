@@ -25,8 +25,8 @@ use std::vec::Vec;
 pub enum PlayerState {
     /// Normal driving
     Upright,
-    /// The player is falling and has been doing so for x seconds
-    Falling(f32),
+    /// The player is in stage `x` of falling and has been doing so for y seconds
+    Falling(usize, f32),
     /// The player is fully crashed and has been so for x seconds
     Crashed(f32),
 }
@@ -146,12 +146,18 @@ impl Player {
         // Update player state
         self.state = match self.state {
             PlayerState::Upright => PlayerState::Upright,
-            PlayerState::Falling(time) => {
+            PlayerState::Falling(stage, time) => {
                 if time > constants::FALLING_DURATION {
-                    PlayerState::Crashed(0.)
+                    let new_stage = stage+1;
+                    if new_stage >= constants::FALLING_STAGES {
+                        PlayerState::Crashed(0.)
+                    }
+                    else {
+                        PlayerState::Falling(new_stage, time + delta_time)
+                    }
                 }
                 else {
-                    PlayerState::Falling(time + delta_time)
+                    PlayerState::Falling(stage, time + delta_time)
                 }
             }
             PlayerState::Crashed(time) => {
