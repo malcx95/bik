@@ -351,6 +351,17 @@ pub fn main() -> Result<(), String> {
                 &mut assets
             );
 
+            let player_fuel = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
+                player.fuel_level
+            } else {
+                0.
+            };
+            if player_fuel <= 0. {
+                engine_channel.pause()
+            } else {
+                engine_channel.resume()
+            }
+
             let player_speed = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
                 player.velocity.norm()
             } else {
