@@ -74,7 +74,7 @@ struct Server<'a> {
     last_time: Instant,
     opts: Opt,
     has_had_player: bool,
-    map_config: track::MapConfig,
+    sounds_to_play: Vec<(SoundEffect, Vec2)>,
 }
 
 impl<'a> Server<'a> {
@@ -109,7 +109,7 @@ impl<'a> Server<'a> {
             ),
             opts,
             has_had_player: false,
-            map_config,
+            sounds_to_play: vec![],
         }
     }
 
@@ -122,7 +122,8 @@ impl<'a> Server<'a> {
         }
         self.last_time = Instant::now();
 
-        self.state.update(delta_time);
+        let Self { state, sounds_to_play, .. } = self;
+        state.update(delta_time, |sound| sounds_to_play.push(sound));
 
         self.accept_new_connections();
         self.update_clients(delta_time);
@@ -163,7 +164,6 @@ impl<'a> Server<'a> {
     fn update_clients(&mut self, delta_time: f32) {
         // Send data to clients
         let mut clients_to_delete = vec![];
-        let mut sounds_to_play = vec![];
 
         macro_rules! remove_player_on_disconnect {
             ($op:expr, $id:expr) => {
@@ -208,7 +208,7 @@ impl<'a> Server<'a> {
                             .start_countdown
                             .unwrap_or(constants::RACE_COUNTDOWN_TIMER_START);
                         self.state.race_state = RaceState::Starting(countdown);
-                        sounds_to_play.push((SoundEffect::StartRace, self.state.start_position));
+                        self.sounds_to_play.push((SoundEffect::StartRace, self.state.start_position));
                         println!("Client {} is starting game!", client.id);
                     }
                     Err(_) => {
@@ -259,10 +259,10 @@ impl<'a> Server<'a> {
             remove_player_on_disconnect!(result, client.id);
         }
 
-        for (sound, pos) in &sounds_to_play {
+        for (sound, pos) in self.sounds_to_play.drain(..) {
             for client in self.connections.iter_mut() {
                 let result = send_server_message(
-                    &ServerMessage::PlaySound(*sound, *pos),
+                    &ServerMessage::PlaySound(sound, pos),
                     &mut client.message_reader.stream,
                 );
                 remove_player_on_disconnect!(result, client.id);

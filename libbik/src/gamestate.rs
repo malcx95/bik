@@ -7,10 +7,11 @@ use crate::checkpoint::Checkpoint;
 use crate::constants;
 use crate::math::{Vec2, vec2, LineSegment};
 use crate::player::{PlayerState, Player};
-use crate::powerup::Powerup;
+use crate::powerup::{Powerup, PowerupKind};
 use crate::static_object::StaticObject;
 use crate::track;
 use crate::weapon;
+use crate::messages::SoundEffect;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum RaceState {
@@ -66,7 +67,7 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, delta: f32) {
+    pub fn update(&mut self, delta: f32, add_sound: impl FnMut((SoundEffect, Vec2))) {
         self.race_state = match self.race_state {
             RaceState::Starting(time) => {
                 if time - delta < 0. {
@@ -81,7 +82,7 @@ impl GameState {
                 self.handle_object_collision();
                 self.handle_player_attacks();
 
-                self.update_powerups(delta);
+                self.update_powerups(delta, add_sound);
 
                 let all_finished = self.update_finished_players();
 
@@ -106,7 +107,7 @@ impl GameState {
         -1
     }
 
-    pub fn update_powerups(&mut self, delta: f32) {
+    pub fn update_powerups(&mut self, delta: f32, mut add_sound: impl FnMut((SoundEffect, Vec2))) {
         let mut i = 0;
         'powerups: loop {
             if i >= self.powerups.len() {
@@ -121,6 +122,11 @@ impl GameState {
                     let distance = player.position.distance_to(powerup.position);
                     if distance < constants::POWERUP_DISTANCE {
                         player.take_powerup(&powerup);
+                        match powerup.kind {
+                            PowerupKind::Nitro(_) =>
+                                add_sound((SoundEffect::Nitro, player.position)),
+                            _ => {}
+                        };
                         powerup.timeout = constants::POWERUP_TIMEOUT;
                         continue 'powerups;
                     }
