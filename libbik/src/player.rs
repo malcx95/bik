@@ -21,7 +21,7 @@ use crate::gamestate::RaceState;
 use crate::weapon::Weapon;
 use std::vec::Vec;
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PlayerState {
     /// Normal driving
     Upright,
@@ -43,7 +43,6 @@ pub struct Player {
     pub angle: f32,
     pub velocity: Vec2,
     pub steering_angle: f32,
-    pub speed: f32,
 
     pub weapon: Option<Weapon>,
     pub lap: usize,
@@ -77,7 +76,6 @@ impl Player {
             state: PlayerState::Upright,
             velocity: vec2(0., 0.),
             steering_angle: 0.,
-            speed: 0.,
             weapon: None,
             lap: 0,
             checkpoint: 0,

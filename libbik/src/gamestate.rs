@@ -5,7 +5,7 @@ use serde_derive::{Serialize, Deserialize};
 use crate::checkpoint::Checkpoint;
 use crate::constants;
 use crate::math::{Vec2, vec2, LineSegment};
-use crate::player::Player;
+use crate::player::{PlayerState, Player};
 use crate::powerup::Powerup;
 use crate::static_object::StaticObject;
 use crate::track;
@@ -162,7 +162,6 @@ impl GameState {
                         // Force a pit stop?
                     }
 
-		    player.speed -= constants::COLLISION_SPEED_REDUCTION;
                     player.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
                 }
             }
@@ -188,6 +187,9 @@ impl GameState {
 
     pub fn handle_object_collision(&mut self) {
         for player in &mut self.players {
+            if dbg!(player.state != PlayerState::Upright) || dbg!(player.velocity.norm() < constants::MIN_CRASH_VELOCITY) {
+                break;
+            }
             for (c, r) in player.collision_points() {
                 for object in &self.static_objects {
                     if let Some(obj_radius) = object.collision_radius() {

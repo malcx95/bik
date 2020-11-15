@@ -23,6 +23,7 @@ pub const STATIC_OBJECT_SCALE: f32 = 2.;
 
 pub const MAX_SPEED: f32 = 600.;
 pub const MAX_WALK_SPEED: f32 = 100.;
+pub const MIN_CRASH_VELOCITY: f32 = 200.;
 pub const ACCELERATION: f32 = 350.;
 
 // lap info parameters
