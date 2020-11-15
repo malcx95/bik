@@ -196,11 +196,10 @@ impl<'a> Server<'a> {
                             name = name.trim().unicode_truncate(20).0.to_string()
                         }
 
-                        let player = Player::new(
-                            client.id,
-                            name,
-                            self.map_config.start_position * constants::MAP_SCALE,
-                        );
+                        let start_distance = -80. * self.state.players.len() as f32;
+                        let position = self.state.start_position + vec2(0., start_distance);
+
+                        let player = Player::new(client.id, name, position);
                         self.state.add_player(player);
                     }
                     Ok(ClientMessage::StartGame) => {

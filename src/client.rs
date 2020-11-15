@@ -322,7 +322,9 @@ pub fn main() -> Result<(), String> {
                             RaceState::NotStarted => {
                                 send_client_message(&ClientMessage::StartGame, &mut reader.stream);
 
-                                if let Err(e) = sdl2::mixer::Channel::all().play(&assets.race_start_sound, 0) {
+                                if let Err(e) =
+                                    sdl2::mixer::Channel::all().play(&assets.race_start_sound, 0)
+                                {
                                     println!("SDL mixer error: {}", e);
                                 }
 

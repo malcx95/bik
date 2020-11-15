@@ -320,8 +320,8 @@ impl ClientState {
             .fill_rect(Rect::new(
                 (screen_w as f32 * constants::END_SCREEN_PADDING) as i32,
                 (screen_h as f32 * constants::END_SCREEN_PADDING) as i32,
-                (screen_w as f32 * (1. - constants::END_SCREEN_PADDING*2.)) as u32,
-                (screen_h as f32 * (1. - constants::END_SCREEN_PADDING*2.)) as u32,
+                (screen_w as f32 * (1. - constants::END_SCREEN_PADDING * 2.)) as u32,
+                (screen_h as f32 * (1. - constants::END_SCREEN_PADDING * 2.)) as u32,
             ))
             .unwrap();
 
