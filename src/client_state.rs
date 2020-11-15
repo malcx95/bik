@@ -437,8 +437,8 @@ impl ClientState {
                         canvas,
                         &player.name,
                         player.position * scale - camera_position,
-                        (255, 255, 255).into(),
-                        &assets.race_font,
+                        (255, 0, 255).into(),
+                        &assets.font,
                     )
                     .unwrap();
                 }
@@ -466,11 +466,17 @@ impl ClientState {
             screen_h as f32 * constants::PRE_RACE_PRESS_ENTER_POS_Y,
         );
 
+        let color = if num as i32 == 0 {
+            (0, 255, 0).into()
+        } else {
+            (255, 255, 0).into()
+        };
+
         rendering::draw_text_rotated_and_scaled(
             canvas,
             &format!("{}", num as i32),
             pos,
-            (255, 255, 255).into(),
+            color,
             &assets.race_font,
             0.,
             vec2(size, size),
@@ -490,7 +496,7 @@ impl ClientState {
             canvas,
             "Press Enter to start race!",
             pos,
-            (255, 255, 255).into(),
+            (255, 0, 0).into(),
             &assets.race_font,
             (self.clock / 2.).sin() / 16.,
             vec2(oscillation_size, oscillation_size),
