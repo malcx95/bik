@@ -95,10 +95,10 @@ impl Player {
     pub fn update_fuel_level(
         &mut self,
         delta_time: f32,
-        input: &ClientInput,
+        throttle: f32,
         ground: &TerrainType
     ) {
-        self.fuel_level = (self.fuel_level - input.y_input.max(0.)*constants::FUEL_CONSUMPTION*delta_time).max(0.);
+        self.fuel_level = (self.fuel_level - throttle.max(0.)*constants::FUEL_CONSUMPTION*delta_time).max(0.);
 
         if let TerrainType::PitStop = ground {
             self.fuel_level = (self.fuel_level + constants::FUEL_PUMP_SPEED * delta_time)
@@ -201,12 +201,16 @@ impl Player {
                     1.0
                 };
 
+                let (throttle, steer_command) = match self.state {
+                    PlayerState::Upright => (input.y_input, input.x_input),
+                    PlayerState::Crashed(_) | PlayerState::Falling(_, _) => (0., 0.)
+                };
+
                 let acc_magnitude = ACCELERATION *
                     BIKE_SCALE *
-                    input.y_input *
+                    throttle *
                     fuel_factor *
                     delta_time;
-
 
                 let acceleration = Vec2::from_direction(self.angle, acc_magnitude);
 
@@ -227,10 +231,9 @@ impl Player {
                 let side_vel_magnitude = side_direction.dot(uncapped_velocity);
                 self.velocity = forward_dir * fwd_vel_magnitude + side_direction * side_vel_magnitude ;
 
-
                 self.position += self.velocity * delta_time;
 
-                self.update_fuel_level(delta_time, input, &ground_type);
+                self.update_fuel_level(delta_time, throttle, &ground_type);
 
                 // Handle steering
                 let delta_angle = fwd_vel_magnitude * self.steering_angle.tan() / (WHEEL_DISTANCE * BIKE_SCALE);
@@ -239,7 +242,7 @@ impl Player {
                     + STEERING_ATTENUATION_MAX;
                 let steering_max = STEERING_MAX * steering_attenuation;
 
-                let target_angle = steering_max * input.x_input;
+                let target_angle = steering_max * steer_command;
 
                 let steer_amount = (self.steering_angle - target_angle) * STEERING_RATE
                     .max(-STEERING_RATE)

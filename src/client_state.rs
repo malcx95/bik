@@ -223,7 +223,8 @@ impl ClientState {
             &assets.mono_font,
             0.,
             vec2(0.5, 0.5),
-        ).unwrap();
+        )
+        .unwrap();
     }
 
     fn draw_lap_info(
@@ -233,7 +234,7 @@ impl ClientState {
         player: &Player,
     ) -> Result<(), String> {
         let (screen_w, screen_h) = canvas.logical_size();
-        let oscillation_size = constants::LAP_SCALE + (((self.clock*2.).sin() + 1.) / 2.) * 0.2;
+        let oscillation_size = constants::LAP_SCALE + (((self.clock * 2.).sin() + 1.) / 2.) * 0.2;
 
         let mut lap_text = format!("Lap {}", player.lap);
         let mut lap_text_color = (255, 255, 255);
@@ -245,12 +246,16 @@ impl ClientState {
         rendering::draw_text_rotated_and_scaled(
             canvas,
             &lap_text,
-            vec2(screen_w as f32 * constants::LAP_POS_X, screen_h as f32 * constants::LAP_POS_Y),
+            vec2(
+                screen_w as f32 * constants::LAP_POS_X,
+                screen_h as f32 * constants::LAP_POS_Y,
+            ),
             lap_text_color.into(),
             &assets.race_font,
             0.,
             vec2(oscillation_size, oscillation_size),
-        ).unwrap();
+        )
+        .unwrap();
 
         self.draw_time(
             canvas,
@@ -261,7 +266,7 @@ impl ClientState {
                 screen_w as f32 * constants::TIME_POS_X,
                 screen_h as f32 * constants::TIME_POS_Y,
             ),
-            (10, 10, 10).into()
+            (10, 10, 10).into(),
         );
 
         for (lap, time) in player.lap_times.iter().enumerate() {
@@ -276,10 +281,10 @@ impl ClientState {
                 lap,
                 vec2(
                     screen_w as f32 * constants::TIME_POS_X,
-                    screen_h as f32 * constants::TIME_POS_Y +
-                    (player.lap - lap) as f32 * constants::TIME_PADDING,
+                    screen_h as f32 * constants::TIME_POS_Y
+                        + (player.lap - lap) as f32 * constants::TIME_PADDING,
                 ),
-                color.into()
+                color.into(),
             );
         }
 
@@ -291,7 +296,7 @@ impl ClientState {
         my_id: u64,
         game_state: &GameState,
         canvas: &mut Canvas<Window>,
-        assets: &mut Assets
+        assets: &mut Assets,
     ) {
         let (screen_w, screen_h) = canvas.logical_size();
         let pos = vec2(
@@ -319,7 +324,6 @@ impl ClientState {
         canvas: &mut Canvas<Window>,
         assets: &mut Assets,
     ) -> Result<(), String> {
-
         let (screen_w, screen_h) = canvas.logical_size();
         let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
 
