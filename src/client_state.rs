@@ -95,6 +95,7 @@ impl ClientState {
 
         // draw some stuff
         for player in &game_state.players {
+
             match player.state {
                 PlayerState::Upright => {
                     self.draw_player_upright(player, camera_position, canvas, assets)?;
@@ -384,7 +385,7 @@ impl ClientState {
         assets: &mut Assets,
     ) -> Result<(), String> {
         let (screen_w, screen_h) = canvas.logical_size();
-        let screen_center = vec2(screen_w as f32 * 0.5, screen_h as f32 * 0.5);
+        let screen_center = vec2(screen_w as f32, screen_h as f32) * 0.5;
 
         let player = game_state.get_player_by_id(my_id).unwrap();
 
@@ -419,17 +420,23 @@ impl ClientState {
             }
         }
 
-        // for player in &game_state.players {
-        //     if player.id != my_id {
-        //         rendering::draw_text(
-        //             canvas,
-        //             &player.name,
-        //             (player.position - self.camera_position(canvas, game_state)) / constants::PIXEL_SCALE as f32,
-        //             (255, 255, 255).into(),
-        //             &assets.race_font
-        //         ).unwrap();
-        //     }
-        // }
+        {
+            let scale = 0.58;
+            let my_player = game_state.get_player_by_id(self.my_id).unwrap();
+            let camera_position = my_player.position * scale - screen_center;
+
+            for player in &game_state.players {
+                if player.id != self.my_id {
+                    rendering::draw_text(
+                        canvas,
+                        &player.name,
+                        player.position * scale - camera_position,
+                        (255, 255, 255).into(),
+                        &assets.race_font
+                        ).unwrap();
+                }
+            }
+        }
 
         Ok(())
     }
