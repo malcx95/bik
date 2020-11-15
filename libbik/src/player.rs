@@ -20,6 +20,7 @@ use crate::ground::{TerrainType, Ground};
 use crate::gamestate::RaceState;
 use crate::weapon::Weapon;
 use std::vec::Vec;
+use crate::messages::SoundEffect;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PlayerState {
@@ -308,7 +309,7 @@ impl Player {
         }
     }
 
-    pub fn crash(&mut self) -> bool {
+    pub fn crash(&mut self, mut add_sound: impl FnMut((SoundEffect, Vec2))) -> bool {
         if self.time_to_next_collision > 0. {
             return false;
         }
@@ -316,6 +317,7 @@ impl Player {
 
         self.time_to_next_collision = constants::COLLISION_GRACE_PERIOD;
         self.state = PlayerState::Falling(0, 0.);
+        add_sound((SoundEffect::Crash, self.position));
 
         true
     }

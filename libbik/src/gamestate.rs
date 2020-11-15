@@ -67,7 +67,7 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, delta: f32, add_sound: impl FnMut((SoundEffect, Vec2))) {
+    pub fn update(&mut self, delta: f32, mut add_sound: impl FnMut((SoundEffect, Vec2))) {
         self.race_state = match self.race_state {
             RaceState::Starting(time) => {
                 if time - delta < 0. {
@@ -78,11 +78,11 @@ impl GameState {
             }
             RaceState::Started => {
                 // update game state
-                self.handle_player_collisions();
-                self.handle_object_collision();
-                self.handle_player_attacks();
+                self.handle_player_collisions(&mut add_sound);
+                self.handle_object_collision(&mut add_sound);
+                self.handle_player_attacks(&mut add_sound);
 
-                self.update_powerups(delta, add_sound);
+                self.update_powerups(delta, &mut add_sound);
 
                 let all_finished = self.update_finished_players();
 
@@ -151,7 +151,7 @@ impl GameState {
         None
     }
 
-    fn handle_player_attacks(&mut self) {
+    fn handle_player_attacks(&mut self, mut add_sound: impl FnMut((SoundEffect, Vec2))) {
         let mace_positions: Vec<Vec2> = self
             .players
             .iter()
@@ -170,14 +170,14 @@ impl GameState {
             for target in &mut self.players {
                 for (c1, r1) in target.collision_points() {
                     if c1.distance_to(mace) < r1 {
-                        target.crash();
+                        target.crash(&mut add_sound);
                     }
                 }
             }
         }
     }
 
-    pub fn handle_player_collisions(&mut self) {
+    pub fn handle_player_collisions(&mut self, mut add_sound: impl FnMut((SoundEffect, Vec2))) {
         let mut collided_players = HashSet::new();
 
         if !self.players.is_empty() {
@@ -198,7 +198,7 @@ impl GameState {
 
         for player in &mut self.players {
             if collided_players.contains(&player.id) {
-                player.crash();
+                player.crash(&mut add_sound);
             }
         }
     }
@@ -220,7 +220,7 @@ impl GameState {
         all_finished
     }
 
-    pub fn handle_object_collision(&mut self) {
+    pub fn handle_object_collision(&mut self, mut add_sound: impl FnMut((SoundEffect, Vec2))) {
         for player in &mut self.players {
             if player.state != PlayerState::Upright || player.velocity.norm() < constants::MIN_CRASH_VELOCITY {
                 break;
@@ -230,7 +230,7 @@ impl GameState {
                     if let Some(obj_radius) = object.collision_radius() {
                         let distance = (c - object.position * constants::MAP_SCALE).norm();
                         if distance < r + obj_radius * constants::STATIC_OBJECT_SCALE {
-                            player.state = crate::player::PlayerState::Falling(0, 0.)
+                            player.crash(&mut add_sound);
                         }
                     }
                 }

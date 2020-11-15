@@ -88,17 +88,11 @@ impl MainState {
             match bincode::deserialize(&message).unwrap() {
                 ServerMessage::AssignId(_) => panic!("Got new ID after intialisation"),
                 ServerMessage::GameState(state) => self.game_state = state,
-                ServerMessage::PlaySound(sound, _pos) => match sound {
-                    SoundEffect::StartRace => {
-                        play_sound(&assets.race_start_sound);
-                    }
-                    SoundEffect::Nitro => {
-                        sdl2::mixer::Channel::all()
-                            .play(&assets.nitro_sound, 0)
-                            .unwrap();
-                    }
-                    SoundEffect::Crash => {}
-                },
+                ServerMessage::PlaySound(sound, _pos) => play_sound(match sound {
+                    SoundEffect::StartRace => &assets.race_start_sound,
+                    SoundEffect::Nitro => &assets.nitro_sound,
+                    SoundEffect::Crash => &assets.hit_sound,
+                }),
             }
         }
 

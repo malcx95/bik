@@ -31,5 +31,5 @@ Extract them both according to the same instructions as noted in the SDL2 tutori
 Bik should now compile and you should be able to run the game under Windows.
 
 ## Attribution
-Flame animation by serenajeanne used under CC-BY-SA 3.0
-[opengameart](https://opengameart.org/content/small-flame-pack-0)
+Impact sound by RoganMcDougald used under CC-BY 3.0
+[freesound.org](https://freesound.org/people/RoganMcDougald/sounds/260435/)
