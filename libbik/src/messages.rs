@@ -75,7 +75,7 @@ impl Iterator for MessageIterator<'_> {
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy)]
-pub enum SoundEffect { Powerup, Explosion, Gun, LaserCharge, LaserFire }
+pub enum SoundEffect { StartRace }
 
 #[derive(Serialize, Deserialize)]
 pub enum ServerMessage {

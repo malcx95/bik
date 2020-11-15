@@ -163,7 +163,7 @@ impl<'a> Server<'a> {
     fn update_clients(&mut self, delta_time: f32) {
         // Send data to clients
         let mut clients_to_delete = vec![];
-        let sounds_to_play = vec![];
+        let mut sounds_to_play = vec![];
 
         macro_rules! remove_player_on_disconnect {
             ($op:expr, $id:expr) => {
@@ -208,6 +208,7 @@ impl<'a> Server<'a> {
                             .start_countdown
                             .unwrap_or(constants::RACE_COUNTDOWN_TIMER_START);
                         self.state.race_state = RaceState::Starting(countdown);
+                        sounds_to_play.push((SoundEffect::StartRace, self.state.start_position));
                         println!("Client {} is starting game!", client.id);
                     }
                     Err(_) => {

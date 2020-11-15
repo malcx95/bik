@@ -73,6 +73,7 @@ impl MainState {
         &mut self,
         server_reader: &mut MessageReader,
         keyboard_state: &sdl2::keyboard::KeyboardState,
+        assets: &mut Assets,
     ) -> StateResult {
         let elapsed = self.last_time.elapsed();
         self.last_time = Instant::now();
@@ -88,11 +89,9 @@ impl MainState {
                 ServerMessage::AssignId(_) => panic!("Got new ID after intialisation"),
                 ServerMessage::GameState(state) => self.game_state = state,
                 ServerMessage::PlaySound(sound, _pos) => match sound {
-                    SoundEffect::Powerup => {}
-                    SoundEffect::Gun => {}
-                    SoundEffect::Explosion => {}
-                    SoundEffect::LaserCharge => {}
-                    SoundEffect::LaserFire => {}
+                    SoundEffect::StartRace => {
+                        play_sound(&assets.race_start_sound);
+                    }
                 },
             }
         }
@@ -160,6 +159,12 @@ impl MainState {
                 panic!("Never recieved game state from server!");
             }
         }
+    }
+}
+
+fn play_sound(chunk: &sdl2::mixer::Chunk) {
+    if let Err(e) = sdl2::mixer::Channel::all().play(chunk, 0) {
+        println!("SDL mixer error: {}", e);
     }
 }
 
@@ -327,12 +332,6 @@ pub fn main() -> Result<(), String> {
                             RaceState::NotStarted => {
                                 send_client_message(&ClientMessage::StartGame, &mut reader.stream);
 
-                                if let Err(e) =
-                                    sdl2::mixer::Channel::all().play(&assets.race_start_sound, 0)
-                                {
-                                    println!("SDL mixer error: {}", e);
-                                }
-
                                 println!("Starting game!")
                             }
                             _ => {}
@@ -346,7 +345,11 @@ pub fn main() -> Result<(), String> {
 
             canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
 
-            let state_result = main_state.update(&mut reader, &event_pump.keyboard_state());
+            let state_result = main_state.update(
+                &mut reader,
+                &event_pump.keyboard_state(),
+                &mut assets
+            );
 
             let player_speed = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
                 player.velocity.norm()
