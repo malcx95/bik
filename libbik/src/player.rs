@@ -44,6 +44,7 @@ pub struct Player {
     pub velocity: Vec2,
     pub steering_angle: f32,
 
+    pub carried_powerup: Option<PowerupKind>,
     pub nitro: f32,
     pub weapon: Option<Weapon>,
 
@@ -88,6 +89,7 @@ impl Player {
             best_lap: f32::INFINITY,
             lap_times: vec!(),
             finished: false,
+            carried_powerup: None,
         }
     }
 
@@ -144,6 +146,10 @@ impl Player {
                     if weapon.expired() {
                         self.weapon = None;
                     }
+                }
+
+                if input.activate_powerup {
+                    self.activate_powerup();
                 }
 
                 self.update_collision_timer(delta_time);
@@ -275,14 +281,20 @@ impl Player {
     }
 
     pub fn take_powerup(&mut self, powerup: &Powerup) {
-        match &powerup.kind {
-            PowerupKind::Weapon(weapon) => {
+        self.carried_powerup = Some(powerup.kind.clone());
+    }
+
+    pub fn activate_powerup(&mut self) {
+        match &self.carried_powerup {
+            Some(PowerupKind::Weapon(weapon)) => {
                 self.weapon = Some(weapon.into());
             }
-            PowerupKind::Nitro(amount) => {
+            Some(PowerupKind::Nitro(amount)) => {
                 self.nitro += amount;
             }
+            None => {}
         }
+        self.carried_powerup = None;
     }
 
     pub fn get_fuel_percentage(&self) -> f32 {

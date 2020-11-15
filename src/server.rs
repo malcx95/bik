@@ -247,7 +247,9 @@ impl<'a> Server<'a> {
                             start_point + vec2(0., goal_width),
                         );
 
-                        let player_movement_line = LineSegment::new(old_pos, player.position);
+                        let pos_diff = old_pos - player.position;
+                        let behind_old_pos = player.position + pos_diff * 2.;
+                        let player_movement_line = LineSegment::new(behind_old_pos, player.position);
                         if player_movement_line.intersects(goal_line) {
                             player.add_lap();
                             player.checkpoint = 0;
