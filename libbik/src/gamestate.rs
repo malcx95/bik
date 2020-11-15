@@ -59,9 +59,9 @@ impl GameState {
      *  vec with positions where lasers are fired
      *  )
      */
-    pub fn update(&mut self, delta: f32) -> Vec<u64> {
+    pub fn update(&mut self, delta: f32) {
         // update game state
-        let hit_players = self.handle_player_collisions(delta);
+        self.handle_player_collisions(delta);
         self.update_powerups(delta);
 
         self.race_state = match self.race_state {
@@ -74,8 +74,6 @@ impl GameState {
             }
             _ => self.race_state.clone()
         };
-
-        hit_players
     }
 
     pub fn update_powerups(&mut self, delta: f32) {
@@ -117,7 +115,7 @@ impl GameState {
         None
     }
 
-    pub fn handle_player_collisions(&mut self, delta: f32) -> Vec<u64> {
+    pub fn handle_player_collisions(&mut self, delta: f32) {
         let mut collided_players: Vec<(u64, String)> = vec!();
 
         for p1 in &self.players {
@@ -155,7 +153,6 @@ impl GameState {
                 }
             }
         }
-        damaged_players
     }
 }
 
