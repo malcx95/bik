@@ -90,14 +90,14 @@ impl ClientState {
                 object.position * constants::MAP_SCALE - camera_position,
                 0.,
                 vec2(2., 2.),
-            );
+            )?;
         }
 
         // draw some stuff
         for player in &game_state.players {
             match player.state {
                 PlayerState::Upright => {
-                    self.draw_player_upright(player, camera_position, canvas, assets);
+                    self.draw_player_upright(player, camera_position, canvas, assets)?;
                 }
                 PlayerState::Falling(0, _) => {
                     rendering::draw_texture_rotated_and_scaled(
@@ -169,7 +169,7 @@ impl ClientState {
                     constants::STATIC_OBJECT_SCALE,
                     constants::STATIC_OBJECT_SCALE,
                 ),
-            );
+            )?;
         }
 
         if self.debug_drawing {
@@ -206,7 +206,7 @@ impl ClientState {
                                 Vec2::from_direction(PI * 2. * (i as f32 / 25.), radius + n as f32);
                             let pos = object.position * constants::MAP_SCALE
                                 + direction * constants::STATIC_OBJECT_SCALE;
-                            canvas.draw_point((pos - camera_position).i32_tuple());
+                            canvas.draw_point((pos - camera_position).i32_tuple())?;
                         }
                     }
                 }

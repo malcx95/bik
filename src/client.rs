@@ -75,7 +75,6 @@ impl MainState {
 
     fn update(
         &mut self,
-        assets: &Assets,
         server_reader: &mut MessageReader,
         keyboard_state: &sdl2::keyboard::KeyboardState,
     ) -> StateResult {
@@ -340,8 +339,7 @@ pub fn main() -> Result<(), String> {
 
             canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
 
-            let state_result =
-                main_state.update(&assets, &mut reader, &event_pump.keyboard_state());
+            let state_result = main_state.update(&mut reader, &event_pump.keyboard_state());
 
             canvas
                 .with_texture_canvas(&mut lowres_target, |mut canvas| {
