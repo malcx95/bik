@@ -187,7 +187,7 @@ impl GameState {
 
     pub fn handle_object_collision(&mut self) {
         for player in &mut self.players {
-            if dbg!(player.state != PlayerState::Upright) || dbg!(player.velocity.norm() < constants::MIN_CRASH_VELOCITY) {
+            if player.state != PlayerState::Upright || player.velocity.norm() < constants::MIN_CRASH_VELOCITY {
                 break;
             }
             for (c, r) in player.collision_points() {
