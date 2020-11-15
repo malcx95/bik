@@ -111,6 +111,10 @@ impl Player {
         self.lap += 1;
 
         self.finished = self.lap >= constants::TOTAL_NUM_LAPS;
+
+        if self.finished {
+            self.velocity = vec2(0., 0.);
+        }
     }
 
     fn update_time(&mut self, delta_time: f32) {

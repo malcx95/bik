@@ -95,7 +95,7 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
         };
 
         // Volume is on a scale from 0 to 128
-        assets.engine_sound.set_volume(30);
+        assets.engine_sound.set_volume(10);
         assets.race_start_sound.set_volume(100);
 
         assets
