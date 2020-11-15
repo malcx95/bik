@@ -143,12 +143,7 @@ impl ClientState {
                 continue;
             }
 
-            let texture = match &powerup.kind {
-                PowerupKind::Weapon(weapon) => match weapon {
-                    powerup::Weapon::Mace => &assets.mace_pickup,
-                },
-                PowerupKind::Nitro(_) => &assets.nitro_pickup,
-            };
+            let texture = powerup_asset(&powerup.kind, assets);
 
             rendering::draw_texture(canvas, texture, powerup.position - camera_position).unwrap();
         }
@@ -417,6 +412,24 @@ impl ClientState {
 
                     self.draw_lap_info(canvas, assets, player).unwrap();
                     self.draw_fuel_gauge(player, canvas, screen_center, assets);
+
+                    if let Some(kind) = &player.carried_powerup {
+                        let asset = powerup_asset(&kind, &assets);
+                        rendering::draw_texture_centered(
+                            canvas,
+                            asset,
+                            screen_center + vec2(0., screen_h as f32 / 4.),
+                        )
+                        .unwrap();
+                        rendering::draw_text(
+                            canvas,
+                            "Press E to activate",
+                            screen_center + vec2(0., screen_h as f32 / 4. + 20.),
+                            (255, 0, 255).into(),
+                            &assets.font,
+                        )
+                        .unwrap();
+                    }
                 } else {
                     self.draw_finish_screen(my_id, game_state, canvas, assets);
                 }
@@ -639,5 +652,17 @@ pub fn static_object_asset<'ttf, 'r, 'a>(
         StaticObjectKind::Tire => &assets.tires[object.variant],
         StaticObjectKind::Barrel => &assets.barrel,
         StaticObjectKind::FinishLine => &assets.finish_line,
+    }
+}
+
+pub fn powerup_asset<'ttf, 'r, 'a>(
+    powerup: &PowerupKind,
+    assets: &'a Assets<'ttf, 'r>,
+) -> &'a sdl2::render::Texture<'r> {
+    match powerup {
+        PowerupKind::Weapon(weapon) => match weapon {
+            powerup::Weapon::Mace => &assets.mace_pickup,
+        },
+        PowerupKind::Nitro(_) => &assets.nitro_pickup,
     }
 }

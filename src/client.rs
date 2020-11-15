@@ -117,6 +117,12 @@ impl MainState {
             input.x_input += 1.0;
         }
 
+        if keyboard_state.is_scancode_pressed(Scancode::E) {
+            input.activate_powerup = true;
+        } else {
+            input.activate_powerup = false;
+        }
+
         self.client_state
             .update(elapsed.as_secs_f32(), &self.game_state, self.my_id);
 
