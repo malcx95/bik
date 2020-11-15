@@ -12,6 +12,8 @@ pub struct Assets<'ttf, 'r> {
 
     pub bike_back: Texture<'r>,
     pub bike_front: Texture<'r>,
+    pub falling: Texture<'r>,
+    pub crashed: Texture<'r>,
     pub driver: Texture<'r>,
     pub track: Texture<'r>,
     pub track_overlay: Texture<'r>,
@@ -57,6 +59,9 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
 
             bike_back: load_tex("resources/back.png"),
             bike_front: load_tex("resources/front.png"),
+            falling: load_tex("resources/falling.png"),
+            crashed: load_tex("resources/crashed.png"),
+
             driver: load_tex("resources/driver.png"),
             track: load_tex("resources/track.png"),
             track_overlay: load_tex("resources/track_overlay.png"),

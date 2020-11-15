@@ -20,11 +20,23 @@ use crate::ground::{TerrainType, Ground};
 use crate::gamestate::RaceState;
 use crate::weapon::Weapon;
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub enum PlayerState {
+    /// Normal driving
+    Upright,
+    /// The player is falling and has been doing so for x seconds
+    Falling(f32),
+    /// The player is fully crashed and has been so for x seconds
+    Crashed(f32),
+}
+
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Player {
     pub id: u64,
     pub name: String,
+
+    pub state: PlayerState,
 
     pub position: Vec2,
     pub angle: f32,
@@ -39,7 +51,7 @@ pub struct Player {
     pub fuel_level: f32,
     pub bike_health: i16,
 
-    pub time_to_next_collision: f32
+    pub time_to_next_collision: f32,
 }
 
 
@@ -54,6 +66,7 @@ impl Player {
             name,
             position,
             angle: 0.,
+            state: PlayerState::Upright,
             velocity: vec2(0., 0.),
             steering_angle: 0.,
             speed: 0.,
@@ -87,6 +100,8 @@ impl Player {
         delta_time: f32,
         race_state: &RaceState
     ) {
+        self.tick_state(delta_time);
+
         self.update_motion(input, ground, delta_time, race_state);
         if let Some(weapon) = &mut self.weapon {
             weapon.update(delta_time);
@@ -94,6 +109,29 @@ impl Player {
                 self.weapon = None;
             }
         }
+    }
+
+    pub fn tick_state(&mut self, delta_time: f32) {
+        // Update player state
+        self.state = match self.state {
+            PlayerState::Upright => PlayerState::Upright,
+            PlayerState::Falling(time) => {
+                if time > constants::FALLING_DURATION {
+                    PlayerState::Crashed(0.)
+                }
+                else {
+                    PlayerState::Falling(time + delta_time)
+                }
+            }
+            PlayerState::Crashed(time) => {
+                if time > constants::CRASH_DURATION {
+                    PlayerState::Upright
+                }
+                else {
+                    PlayerState::Crashed(time + delta_time)
+                }
+            }
+        };
     }
 
     fn update_motion(

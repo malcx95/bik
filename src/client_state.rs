@@ -9,7 +9,7 @@ use libbik::constants;
 use libbik::gamestate::GameState;
 use libbik::gamestate::RaceState;
 use libbik::math::{self, vec2, Vec2};
-use libbik::player::Player;
+use libbik::player::{Player, PlayerState};
 use libbik::static_object::{StaticObject, StaticObjectKind};
 
 use crate::assets::Assets;
@@ -95,35 +95,29 @@ impl ClientState {
 
         // draw some stuff
         for player in &game_state.players {
-            rendering::draw_texture_rotated_and_scaled(
-                canvas,
-                &assets.bike_back,
-                player.position - camera_position,
-                player.angle + PI / 2.,
-                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
-            )
-            .unwrap();
-
-            let front_offset = Vec2::from_direction(player.angle, constants::WHEEL_DISTANCE)
-                * constants::BIKE_SCALE;
-
-            rendering::draw_texture_rotated_and_scaled(
-                canvas,
-                &assets.bike_front,
-                player.position + front_offset - camera_position,
-                player.angle + PI / 2. + player.steering_angle,
-                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
-            )
-            .unwrap();
-
-            rendering::draw_texture_rotated_and_scaled(
-                canvas,
-                &assets.driver,
-                player.position - camera_position,
-                player.angle + PI / 2.,
-                vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
-            )
-            .unwrap();
+            match player.state {
+                PlayerState::Upright => {
+                    self.draw_player_upright(player, camera_position, canvas, assets);
+                }
+                PlayerState::Falling(_) => {
+                    rendering::draw_texture_rotated_and_scaled(
+                        canvas,
+                        &assets.falling,
+                        player.position - camera_position,
+                        player.angle + PI / 2.,
+                        vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+                    )?;
+                }
+                PlayerState::Crashed(_) => {
+                    rendering::draw_texture_rotated_and_scaled(
+                        canvas,
+                        &assets.crashed,
+                        player.position - camera_position,
+                        player.angle + PI / 2.,
+                        vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+                    )?;
+                }
+            }
 
             self.draw_weapon(player, canvas, camera_position, assets);
         }
@@ -396,6 +390,43 @@ impl ClientState {
         }
         b = 0.;
         (r as u8, g as u8, b as u8)
+    }
+
+    fn draw_player_upright(
+        &self,
+        player: &Player,
+        camera_position: Vec2,
+        canvas: &mut Canvas<Window>,
+        assets: &mut Assets,
+    ) -> Result<(), String> {
+        rendering::draw_texture_rotated_and_scaled(
+            canvas,
+            &assets.bike_back,
+            player.position - camera_position,
+            player.angle + PI / 2.,
+            vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+        )?;
+
+        let front_offset =
+            Vec2::from_direction(player.angle, constants::WHEEL_DISTANCE) * constants::BIKE_SCALE;
+
+        rendering::draw_texture_rotated_and_scaled(
+            canvas,
+            &assets.bike_front,
+            player.position + front_offset - camera_position,
+            player.angle + PI / 2. + player.steering_angle,
+            vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+        )?;
+
+        rendering::draw_texture_rotated_and_scaled(
+            canvas,
+            &assets.driver,
+            player.position - camera_position,
+            player.angle + PI / 2.,
+            vec2(constants::BIKE_SCALE, constants::BIKE_SCALE),
+        )?;
+
+        Ok(())
     }
 }
 

@@ -61,3 +61,8 @@ pub const BIKE_SIZE: u32 = 40;
 pub const COLLISION_GRACE_PERIOD: f32 = 1.;
 pub const COLLISION_DAMAGE: i16 = 10;
 pub const COLLISION_SPEED_REDUCTION: f32 = 500.;
+
+
+// Crash parameters
+pub const FALLING_DURATION: f32 = 0.3;
+pub const CRASH_DURATION: f32 = 1.5;
