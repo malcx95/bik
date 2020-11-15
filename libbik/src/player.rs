@@ -247,4 +247,18 @@ impl Player {
     pub fn is_bike_broken(&mut self) -> bool{
         self.bike_health == 0
     }
+
+    /// Returns a list of points where collisions should be checked. Anything inside
+    /// the specified radius counts as a collision
+    pub fn collision_points(&self) -> Vec<(Vec2, f32)> {
+        let direction = Vec2::from_direction(self.angle, 1.);
+        [
+            (direction * 20., 7.),
+            (vec2(0., 0.), 10.),
+            (-direction * 20., 7.),
+        ]
+            .iter()
+            .map(|(point, distance)| (self.position + point.clone() * 2., distance * 2.))
+            .collect::<Vec<_>>()
+    }
 }

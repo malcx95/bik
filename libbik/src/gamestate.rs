@@ -119,13 +119,16 @@ impl GameState {
 
     pub fn handle_player_collisions(&mut self, delta: f32) -> Vec<u64> {
         let mut collided_players: Vec<(u64, String)> = vec!();
-        let hit_radius = constants::BIKE_SIZE * 2;
 
         for p1 in &self.players {
             for p2 in &self.players {
-                let distance = (p1.position - p2.position).norm();
-                if p1.id != p2.id && distance < hit_radius as f32 {
-                    collided_players.push((p1.id, p2.name.clone()));
+                for (c1, r1) in p1.collision_points() {
+                    for (c2, r2) in p2.collision_points() {
+                        let distance = (c1 - c2).norm();
+                        if p1.id != p2.id && distance < r1+r2 as f32 {
+                            collided_players.push((p1.id, p2.name.clone()));
+                        }
+                    }
                 }
             }
         }
