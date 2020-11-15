@@ -95,6 +95,12 @@ impl ClientState {
 
         // draw some stuff
         for player in &game_state.players {
+            if player.time_to_next_collision > 0.
+                && (self.clock * 2.).fract() < 0.25
+                && game_state.race_state == RaceState::Started
+            {
+                break;
+            }
             match player.state {
                 PlayerState::Upright => {
                     self.draw_player_upright(player, camera_position, canvas, assets)?;
@@ -519,15 +525,17 @@ impl ClientState {
             (constants::GAUGE_HEIGHT * (screen_h as f32) * player.get_fuel_percentage()) as i32;
         let max_fuel_bar_height = (constants::GAUGE_HEIGHT * (screen_h as f32)) as i32;
 
-        canvas.set_draw_color(self.get_fuel_bar_color(player));
-        canvas
-            .fill_rect(Rect::new(
-                gauge_pos_x,
-                gauge_pos_y + (max_fuel_bar_height - fuel_bar_height),
-                (constants::GAUGE_WIDTH * (screen_w as f32)) as u32,
-                fuel_bar_height as u32,
-            ))
-            .unwrap();
+        if !((self.clock * 2.).fract() < 0.5 && player.get_fuel_percentage() < 0.4) {
+            canvas.set_draw_color(self.get_fuel_bar_color(player));
+            canvas
+                .fill_rect(Rect::new(
+                    gauge_pos_x,
+                    gauge_pos_y + (max_fuel_bar_height - fuel_bar_height),
+                    (constants::GAUGE_WIDTH * (screen_w as f32)) as u32,
+                    fuel_bar_height as u32,
+                ))
+                .unwrap();
+        }
 
         canvas.set_draw_color(constants::GAUGE_BACKGROUND);
         canvas

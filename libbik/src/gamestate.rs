@@ -13,7 +13,7 @@ use crate::track;
 use crate::weapon;
 use crate::messages::SoundEffect;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub enum RaceState {
     NotStarted,
     Starting(f32),
