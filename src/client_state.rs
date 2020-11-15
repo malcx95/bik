@@ -95,7 +95,6 @@ impl ClientState {
 
         // draw some stuff
         for player in &game_state.players {
-
             match player.state {
                 PlayerState::Upright => {
                     self.draw_player_upright(player, camera_position, canvas, assets)?;
@@ -433,8 +432,9 @@ impl ClientState {
                         &player.name,
                         player.position * scale - camera_position,
                         (255, 255, 255).into(),
-                        &assets.race_font
-                        ).unwrap();
+                        &assets.race_font,
+                    )
+                    .unwrap();
                 }
             }
         }

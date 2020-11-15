@@ -345,11 +345,8 @@ pub fn main() -> Result<(), String> {
 
             canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
 
-            let state_result = main_state.update(
-                &mut reader,
-                &event_pump.keyboard_state(),
-                &mut assets
-            );
+            let state_result =
+                main_state.update(&mut reader, &event_pump.keyboard_state(), &mut assets);
 
             let player_fuel = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
                 player.fuel_level
@@ -370,11 +367,12 @@ pub fn main() -> Result<(), String> {
             pitch_effect.speed_factor = 1. + player_speed / constants::MAX_SPEED * 7.;
 
             if engine_on {
-                let player_finished = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
-                    player.finished
-                } else {
-                    true
-                };
+                let player_finished =
+                    if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
+                        player.finished
+                    } else {
+                        true
+                    };
 
                 if player_finished {
                     engine_channel.fade_out(500);
