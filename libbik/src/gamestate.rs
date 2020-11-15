@@ -26,6 +26,7 @@ pub struct GameState {
     pub players: Vec<Player>,
     pub powerups: Vec<Powerup>,
     pub checkpoints: Vec<Checkpoint>,
+    pub start_position: Vec2,
     pub race_state: RaceState,
     pub static_objects: Vec<StaticObject>,
     pub finished_players: Vec<u64>,
@@ -34,6 +35,7 @@ pub struct GameState {
 impl GameState {
     pub fn new(
         mut powerups: Vec<Powerup>,
+        start_point: Vec2,
         checkpoint_positions: &Vec<Vec2>,
         static_objects: Vec<StaticObject>
     ) -> GameState {
@@ -49,6 +51,7 @@ impl GameState {
             players: Vec::new(),
             powerups,
             checkpoints,
+            start_position: start_point,
             race_state: RaceState::NotStarted,
             static_objects,
             finished_players: Vec::new(),
@@ -228,10 +231,21 @@ impl GameState {
             }
         }
     }
+
+    pub fn vector_to_checkpoint(&self, player: &Player) -> Vec2 {
+        let checkpoint_pos = if player.checkpoint < self.checkpoints.len() {
+            self.checkpoints[player.checkpoint].position
+        }
+        else {
+            self.start_position
+        };
+
+        checkpoint_pos - player.position
+    }
 }
 
 impl Default for GameState {
     fn default() -> Self {
-        Self::new(Vec::new(), &Vec::new(), Vec::new())
+        Self::new(Vec::new(), vec2(0., 0.), &Vec::new(), Vec::new())
     }
 }

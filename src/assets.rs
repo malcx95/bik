@@ -20,6 +20,7 @@ pub struct Assets<'ttf, 'r> {
     pub track: Texture<'r>,
     pub track_overlay: Texture<'r>,
     pub track_overlay_overhead: Texture<'r>,
+    pub arrow: Texture<'r>,
 
     pub red_outline: Texture<'r>,
     pub finish_line: Texture<'r>,
@@ -68,6 +69,8 @@ impl<'ttf, 'r> Assets<'ttf, 'r> {
             falling: load_tex("resources/falling.png"),
             more_falling: load_tex("resources/more_falling.png"),
             crashed: load_tex("resources/crashed.png"),
+
+            arrow: load_tex("resources/arrow.png"),
 
             driver: load_tex("resources/driver.png"),
             track: load_tex("resources/track.png"),

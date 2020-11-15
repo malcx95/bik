@@ -397,6 +397,17 @@ impl ClientState {
             }
             RaceState::Started => {
                 if !player.finished {
+                    let checkpoint_vec = game_state.vector_to_checkpoint(&player);
+
+                    let arrow_vec = screen_center + checkpoint_vec.normalize() * 200.;
+
+                    rendering::draw_texture_rotated(
+                        canvas,
+                        &assets.arrow,
+                        arrow_vec,
+                        checkpoint_vec.angle(),
+                    );
+
                     self.draw_lap_info(canvas, assets, player).unwrap();
                     self.draw_fuel_gauge(player, canvas, screen_center, assets);
                 } else {

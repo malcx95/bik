@@ -103,6 +103,7 @@ impl<'a> Server<'a> {
             last_time: Instant::now(),
             state: gamestate::GameState::new(
                 map_config.powerups.clone(),
+                map_config.start_position * constants::MAP_SCALE,
                 &map_config.checkpoints,
                 map_config.static_objects.clone(),
             ),
@@ -233,7 +234,8 @@ impl<'a> Server<'a> {
                             player.checkpoint += 1;
                         }
                     } else {
-                        let start_point = self.map_config.start_position * constants::MAP_SCALE;
+                        // let start_point = self.map_config.start_position * constants::MAP_SCALE;
+                        let start_point = self.state.start_position;
                         let goal_width = constants::CHECKPOINT_RADIUS * constants::MAP_SCALE;
                         let goal_line = LineSegment::new(
                             start_point + vec2(0., -goal_width),
