@@ -2,6 +2,7 @@
 mod assets;
 mod client_state;
 mod menu;
+mod pitch_effect;
 mod rendering;
 
 use std::io::prelude::*;
@@ -23,6 +24,7 @@ use libbik::gamestate::RaceState;
 use libbik::math::{vec2, Vec2};
 use libbik::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use menu::MenuState;
+use pitch_effect::{PitchEffect, start_pitch_effect};
 
 #[derive(StructOpt)]
 struct Opt {
@@ -55,12 +57,6 @@ struct MainState {
     game_state: gamestate::GameState,
     client_state: client_state::ClientState,
     last_time: Instant,
-}
-
-fn play_sound_loop(soundeffect: &sdl2::mixer::Chunk) {
-    if let Err(e) = sdl2::mixer::Channel::all().play(soundeffect, -1) {
-        println!("SDL mixer error: {}", e);
-    }
 }
 
 impl MainState {
@@ -300,7 +296,11 @@ pub fn main() -> Result<(), String> {
 
         let mut lowres_target = create_lowres_target(canvas.output_size()?);
 
-        play_sound_loop(&assets.engine_sound);
+        let channel = sdl2::mixer::Channel::all().play(&assets.engine_sound, -1).unwrap();
+        let mut pitch_effect = PitchEffect::new(1., &assets.engine_sound);
+        unsafe {
+            start_pitch_effect(channel, &mut pitch_effect as *mut PitchEffect);
+        }
 
         'gameloop: loop {
             for event in event_pump.poll_iter() {
@@ -340,6 +340,13 @@ pub fn main() -> Result<(), String> {
             canvas.set_draw_color(sdl2::pixels::Color::RGB(255, 204, 104));
 
             let state_result = main_state.update(&mut reader, &event_pump.keyboard_state());
+
+            let player_speed = if let Some(player) = main_state.game_state.get_player_by_id(my_id) {
+                player.velocity.norm()
+            } else {
+                0.
+            };
+            pitch_effect.speed_factor = 1. + player_speed / constants::MAX_SPEED * 7.;
 
             canvas
                 .with_texture_canvas(&mut lowres_target, |mut canvas| {
