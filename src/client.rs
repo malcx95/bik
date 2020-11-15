@@ -24,7 +24,7 @@ use libbik::gamestate::RaceState;
 use libbik::math::{vec2, Vec2};
 use libbik::messages::{ClientInput, ClientMessage, MessageReader, ServerMessage, SoundEffect};
 use menu::MenuState;
-use pitch_effect::{PitchEffect, start_pitch_effect};
+use pitch_effect::{start_pitch_effect, PitchEffect};
 
 #[derive(StructOpt)]
 struct Opt {
@@ -296,7 +296,9 @@ pub fn main() -> Result<(), String> {
 
         let mut lowres_target = create_lowres_target(canvas.output_size()?);
 
-        let channel = sdl2::mixer::Channel::all().play(&assets.engine_sound, -1).unwrap();
+        let channel = sdl2::mixer::Channel::all()
+            .play(&assets.engine_sound, -1)
+            .unwrap();
         let mut pitch_effect = PitchEffect::new(1., &assets.engine_sound);
         unsafe {
             start_pitch_effect(channel, &mut pitch_effect as *mut PitchEffect);

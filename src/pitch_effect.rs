@@ -49,11 +49,17 @@ fn bytes_to_milliseconds(chunk_size: usize) -> usize {
     sample_frames * 1000 / freq as usize
 }
 
-unsafe extern "C" fn effect_callback(_chan: c_int, stream: *mut c_void, len: c_int, udata: *mut c_void) {
+unsafe extern "C" fn effect_callback(
+    _chan: c_int,
+    stream: *mut c_void,
+    len: c_int,
+    udata: *mut c_void,
+) {
     let (freq, format, channel_count) = sdl2::mixer::query_spec().unwrap();
     let sample_size = format_sample_size(format);
 
-    let buffer: &mut [i16] = std::slice::from_raw_parts_mut(stream as *mut i16, len as usize / sample_size);
+    let buffer: &mut [i16] =
+        std::slice::from_raw_parts_mut(stream as *mut i16, len as usize / sample_size);
     let effect: &mut PitchEffect = (udata as *mut PitchEffect).as_mut().unwrap();
 
     let duration = effect.chunk_data.len() * sample_size;
@@ -76,8 +82,10 @@ unsafe extern "C" fn effect_callback(_chan: c_int, stream: *mut c_void, len: c_i
         for c in 0..(channel_count as usize) {
             let chunk_size = effect.chunk_data.len();
             let value1 = effect.chunk_data[(k * channel_count as usize + c) % chunk_size] as f32;
-            let value2 = effect.chunk_data[((k+1) * channel_count as usize + c) % chunk_size] as f32;
-            buffer[i+c] = ((1.-interpolation_factor) * value1 + interpolation_factor * value2) as i16;
+            let value2 =
+                effect.chunk_data[((k + 1) * channel_count as usize + c) % chunk_size] as f32;
+            buffer[i + c] =
+                ((1. - interpolation_factor) * value1 + interpolation_factor * value2) as i16;
         }
     }
 
