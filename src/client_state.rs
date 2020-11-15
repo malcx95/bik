@@ -259,7 +259,7 @@ impl ClientState {
 
         let mut lap_text = format!("Lap {}", player.lap);
         let mut lap_text_color = (255, 255, 255);
-        if player.lap == constants::TOTAL_NUM_LAPS - 1 {
+        if player.lap == constants::TOTAL_NUM_LAPS {
             lap_text = String::from("Final lap!");
             lap_text_color = constants::FINAL_LAP_COLOR;
         }
@@ -299,11 +299,11 @@ impl ClientState {
                 canvas,
                 assets,
                 *time,
-                lap,
+                lap + 1,
                 vec2(
                     screen_w as f32 * constants::TIME_POS_X,
                     screen_h as f32 * constants::TIME_POS_Y
-                        + (player.lap - lap) as f32 * constants::TIME_PADDING,
+                        + (player.lap - (lap + 1)) as f32 * constants::TIME_PADDING,
                 ),
                 color.into(),
             );
@@ -372,11 +372,11 @@ impl ClientState {
                 canvas,
                 assets,
                 *time,
-                lap,
+                lap + 1,
                 vec2(
                     screen_w as f32 * constants::END_TIME_POS_X,
                     screen_h as f32 * constants::END_TIME_POS_Y
-                        + (constants::TOTAL_NUM_LAPS - lap) as f32 * constants::TIME_PADDING,
+                        + (constants::TOTAL_NUM_LAPS - (lap + 1)) as f32 * constants::TIME_PADDING,
                 ),
                 color.into(),
             );

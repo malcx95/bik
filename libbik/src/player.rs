@@ -79,12 +79,12 @@ impl Player {
             steering_angle: 0.,
             nitro: 0.,
             weapon: None,
-            lap: 0,
+            lap: 1,
             checkpoint: 0,
             fuel_level: constants::INITIAL_FUEL_LEVEL,
             time_to_next_collision: constants::COLLISION_GRACE_PERIOD,
             total_time: 0.,
-            current_lap: 0.,
+            current_lap: 1.,
             best_lap: f32::INFINITY,
             lap_times: vec!(),
             finished: false,
@@ -113,7 +113,7 @@ impl Player {
         self.current_lap = 0.;
         self.lap += 1;
 
-        self.finished = self.lap >= constants::TOTAL_NUM_LAPS;
+        self.finished = self.lap > constants::TOTAL_NUM_LAPS;
 
         if self.finished {
             self.velocity = vec2(0., 0.);
