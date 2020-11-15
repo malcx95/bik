@@ -93,7 +93,9 @@ impl MainState {
                         play_sound(&assets.race_start_sound);
                     }
                     SoundEffect::Nitro => {
-                        sdl2::mixer::Channel::all().play(&assets.nitro_sound, 0).unwrap();
+                        sdl2::mixer::Channel::all()
+                            .play(&assets.nitro_sound, 0)
+                            .unwrap();
                     }
                     SoundEffect::Crash => {}
                 },

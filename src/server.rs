@@ -122,7 +122,11 @@ impl<'a> Server<'a> {
         }
         self.last_time = Instant::now();
 
-        let Self { state, sounds_to_play, .. } = self;
+        let Self {
+            state,
+            sounds_to_play,
+            ..
+        } = self;
         state.update(delta_time, |sound| sounds_to_play.push(sound));
 
         self.accept_new_connections();
@@ -208,7 +212,8 @@ impl<'a> Server<'a> {
                             .start_countdown
                             .unwrap_or(constants::RACE_COUNTDOWN_TIMER_START);
                         self.state.race_state = RaceState::Starting(countdown);
-                        self.sounds_to_play.push((SoundEffect::StartRace, self.state.start_position));
+                        self.sounds_to_play
+                            .push((SoundEffect::StartRace, self.state.start_position));
                         println!("Client {} is starting game!", client.id);
                     }
                     Err(_) => {
