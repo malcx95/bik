@@ -12,7 +12,7 @@ impl Default for Mace {
     fn default() -> Self {
         Self {
             angle: 0.0,
-            durability: 20.0,
+            durability: 10.0,
         }
     }
 }

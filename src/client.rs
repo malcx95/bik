@@ -342,7 +342,8 @@ pub fn main() -> Result<(), String> {
                             }
                             RaceState::Finished => {
                                 send_client_message(
-                                    &ClientMessage::RestartGame, &mut reader.stream
+                                    &ClientMessage::RestartGame,
+                                    &mut reader.stream,
                                 );
                                 println!("Restarting game!")
                             }

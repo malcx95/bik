@@ -254,7 +254,7 @@ impl ClientState {
 
         let mut lap_text = format!("Lap {}", player.lap + 1);
         let mut lap_text_color = (255, 255, 255);
-        if player.lap == constants::TOTAL_NUM_LAPS - 1{
+        if player.lap == constants::TOTAL_NUM_LAPS - 1 {
             lap_text = String::from("Final lap!");
             lap_text_color = constants::FINAL_LAP_COLOR;
         }

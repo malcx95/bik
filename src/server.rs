@@ -147,7 +147,9 @@ impl<'a> Server<'a> {
             for p in &old_players {
                 let start_distance = -50. * self.state.players.len() as f32;
                 let position = self.state.start_position + vec2(0., start_distance);
-                self.state.players.push(Player::new(p.id, p.name.clone(), position));
+                self.state
+                    .players
+                    .push(Player::new(p.id, p.name.clone(), position));
             }
         }
     }
@@ -273,7 +275,8 @@ impl<'a> Server<'a> {
 
                         let pos_diff = old_pos - player.position;
                         let behind_old_pos = player.position + pos_diff * 2.;
-                        let player_movement_line = LineSegment::new(behind_old_pos, player.position);
+                        let player_movement_line =
+                            LineSegment::new(behind_old_pos, player.position);
                         if player_movement_line.intersects(goal_line) {
                             player.add_lap();
                             player.checkpoint = 0;
