@@ -33,4 +33,5 @@ Bik should now compile and you should be able to run the game under Windows.
 ## Attribution
 Impact sound by RoganMcDougald used under CC-BY 3.0
 [freesound.org](https://freesound.org/people/RoganMcDougald/sounds/260435/)
+
 Racing Sans One by Impallari Type used under [Open Font License](https://fonts.google.com/specimen/Racing+Sans+One)
