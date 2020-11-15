@@ -118,13 +118,15 @@ impl GameState {
     pub fn handle_player_collisions(&mut self, delta: f32) {
         let mut collided_players: Vec<(u64, String)> = vec!();
 
-        for p1 in &self.players {
-            for p2 in &self.players {
-                for (c1, r1) in p1.collision_points() {
-                    for (c2, r2) in p2.collision_points() {
-                        let distance = (c1 - c2).norm();
-                        if p1.id != p2.id && distance < r1+r2 as f32 {
-                            collided_players.push((p1.id, p2.name.clone()));
+        if !self.players.is_empty() {
+            for (i, p1) in self.players[..self.players.len() - 1].iter().enumerate() {
+                for p2 in &self.players[(i + 1)..] {
+                    for (c1, r1) in p1.collision_points() {
+                        for (c2, r2) in p2.collision_points() {
+                            let distance = (c1 - c2).norm();
+                            if p1.id != p2.id && distance < r1+r2 as f32 {
+                                collided_players.push((p1.id, p2.name.clone()));
+                            }
                         }
                     }
                 }
