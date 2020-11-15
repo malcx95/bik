@@ -12,6 +12,17 @@ pub struct PitchEffect {
     pub chunk_data: Vec<i16>,
 
     position: usize, // In milliseconds
+    channel: Option<c_int>,
+}
+
+impl Drop for PitchEffect {
+    fn drop(&mut self) {
+        if let Some(channel) = self.channel {
+            unsafe {
+                sdl2_sys::mixer::Mix_UnregisterEffect(channel, Some(effect_callback));
+            }
+        }
+    }
 }
 
 impl PitchEffect {
@@ -29,6 +40,7 @@ impl PitchEffect {
             speed_factor,
             chunk_data,
             position: 0,
+            channel: None,
         }
     }
 }
@@ -97,10 +109,11 @@ unsafe extern "C" fn effect_callback(
 }
 
 pub unsafe fn start_pitch_effect(channel: Channel, pitch_effect: *mut PitchEffect) {
-    let channel_number = channel.0;
+    let channel_number = channel.0 as c_int;
+    (*pitch_effect).channel = Some(channel_number);
 
     sdl2_sys::mixer::Mix_RegisterEffect(
-        channel_number as c_int,
+        channel_number,
         Some(effect_callback),
         None,
         pitch_effect as *mut c_void,
